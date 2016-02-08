@@ -1,4 +1,6 @@
 
+Vagrant 的安装见文件《使用 Vagrant 打造跨平台开发环境.pdf》
+
 ### Virtualbox 无法开启虚拟机
 **问题**
 使用 vagrant up 命令无法启动虚拟机，而且使用 Virtualbox GUI 界面也无法启动，提示启动遇到异常，代码为：1073741819 (0xc0000005)
