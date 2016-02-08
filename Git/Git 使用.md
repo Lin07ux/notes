@@ -11,6 +11,11 @@
 	`$ git config --global user.email "email@example.com"`
 这里的"Your Name"和"email@example.com"需要替换成你自己的名称和 email 地址。
 
+另外，可能还需要重新生成 SSH Keys 秘钥对。在 git bash 程序中，执行下面的命令，会先生成一个 SSH Key，然后拷贝公钥到剪贴板中：
+	`$ ssh-keygen -t rsa -b 4096 -C "linshengli.linux7@qq.com"`
+	`$ clip < ~/.ssh/id_rsa.pub`
+然后在 GitHub 中个人账户的 setting 中新建一个秘钥，并将剪贴板中的内容粘贴到相应位置，即可使用 GitHub 上的远程仓库。
+
 
 ## 创建版本库(repository)
 版本库又名仓库，repository，可以理解成一个目录，这个目录里面的所有文件都可以被 Git 管理起来，每个文件的修改、删除，Git 都能跟踪，以便任何时刻都可以追踪历史，或者在将来某个时刻可以“还原”。
