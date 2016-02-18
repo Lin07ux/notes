@@ -11,12 +11,13 @@ Cmder 是一个 Windows 下的命令行工具，能够很大程度上的改善 W
 
 设置别名有两种方式：
 
-1. 使用 alias 命令设置：`$ alias <alias-name>=<command>`
+- 使用 alias 命令设置：
+	`$ alias <alias-name>=<command>`
 
 这种方式一次可以添加一条别名命令，如，添加`gits`为`git status`命令的别名：
 	`alias gits=git status`
 
-2. 直接编辑 Cmder/config/alias 文件
+- 直接编辑 Cmder/config/alias 文件
 
 这种方式能够直接添加或者编辑命令别名，但是添加之后可能需要重启 Cmder 程序才能生效。
 
