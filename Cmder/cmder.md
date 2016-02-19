@@ -30,6 +30,7 @@ gits=git status
 gita=git add $*
 gitp=git push origin master
 gitc=git commit -m $1
+mysql="D:\Program Files\MySQL\MySQL Server 5.6\bin\mysql.exe" --default-character-set=utf8 $*
 ```
 
 ### 设置 PowerShell 命令行命令别名
