@@ -116,8 +116,24 @@ http {
             include fastcgi_params;
         }
 
+        # 支持 PathInfo
+        # 需要创建一个 pathinfo.conf 文件，内容如下：
+        #   fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+        #   set $path_info $fastcgi_path_info;
+        #   fastcgi_param PATH_INFO       $path_info;
+        #   try_files $fastcgi_script_name =404;
+        # 另外，需要加载的是 fastcgi.conf 文件，而不是 fastcgi_params 文件
+        # 注：当 nginx 和 php-fpm 在一个服务器上时，用 unix sock 比直接使用 IP 协议传输更快
+        location ~ .+\.php(/|$) {
+            # fastcgi_pass  127.0.0.1:9000;
+            fastcgi_pass  unix:/tmp/php-cgi.sock;
+            fastcgi_index index.php;
+            include fastcgi.conf;
+            include pathinfo.conf;
+        }
+
         # 禁止访问 .htxxx 文件
-            location ~ /.ht {
+        location ~ /.ht {
             deny all;
         }
 
