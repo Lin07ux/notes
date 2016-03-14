@@ -29,10 +29,42 @@ CentOS 上已经预安装了很多软件，可以通过如下的方式查看是�
 安装程序之前，可能我们需要先查看下是否可以安装需要的版本的程序，可以用如下的命令：
 	yum list | grep [soft_name]
 
+### 开启 EPEL 仓库
+参考：http://www.tecmint.com/how-to-enable-epel-repository-for-rhel-centos-6-5/
+
+RHEL/CentOS 7 64 Bit
+
+```shell
+wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+rpm -ivh epel-release-7-5.noarch.rpm
+```
+
+RHEL/CentOS 6 32-64 Bit
+
+```shell
+## RHEL/CentOS 6 32-Bit ##
+wget http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+rpm -ivh epel-release-6-8.noarch.rpm
+
+## RHEL/CentOS 6 64-Bit ##
+wget http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -ivh epel-release-6-8.noarch.rpm
+```
+
+### 创建 web 服务账户和组
+一般会将 web 服务都用一个不能登录的账户来运行，web 目录也都设置为该账户和组所有，避免权限问题。
+
+```shell
+groupadd www
+useradd  www -s /sbin/nologin -d /var/www/ -g www
+```
+
+添加了 www 账户之后，可以查看起 uid，在后面添加 ftp 用户的时候会用到：
+`cat /etc/passwd`
+
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
-
 
 ## 安装 FTP 服务
 由于会经常需要将文件上传到服务器中，所以我们需要在服务器上安装一个 vsftpd 服务。
@@ -106,14 +138,34 @@ CentOS 上已经预安装了很多软件，可以通过如下的方式查看是�
 	# 创建一个名为 ftpuser 的账户，主目录为 /home/wwwroot/magento，组为 ftp，
 	# 同时指定其不能用于登录系统
 	useradd -d /home/wwwroot/magento -g ftp -s /sbin/nologin ftpuser
+	# 一般建议添加的用户都是 web 服务的守护者，如 www，设置用户的 uid 为 www 的 uid(需要使用 -o 选项)
+	useradd -d /home/wwwroot/test -s /sbin/nologin -g www -o -u 500 test
 	# 设置密码，之后会提示输入密码并确认重输入
 	passwd ftpuser
 	# 如果是先建立的文件夹，然后添加的文件，还需要更改路径权限
 	chown -R ftpuser /home/wwwroot/magneto 
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
 
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+## 安装 Nginx
+
+```shell
+yum install -y nginx
+
+chkconfig nginx on
+```
+
+配置 nginx 的运行账户和组：
+
+```shell
+vim /etc/nginx/nginx.conf
+user www www;
+```
+
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 ## 安装 Apache
 参考：
@@ -216,7 +268,7 @@ CentOS 上的源很久没有更新了，需要更新源之后才能安装 PHP 5.
 
 3. 安装 PHP 5.6
 	安装好源之后，就可以用下面的命令安装 PHP 5.6，当然也可以指定其他的版本。
-	`yum install -y php56w php56w-opcache php56w-xml php56w-mcrypt php56w-gd php56w-devel php56w-mysql php56w-intl php56w-mbstring php56w-bcmath`
+	`yum install -y php56w php56w-fpm php56w-opcache php56w-xml php56w-mcrypt php56w-gd php56w-devel php56w-mysql php56w-intl php56w-mbstring php56w-bcmath`
 
 4. 查看 PHP 版本
 	安装好 PHP 之后，就可以使用如下命令查看 PHP 的版本：
@@ -233,12 +285,20 @@ CentOS 上的源很久没有更新了，需要更新源之后才能安装 PHP 5.
     vi /etc/php.ini
     # 设置时区
     date.timezone = Asia/Chongqing
-    # 设置内存限制，Magento2 推荐 768M
-    memory_limit = 768M
     # 取消自动获取内容
     always_populate_raw_post_data = -1
     # 关闭 asp 风格
     asp_tags = Off
+
+    # 设置 php-fpm 设置
+    # 这里也可以不设置，建议web服务设置一个统一的账户
+    vim /etc/php-fpm.d/www.conf
+    # 设置其中的 user 和 group
+    user = www
+    group = www
+    # 设置监听程序的用户和组
+    listen.owner = www
+	listen.group = www
 
 6. PHP 扩展库位置
 	/usr/lib64/php/modules/
@@ -271,7 +331,7 @@ CentOS 上的源很久没有更新了，需要更新源之后才能安装 PHP 5.
 
 5. 开启 MySQL 服务并添加自动启动
 	# 第一次启动会有一些相关信息自动完成
-	service mysql start
+	service mysqld start
 	chkconfig mysqld on
 
 6. 设置 root 密码和其他安全选项
@@ -320,69 +380,6 @@ CentOS 上的源很久没有更新了，需要更新源之后才能安装 PHP 5.
 	/var/log/mysqld.log
 	# 显示 MySQL 的配置
 	mysqld --print-defaults
-
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-
-## 安装 Magento
-参考：
-	步骤1  ：[Composer 中文网](http://www.phpcomposer.com)
-	步骤2/3：[Apache User](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/apache-user.html)
-
-1. 安装 composer
-	composer 是一个用来管理 PHP 依赖关系的工具。类似 Nodejs 的 npm。
-
-	# 全局安装
-	curl -sS https://getcomposer.org/installer | php
-	mv composer.phar /usr/local/bin/composer
-
-2. 创建一个用户，并设置密码
-	useradd wwwuser
-	passwd wwwuser
-
-3. 将新建的用户加入到 web 服务器组
-	# 查看 web 服务器组，一般是 apache
-	egrep -i '^user|^group' /etc/httpd/conf/httpd.conf
-	# 将用户 wwwuser 添加到 apache 组
-	usermod -g apache wwwuser
-	# 确认 wwwuser 用户的组
-	groups wwwuser
-	# 重启 apache 服务器
-	service httpd restart
-
-4. 在 /var/www/html 中新建文件夹，并更改所有者
-	# 新建 magneto2 文件夹
-	cd /var/www/html
-	mkdir magento2
-	# 更改所有者和组
-	chown wwwuser magento2
-	chown -R :apache magento2
-
-5. 上传压缩包到服务器，并解压到 /var/www/html/magento2 文件夹
-	# 上传后拷贝
-	cp /home/ftp/Magento-2.0.0-tar.bz2 magento2
-	# 修改权限
-	chown wwwuser magento2/Magento-2.0.0-tar.bz2
-
-6. 切换到 wwwuser 用户进行操作
-	# 切换用户，或者重开会话用这个用户登录
-	su - wwwuser
-	# 解压
-	tar -jxvf Magento-2.0.0-tar.bz2
-
-7. 设置文件夹权限
-	find . -type d -exec chmod 770 {} \; && find . -type f -exec chmod 660 {} \; && chmod u+x bin/magento
-
-8. 浏览器中安装
-	最后一步，安装时，如果提示类似：无法打开 /var/lib/php/session/ 文件的错误，
-	一般是由于 apache 组对 /var/lib/php/session/ 这个文件夹没有写权限造成的，
-	更改下 apache 组的权限，然后重启 apache 即可。
-	chmod 775 /var/lib/php/session
-	service httpd restart
-
-	其他文件，参见：
-		[Magento Troubleshooting](http://devdocs.magento.com/guides/v2.0/install-gde/trouble/tshoot.html)
-
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
