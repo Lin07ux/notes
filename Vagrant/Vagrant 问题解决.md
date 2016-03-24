@@ -51,5 +51,17 @@ end
 ```
 
 
+### vagrant 启动报错
+**问题**
+启动时，提示“The following SSH command responded with a non-zero exit status”。
+
+**原因**
+问题就处在在持久网络设备udev规则（persistent network device udev rules）是被原VM设置好的，再用box生成新VM时，这些rules需要被更新。而这和Vagrantfile里对新VM设置private network的指令发生冲突。删除就好了。
+
+**解决方法**
+虽然vagrant up启动报错，但是vagrant ssh还是能登陆虚拟机的，进入虚拟机后，执行如下命令
+`sudo rm -f /etc/udev/rules.d/70-persistent-net.rules`
+
+
 
 
