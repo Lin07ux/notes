@@ -23,6 +23,8 @@ print_r($_SESSION);
 
 那会不会是因为权限问题导致的不能存储 session 数据呢？
 
+查看 php-fpm 的配置文件(/etc/php-fpm.d/www.conf)，可以看到 php-fpm 的相关配置中，session 的目录不是`/tmp`，而是`/var/lib/php/session`。
+
 检查存放 session 数据的目录的权限：
 
 ```shell
@@ -42,3 +44,5 @@ chown -R www:www /var/lib/php/session
 php-fpm -t
 service php-fpm restart
 ```
+
+
