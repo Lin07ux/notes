@@ -1,170 +1,105 @@
 
 ## 预备知识
-### 更新 yum
-首先需要更新 yum 源。
+### yum 与 rpm 的区别
+rpm 是由红帽公司开发的软件包管理方式，使用 rpm 我们可以方便的进行软件的安装、查询、卸载、升级等工作。但是 rpm 软件包之间的依赖性问题往往会很繁琐,尤其是软件由多个 rpm 包组成时。
 
-升级所有包，改变软件设置和系统设置,系统版本内核都升级
-	yum -y update
+Yum（全称为 Yellow dog Updater, Modified）是一个在 Fedora 和 RedHat 以及 SUSE 中的 Shell 前端软件包管理器。基於 RPM 包管理，能够从指定的服务器自动下载 RPM 包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软体包，无须繁琐地一次次下载、安装。
 
-升级所有包，不改变软件设置和系统设置，系统版本升级，内核不改变
-	yum -y upgrade
+Yum 的关键之处是要有可靠的 repository，顾名思义，这是软件的仓库，它可以是http 或 ftp 站点，也可以是本地软件池，但必须包含 rpm 的 header，header 包括了 rpm 包的各种信息，包括描述，功能，提供的文件，依赖性等。正是收集了这些 header 并加以分析，才能自动化地完成余下的任务。
 
-### 查看已经安装的程序
-CentOS 上已经预安装了很多软件，可以通过如下的方式查看是否安装有某种软件 soft_name：
-	rpm -qa | grep [soft_name]
-如，查看是否安装有 mysql：
-	rpm -qa | grep mysql
-如果有输出，则表示安装的有相应的程序。
+也就是说，Yum 需要先配置好一个或多个 repository 源，才能找到并安装你所需要的 rpm 包。
 
-### 删除已安装的程序
-由于 CentOS 上安装的程序版本可能比较低，所以我们需要先删除掉相应的程序，然后再安装合适的版本。
-	rpm -e [soft_name]
-如，删除 mysql：
-	rpm -e mysql
+### rpm 包的安装和管理
+CentOS 上已经预安装了 rpm 包，但由于 CentOS 上安装的源都比较旧，所以我们也需要自己安装一些需要的 rpm 包源。
 
-如果删除程序时，提示有依赖的其他文件，可以用下面的强力删除命令：
-	rpm -e --nodeps mysql
+* 安装一个包：`rpm -ivh < rpm package name>`
+* 升级一个包：`rpm -Uvh < rpm package name>`
+* 移走一个包：`rpm -e [soft_name]`
+* 有依赖时强力删除：``rpm -e --nodeps [soft_name]`
+* 查询一个包是否被安装：`rpm -q < rpm package name>`
+* 得到被安装的包的信息：`rpm -qi < rpm package name>`
+* 列出该包中有哪些文件：`rpm -ql < rpm package name>`
+* 列出服务器上的一个文件属于哪一个 RPM 包：`rpm -qf`
+* 列出所有被安装的 rpm package：`rpm -qa`
+* 查看是否安装有指定的软件：`rpm -qa | grep [soft_name]`
+* 列出一个未被安装进系统的 RPM 包文件中包含有哪些文件：`rpm -qilp < rpm package name>`
+* 可综合好几个参数一起用：`rpm -qil < rpm package name>`
 
-### 查看可以安装的程序的
-安装程序之前，可能我们需要先查看下是否可以安装需要的版本的程序，可以用如下的命令：
-	yum list | grep [soft_name]
+> 安装参数：
+    --force  即使覆盖属于其它包的文件也强迫安装 
+    --nodeps 如果该RPM包的安装依赖其它包，即使其它包没装，也强迫安装。 
+
+### Yum 管理和使用
+* 升级所有包，改变软件设置和系统设置,系统版本内核都升级：`yum -y update`
+* 升级所有包，不改变软件设置和系统设置，系统版本升级，内核不改变：`yum -y upgrade`
+* 查看可以安装的程序的：`yum list | grep [soft_name]`
+* 安装程序：`yum install [soft_name]`
+* 安装程序并自动安装依赖：`yum install -y [soft_name]`
+* 卸载软件包：`yum remove -y [soft_name]`
 
 ### 开启 EPEL 仓库
-参考：http://www.tecmint.com/how-to-enable-epel-repository-for-rhel-centos-6-5/
-
-RHEL/CentOS 7 64 Bit
+参考：[CentOS 开启 EPEL 仓库](http://www.tecmint.com/how-to-enable-epel-repository-for-rhel-centos-6-5/)
 
 ```shell
+# RHEL/CentOS 7 64 Bit
 wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
 rpm -ivh epel-release-7-5.noarch.rpm
-```
 
-RHEL/CentOS 6 32-64 Bit
-
-```shell
-## RHEL/CentOS 6 32-Bit ##
+# RHEL/CentOS 6 32-Bit
 wget http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 rpm -ivh epel-release-6-8.noarch.rpm
 
-## RHEL/CentOS 6 64-Bit ##
+# RHEL/CentOS 6 64-Bit
 wget http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 rpm -ivh epel-release-6-8.noarch.rpm
 ```
 
+> 除 EPEL 仓库之外，安装软件的时候，可能需要使用其他的仓库来获取较新的版本。
+
 ### 创建 web 服务账户和组
 一般会将 web 服务都用一个不能登录的账户来运行，web 目录也都设置为该账户和组所有，避免权限问题。
+
+一般会将 Nginx 和 PHP/PHP-FPM 的用户均设置为 nobody 用户和组，并将网站根目录的用户和属组设置为 nobody，当然，也可以新建一个不能登录系统的用户。
+
+> 需要用到 ftp 向网站根目录上传文档的时候，可以添加 ftp 用户的 uid 和 web 服务的用户相同。
 
 ```shell
 groupadd www
 useradd  www -s /sbin/nologin -d /var/www/ -g www
 ```
 
-添加了 www 账户之后，可以查看起 uid，在后面添加 ftp 用户的时候会用到：
+添加了 www 账户之后，可以查看其 uid，在后面添加 ftp 用户的时候会用到：
 `cat /etc/passwd`
 
 
 -------------------------------------------------------------------------------
--------------------------------------------------------------------------------
 
-## 安装 FTP 服务
-由于会经常需要将文件上传到服务器中，所以我们需要在服务器上安装一个 vsftpd 服务。
-
-1. 安装 vsftpd
-	yum -y install vsftpd
-
-2. 设置 vsftpd 服务开机自启动
-	chkconfig vsftpd on
-
-3. 相关操作指令
-	service vsftpd start		开启 vsftpd 服务
-	service vsftpd restart		重启 vsftpd 服务
-	service vsftpd stop			关闭 vsftpd 服务
-	service vsftpd status		查看 vsftpd 服务的状态
-
-4. 修改配置文件
-	vi /etc/vsftpd/vsftpd.conf
-
-	# 禁止匿名用户anonymous登录
-	anonymous_enable=NO
-	# 允许本地用户登录
-	local_enable=YES
-	# 让登录的用户有写权限(上传，删除)
-	write_enable=YES
-	# 默认umask
-	local_umask=022
-	# 把传输记录的日志保存到/var/log/vsftpd.log
-	xferlog_enable=YES
-	xferlog_file=/var/log/vsftpd.log
-	xferlog_std_format=NO
-	# 允许ASCII模式上传
-	ascii_upload_enable=YES 
-	# 允许ASCII模式下载
-	ascii_download_enable=YES
-	# 使用20号端口传输数据
-	connect_from_port_20=YES
-
-	# **接下来的三条配置很重要**
-	# `chroot_local_user` 设置为 YES，那么所有的用户默认将被 chroot，
-	# 也就用户目录被限制在了自己的 home 下，无法向上改变目录。
-	# ★超重要：如果`chroot_local_user`设置为 YES，
-	# 那么`chroot_list_file` 设置的文件里的用户，是不会被 chroot 的(即，可以向上改变目录)
-	# ★超重要：如果`chroot_local_user`设置为 NO，
-	# 那么`chroot_list_file` 设置的文件里的用户，是会被 chroot 的(即，无法向上改变目录)
-	# `chroot_list_enable` 设置为 YES，即让 chroot 用户列表有效。
-	chroot_local_user=YES
-	chroot_list_enable=YES
-	chroot_list_file=/etc/vsftpd/chroot_list
-	# 新建这个 chroot_list 文件
-	# touch /etc/vsftpd/chroot_list
-
-	use_localtime=YES
-	# 以standalone模式在ipv4上运行
-	listen=YES
-	# PAM认证服务名，这里默认是vsftpd，在安装vsftpd的时候已经创建了这个pam文件，
-	# 在/etc/pam.d/vsftpd，根据这个pam文件里的设置，/etc/vsftpd/ftpusers
-	# 文件里的用户将禁止登录ftp服务器，比如root这样敏感的用户，所以你要禁止别的用户
-	# 登录的时候，也可以把该用户追加到/etc/vsftpd/ftpusers里。
-	pam_service_name=vsftpd
-
-	# 重启 vsftpd
-	service vsftpd restart
-
-5. 添加 ftp 用户
-	设置好 vsftpd 服务之后，需要设置一个 ftp 账户用来登录 ftp。
-	同时，可以给这个 ftp  账户设定相应的主目录 home，避免改动其他目录。
-	当然，也可以创建多个 ftp 账户，分别管理不同的目录。
-
-	# 在创建好相应的主目录之后，添加 ftp 账户
-	# 创建一个名为 ftpuser 的账户，主目录为 /home/wwwroot/magento，组为 ftp，
-	# 同时指定其不能用于登录系统
-	useradd -d /home/wwwroot/magento -g ftp -s /sbin/nologin ftpuser
-	# 一般建议添加的用户都是 web 服务的守护者，如 www，设置用户的 uid 为 www 的 uid(需要使用 -o 选项)
-	useradd -d /home/wwwroot/test -s /sbin/nologin -g www -o -u 500 test
-	# 设置密码，之后会提示输入密码并确认重输入
-	passwd ftpuser
-	# 如果是先建立的文件夹，然后添加的文件，还需要更改路径权限
-	chown -R ftpuser /home/wwwroot/magneto 
-
+## 安装 ftp 服务器
+参考：[CentOS vsftpd 安装和配置](https://github.com/Lin07ux/notes/blob/master/CentOS/CentOS%20vsftpd%20%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE.md)
 
 -------------------------------------------------------------------------------
--------------------------------------------------------------------------------
+
 ## 安装 Nginx
+默认情况下，CentOS 系统上的源里面的 Nginx 软件包不是很新，可以添加 Nginx 的软件源来找到新的 Nginx 包：
 
 ```shell
+# CentOS7 Nginx 源
+sudo rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+
+# 安装 Nginx
 yum install -y nginx
 
+# 开机自启动
 chkconfig nginx on
 ```
 
-配置 nginx 的运行账户和组：
+然后配置 nginx 的运行账户和组及其他设置：
 
 ```shell
 vim /etc/nginx/nginx.conf
 user www www;
 ```
 
-
--------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
 ## 安装 Apache
@@ -312,74 +247,95 @@ CentOS 上的源很久没有更新了，需要更新源之后才能安装 PHP 5.
 
 
 -------------------------------------------------------------------------------
--------------------------------------------------------------------------------
 
 
 ## 安装 MySQL
 参考：
 	[Magento MySQL](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/mysql.html)
+	[CentOS7 MySQL](https://www.linode.com/docs/databases/mysql/how-to-install-mysql-on-centos-7#install-mysql)
 
 1. 更新 yum 源
-	yum -y update
+
+`yum -y update`
 
 2. 添加 MySQL 源
-	wget http://repo.mysql.com/mysql-community-release-el6-5.noarch.rpm && rpm -ivh mysql-community-release-el6-5.noarch.rpm
+
+`wget http://repo.mysql.com/mysql-community-release-el6-5.noarch.rpm && rpm -ivh mysql-community-release-el6-5.noarch.rpm`
+
+> CentOS7 的源：http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm 
 
 4. 安装 MySQL
-	# 下面这个命令会自动安装 MySQL-server 和 MySQL-client 等
-	yum -y install mysql-server
+
+```shell
+# 下面这个命令会自动安装 MySQL-server 和 MySQL-client 等
+yum -y install mysql-server
+```
 
 5. 开启 MySQL 服务并添加自动启动
-	# 第一次启动会有一些相关信息自动完成
-	service mysqld start
-	chkconfig mysqld on
+
+```shell
+# 第一次启动会有一些相关信息自动完成
+service mysqld start
+chkconfig mysqld on
+```
 
 6. 设置 root 密码和其他安全选项
-	# 执行下面的命令，然后根据提示进行
-	mysql_secure_installation
-	(1). 提示输入密码，由于是第一次安装，没有密码，直接 Enter
-	(2). 提示是否设置密码，输入 Y，然后 Enter
-	(3). 设置密码，并确认密码
-	(4). 提示是否删除匿名用户，输入 Y，然后 Enter
-	(5). 提示是否禁止 root 用户远程登陆，输入 Y，然后 Enter
-	(6). 提示是否删除 test 数据库，输入 Y，然后 Enter
-	(7). 提示是否立即重新加载权限表，输入 Y，然后 Enter
+
+```shell
+# 执行下面的命令，然后根据提示进行
+mysql_secure_installation
+# (1). 提示输入密码，由于是第一次安装，没有密码，直接 Enter
+# (2). 提示是否设置密码，输入 Y，然后 Enter
+# (3). 设置密码，并确认密码
+# (4). 提示是否删除匿名用户，输入 Y，然后 Enter
+# (5). 提示是否禁止 root 用户远程登陆，输入 Y，然后 Enter
+# (6). 提示是否删除 test 数据库，输入 Y，然后 Enter
+# (7). 提示是否立即重新加载权限表，输入 Y，然后 Enter
+```
 
 7. 增加新用户，并设置权限
-    # 创建新用户并设置密码
-    # % 表示外部任何地址都能访问
-    mysql> create user 'magento'@'%' identified by '123456';
-    # 给新用户授权，使其能从外部登陆和本地登陆
-    # 并能管理数据库 magento 数据库的所有表
-    mysql> grant all privileges on magento.* to 'magento'@'localhost' identified by '123456';
-    mysql> grant all privileges on magento.* to 'magento'@'%' identified by '123456';
+
+```shell
+# 创建新用户并设置密码
+# % 表示外部任何地址都能访问
+mysql> create user 'magento'@'%' identified by '123456';
+# 给新用户授权，使其能从外部登陆和本地登陆
+# 并能管理数据库 magento 数据库的所有表
+mysql> grant all privileges on magento.* to 'magento'@'localhost' identified by '123456';
+mysql> grant all privileges on magento.* to 'magento'@'%' identified by '123456';
+```
 
 8. 检查 MySQL 数据库的引擎
-    mysql> show variables like 'storage_engine';
-    # 如果显示的结果不是 InnoDB 而是 MyISAM
-    # 则需要修改引擎为 InnoDB
-    mysql> exit;
-    service mysqld stop
-    # 编辑 my.cnf 文件
-    vi /etc/my.cnf
-    # [mysqld] 后加入
-    default-storage-engine=InnoDB
+
+```shell
+mysql> show variables like 'storage_engine';
+# 如果显示的结果不是 InnoDB 而是 MyISAM
+# 则需要修改引擎为 InnoDB
+mysql> exit;
+service mysqld stop
+# 编辑 my.cnf 文件
+vim /etc/my.cnf
+# [mysqld] 后加入
+# default-storage-engine=InnoDB
+```
 
 9. 配置 MySQL
-    在 /etc/my.cnf 文件中至少加入下面的一段
-    否则在安装时，会无法连接数据库
 
-    # 打开配置文件
-    vi /etc/my.cnf
-    # 加入 [client] 段
-    [client]
-    socket = /var/lib/mysql/mysql.sock
+在 /etc/my.cnf 文件中至少加入下面的一段。否则在安装时，会无法连接数据库
+
+```shell
+# 打开配置文件
+vi /etc/my.cnf
+# 加入 [client] 段
+[client]
+socket = /var/lib/mysql/mysql.sock
+```
 
 10. MySQL 其他
-	# 日志文件
-	/var/log/mysqld.log
-	# 显示 MySQL 的配置
-	mysqld --print-defaults
+
+日志文件：/var/log/mysqld.log
+
+显示 MySQL 的配置：mysqld --print-defaults
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------

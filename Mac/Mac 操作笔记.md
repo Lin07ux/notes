@@ -35,6 +35,7 @@ Mac 系统的 host 文件位于：`/etc/hosts`。
 ## 键盘符号
 * `↖︎`  Home键 对应  fn + 左方向键
 * `↘︎`  End键  对应  fn + 右方向键
+* `^`   Control键
 
 
 
