@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CSS 密码花园 - 交互式图像对比</title>
+
+	<style type="text/css">
+		* { padding: 0; margin: 0; }
+		.image-slider {
+		    position:relative;
+		    display: inline-block;
+		}
+		.image-slider > div {
+		    position: absolute;
+		    top: 0; left: 0;
+		    width: 50%; /* Initial width */
+		    overflow: hidden; /* Make it clip the image */
+		}
+		.image-slider img { display: block; width: 100vw; }
+		.image-slider input {
+		    position: absolute;
+		    left: 0;
+		    bottom: 10px;
+		    width: 100%;
+		    margin: 0;
+		}
+	</style>
+</head>
+<body>
+	<div class="image-slider">
+	    <img src="11.jpg" alt="Before" />
+	    <img src="22.jpg" alt="After" />
+	</div>
+
+	<script type="text/javascript">
+		var sliders = document.querySelectorAll('.image-slider');
+		[].forEach.call(sliders, function(slider) {
+		    // Create the extra div and
+		    // wrap it around the first image
+		    var div = document.createElement('div');
+		    var img = slider.querySelector('img');
+		    slider.insertBefore(div, img);
+		    div.appendChild(img);
+
+		    // Create the slider
+		    var range = document.createElement('input');
+		    range.type = 'range';
+		    range.oninput = function() {
+		        div.style.width = this.value + '%';
+		    };
+		    slider.appendChild(range);
+		});
+	</script>
+</body>
+</html>
