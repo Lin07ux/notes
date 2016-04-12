@@ -97,7 +97,7 @@ function make_password( $length = 8 )
 ```php
 function get_password( $length = 8 ) 
 {
-    $str = substr(md5(time()), 0, 6);
+    $str = substr(md5(time()), 0, $length);
     return $str;
 }
 ```
