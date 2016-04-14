@@ -181,7 +181,7 @@ user www www;
 	access_log   访问日志
 	error_log    错误日志
 
--------------------------------------------------------------------------------
+
 -------------------------------------------------------------------------------
 
 
@@ -303,6 +303,8 @@ mysql> create user 'magento'@'%' identified by '123456';
 # 并能管理数据库 magento 数据库的所有表
 mysql> grant all privileges on magento.* to 'magento'@'localhost' identified by '123456';
 mysql> grant all privileges on magento.* to 'magento'@'%' identified by '123456';
+# 刷新权限
+mysql> flush privileges;
 ```
 
 8. 检查 MySQL 数据库的引擎
