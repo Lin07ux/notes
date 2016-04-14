@@ -24,9 +24,204 @@
 由于默认情况下，`input`标签在各个浏览器中样式不统一，而且都很丑。我们可以使用其他方法来将其美化一下。
 
 **方法一**
+使用 JavaScript。
 将`input`元素隐藏，然后通过其他元素的事件来触发`input`元素的点击事件。比如，可以设置一个`div`元素包裹着设置了`display: none;`的`input`元素，然后当`div`元素被点击的时候，使用 JavaScript 代码触发`input`元素的`click`事件，就能进行文件选择了。
 
+**方法二**
+使用`label`元素。
+由于`label`元素可以指向一个`input`元素，当点击`label`的时候，其指向的`input`元素就会被激活，所以，我们可以将`input`元素隐藏，而修改`label`元素的样式，也能达到美化效果。
+
+## 相关 API
+[W3C文档](https://www.w3.org/TR/file-upload/)
+
+目前 HTML 5 提供了以下的一些接口来操作文件：
+
+- FileList - File 对象的类数组序列（考虑多文件上传或者从桌面拖动目录或文件）。
+- File - 独立文件；提供只读信息，例如名称、文件大小、mimetype 和对文件句柄的引用。
+- FileReader - 读取File或Blob
+- DataTransfer - 通过拖拽来生成 FileList 对象
+- Blob - 可将文件分割为字节范围。
+- URL scheme
+
+可以通过下面的方式来验证浏览器是否支持 File API：
+
+```js
+// 检测是否支持File API
+if (window.File && window.FileReader && window.FileList && window.Blob) {
+  //  支持
+} else {
+  alert('不支持');
+}
+```
+
+### FileList
+[MDN FileList](https://developer.mozilla.org/zh-CN/docs/Web/API/FileList)
+
+一个 FileList 对象通常来自于一个 HTML input 元素的 files 属性，或者来自用户的拖放操作(查看 [DataTransfer](https://developer.mozilla.org/zh-CN/docs/DragDrop/DataTransfer) 对象了解详情)。
+
+可以通过这个对象访问到用户所选择的文件。这个对象一般是由一个或多个 [File](https://developer.mozilla.org/zh-CN/docs/Web/API/File) 对象组成的类数组对象。每个 File 对象在其中是通过数字索引来获取(索引从 0 开始)。所以这个对象也有`length`属性来表示其中包含的 File 对象的个数。
+
+比如，对于`type`属性为`file`的`<input>`元素，我们可以通过下面的方式获得 FileList 对象，以及其中的第一个 File 文件对象：
+
+```js
+// FileList 对象
+var list = document.getElementById('fileItem').files;
+// File 对象
+var file = list[0];
+```
+
+### File
+[MDN File](https://developer.mozilla.org/zh-CN/docs/Web/API/File)
+
+File 接口提供了文件的信息，以及存取文件内容的方法。
+
+通常情况下，File 对象是来自用户在一个`<input>`元素上选择文件后返回的[`FileList`对象](https://developer.mozilla.org/zh-CN/docs/Web/API/FileList)(files 属性)，也可以是来自由拖放操作生成的 [DataTransfer](https://developer.mozilla.org/zh-CN/docs/DragDrop/DataTransfer) 对象。
+
+**属性**
+
+- `name` 当前 File 对象所引用文件的文件名，不包含任何路径信息。只读。
+- `size` 当前 File 对象所引用文件的文件大小，单位为字节，64位整数。只读。
+- `type` 当前 File 对象所引用文件的类型(MIME类型)，如果类型未知，则返回空字符串。只读。
+- `lastModifiedDate` 当前 File 对象所引用文件最后修改时间。只读。
+
+**方法**
+虽然 File 对象也有一些方法可以用来获取文件内容，但都是非标准的，建议使用 [FileReader](https://developer.mozilla.org/zh-CN/docs/Web/API/FileReader) 对象来获取文件内容(可以查看 [如何在web应用程序中使用文件](https://developer.mozilla.org/zh-CN/Using_files_from_web_applications))
+
+### FileReader
+[MDN FileReader](https://developer.mozilla.org/zh-CN/docs/Web/API/FileReader)
+
+使用 FileReader 对象，web 应用程序可以异步的读取存储在用户计算机上的文件(或者原始数据缓冲)内容，可以使用 File 对象或者 Blob 对象来指定所要处理的文件或数据。其中 File 对象可以是来自用户在一个 <input> 元素上选择文件后返回的 FileList 对象，也可以来自拖放操作生成的 DataTransfer 对象，还可以是来自在一个 HTMLCanvasElement 上执行 mozGetAsFile() 方法后的返回结果。
+
+创建一个 FileReader 对象：
+
+```js
+var reader = new FileReader();
+```
+
+**属性**
+
+- `error` 在读取文件时发生的错误。只读。
+- `readyState`	 表明 FileReader 对象的当前状态，整数。值为状态常量中的一个。只读。
+- `result` 读取到的文件内容。这个属性只在读取操作完成之后才有效，并且数据的格式取决于读取操作是由哪个方法发起的。只读。
+
+**状态常量**
+
+| 常量名   |   值   |   描述           |
+|---------|--------|-----------------|
+| EMPTY   |   0    | 还没有加载任何数据 |
+| LOADING |   1    | 数据正在被加载    |
+| DONE    |   2    | 完成全部的读取请求 |
+
+**方法**
+
+- `void abort()`
+    中止该读取操作。在返回时，readyState 属性的值为`DONE`。
+    当该 FileReader 对象没有在进行读取操作时(也就是 readyState 属性的值不为`LOADING`时)，调用该方法会抛出该异常。
+    
+- `void readAsArrayBuffer(in Blob blob)`
+    开始读取指定的 Blob 对象或 File 对象中的内容。
+    参数`blob`表示将要读取到一个 ArrayBuffer 中的 Blob 对象或者 File 对象。
+    当读取操作完成时，readyState 属性的值会成为`DONE`。
+    如果设置了`onloadend`事件处理程序，则调用之。
+    同时，result 属性中将包含一个`ArrayBuffer`对象以表示所读取文件的内容。
+    
+- `void readAsBinaryString(in Blob blob)`
+    和`readAsArrayBuffer()`方法类似，只是其调用结束后，result 属性中将包含所读取文件的`原始二进制数据`。
+    
+- `void readAsDataURL(in Blob blob)`
+    和`readAsArrayBuffer()`方法类似，只是其调用结束后，result 属性中将包含一个`data: URL`格式的字符串以表示所读取文件的内容。
+    一般用这个方法来读取一个图片，从而实现图片的本地预览。(注: IE10 以下的版本不支持 FileReader() 构造函数。不过可以利用滤镜来兼容旧版本的 IE：[兼容 IE 的图片本地预览](https://mdn.mozillademos.org/files/3699/crossbrowser_image_preview.html))
+    
+- `void readAsText(in Blob blob, [optional] in DOMString encoding)`
+    和`readAsArrayBuffer()`方法类似，只是其调用结束后，result 属性中将包含一个`字符串`以表示所读取的文件内容。
+    其中，第二个参数可选，表示返回数据所使用的编码。如果不指定，默认为 UTF-8。
+
+**事件**
+
+- `onabort` 当读取操作被中止时调用。
+- `onerror` 当读取操作发生错误时调用
+- `onload` 当读取操作成功完成时调用。
+- `onloadend` 当读取操作完成时调用，不管是成功还是失败。该处理程序在 onload 或者 onerror 之后调用。
+- `onloadstart` 当读取操作将要开始之前调用。
+- `onprogress` 在读取数据过程中周期性调用。
+
+**兼容性**
+Safari 和 IE 10- 不支持。
+
+### DataTransfer
+[MDN DataTransfer](https://developer.mozilla.org/zh_CN/docs/Web/API/DataTransfer)
+
+在进行拖放操作时，DataTransfer 对象用来保存被拖动的数据。它可以保存一项或多项数据、一种或者多种数据类型。关于拖放的更多信息，请参见 [Drag and Drop](https://developer.mozilla.org/zh_CN/DragDrop/Drag_and_Drop)。
+
+这个对象可以从所有的拖动事件的 dataTransfer 属性来调用，但是不能单独创建。
+
+**属性**
+
+- `dropEffect` 
+    设置实际的放置效果，它应该始终设置成 effectAllowed 的可能值之一。
+    分配任何其他值时不会有任何影响并且保留旧值。
+    可能的值：
+    * copy: 复制到新的位置
+    * move: 移动到新的位置.
+    * link: 建立一个源位置到新位置的链接.
+    * none: 禁止放置（禁止任何操作）
+    
+- `effectAllowed`
+    用来指定拖动时被允许的效果。
+    分配任何其他值时不会有任何影响并且保留旧值。
+    可能的值:
+    * copy: 复制到新的位置.
+    * move:移动到新的位置 .
+    * link:建立一个源位置到新位置的链接.
+    * copyLink: 允许复制或者链接.
+    * copyMove: 允许复制或者移动.
+    * linkMove: 允许链接或者移动.
+    * all: 允许所有的操作.
+    * none: 禁止所有操作.
+    * uninitialized: 缺省值（默认值）, 相当于 all。
+    
+- `files`
+    一个 FileList 对象，包含一个在数据传输上所有可用的本地文件列表。
+    如果拖动操作不涉及拖动文件，此属性是一个空列表。
+    此属性访问指定的 FileList 中无效的索引将返回未定义（undefined）。
+    
+- `types`
+    保存一个被存储数据的类型列表作为第一项，顺序与被添加数据的顺序一致。
+    如果没有添加数据将返回一个空列表。
+
+**方法**
+
+- `void addElement(in Element element)`
+    设置拖动源。通常你不需要改变这项，如果修改这项将会影响拖动的那个节点和 dragend 事件的触发。默认目标是被拖动的节点。
+    参数 element 表示要添加的元素。
+
+- `void clearData([in String type])`
+    删除与给定类型关联的数据。
+    可选类型参数 type 表示要删除的数据类型。
+    如果类型为空或未指定，将删除所有类型相关联的数据。
+    如果不存在指定类型的数据，或数据传输不包含任何数据，此方法将没有任何效果。
+
+- `String getData(in String type)`
+    检索（取得）给定类型的数据，如果给定类型的数据不存在或者数据转存（data transfer）没有包含数据，方法将返回一个空字符串。
+    如果你试图获取从不同域中拖动的数据将发生一个安全性错误或者无法访问，这个数据将仅仅在放置动作发生时在 drop 时间中是可用的。
+    参数 type 表示要检索的数据类型。
+
+- `void setData(in String type, in String data)`
+    为一个给定的类型设置数据。
+    如果该数据类型不存在，它将添加到的末尾，这样类型列表中的最后一个项目将是新的格式。如果已经存在的数据类型，替换相同的位置的现有数据。
+    就是，当更换相同类型的数据时，不会更改类型列表的顺序。
+    参数 type 表示要添加的数据类型；参数 data 表示要添加的数据。
+
+- `void setDragImage(in nsIDOMElement image, in long x, in long y)`
+    自定义一个期望的拖动时的图片。大多数情况下，这项不用设置，因为被拖动的节点被创建成默认图片。
+    如果该节点是 HTML img 元素、 HTML 画布元素或一个 XUL 图像元素，则会使用图像数据[拖动时的效果将使用这里的图片]。否则为图像应该是可见的节点，根据这个可见的节点创建拖动图像。
+    如果参数 image 是 null，任何自定义拖动图像都会被清除，并且使用默认值代替。
+    参数 x，y 是分别是图像内的水平偏移量和垂直偏移量，指定图像相对于鼠标光标位置的偏移量。例如，为使鼠标在图像中心，可以使用图像宽度和高度的值的一半。
+
+
 ## JS 操作
+可以参考 MDN 的一个文档：[在web应用中使用文件](https://developer.mozilla.org/zh-CN/docs/Using_files_from_web_applications)
+
 ### 获取文件内容
 `input`元素有一个`files`属性，当选择了文件之后，我们可以通过原生 JavaScript 代码或者 jQuery 代码操作这个属性，来获得这个(这些)文件的内容。如下：
 
@@ -72,5 +267,117 @@ $.ajax({
 ### 多文件上传
 * 方法一：如果后台接口允许多文件上传，就把文件存到一个变量后上传。
 * 方法二：如果后台接口要求单个文件，就循环获取文件信息提交，Ajax 使用同步上传`async: false`。
+
+### 选取并预览图片：
+本地的图片没有办法通过一个 URI 来引入浏览器中进行预览，所以就只能获取选取的图片的内容，并转换成 Base64 编码，以便能在浏览器中显示出来。
+
+示例代码如下：
+
+```html
+<style>
+.preview_box img {
+  width: 200px;
+}
+</style>
+
+<input id="img_input" type="file" accept="image/*"/>
+<label for="img_input"></label>
+<div class="preview_box"></div>
+
+<script>
+$("#img_input").on("change", function(e){
+
+  var file = e.target.files[0]; //获取图片资源
+
+  // 只选择图片文件
+  if (!file.type.match('image.*')) {
+    return false;
+  }
+
+  var reader = new FileReader();
+
+  reader.readAsDataURL(file); // 读取文件内容
+
+  // 渲染文件
+  reader.onload = function(arg) {
+
+    var img = '<img class="preview" src="' + arg.target.result + '" alt="preview"/>';
+    $(".preview_box").empty().append(img);
+  }
+});
+</script>
+```
+
+### 拖拽上传
+拖拽上传和一般的`input`元素选择文件进行上传没有什么不同，只是其操作形式上的区别：可以通过将文件拖拽到指定区域从而进行上传。
+
+拖拽的三个相关事件：
+    * dragover
+    * dragenter
+    * drop
+    
+相关的 HTML 代码：
+
+```html
+<div id="drop_zone">Drop files here</div>
+<ul id="list"></ul>
+```
+
+原生 JavaScript 代码：
+
+```js
+ // 必须阻止dragenter和dragover事件的默认行为，这样才能触发 drop 事件
+function fileSelect(evt) {
+
+  evt.stopPropagation();
+  evt.preventDefault();
+
+  var files = evt.dataTransfer.files; // 文件对象
+  var output = [];
+
+  // 处理多文件
+  for (var i = 0, f; f = files[i]; i++) {
+    output.push('<li><strong>', 
+                escape(f.name), 
+                '</strong> (', 
+                f.type || 'n/a', 
+                ') - ',
+                f.size, 
+                ' bytes, last modified: ',
+                f.lastModifiedDate.toLocaleDateString(), 
+                '</li>');
+  }
+  // 显示文件信息
+  document.getElementById('list').innerHTML = output.join('');
+}
+
+function dragOver(evt) {
+  evt.stopPropagation();
+  evt.preventDefault();
+  evt.dataTransfer.dropEffect = 'copy';
+}
+
+// Setup the dnd listeners.
+var dropZone = document.getElementById('drop_zone');
+dropZone.addEventListener('dragover', dragOver, false);
+dropZone.addEventListener('drop', fileSelect, false);
+```
+
+jQuery 代码：
+其他代码可以不变，注意监听事件的时候的，由于 jQuery 的封装，数据存放的字段有变，传参是`e.originalEvent`而不是`e`。
+
+```js
+$("#drop_zone").on('dragover', function(e){
+  e.stopPropagation();
+  e.preventDefault();
+  handleDragOver(e.originalEvent);
+});
+
+$("#drop_zone").on('drop', function(e){
+  e.stopPropagation();
+  e.preventDefault();
+  handleFileSelect(e.originalEvent);
+});
+```
 
 
