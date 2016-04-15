@@ -144,9 +144,101 @@ IS '获得表信息';
 
 如果上面两步执行完成之后，还会提示函数不存在，或者`relation "articles" does not exist`一类的错误，一般是由于第一步中生成函数时，相应的函数或者结构的前缀没有修改完全。默认情况下，pgsql 的命名空间应该是 public。
 
+### add() 之后无法返回正确的自增 ID
 
+**现象**
 
+在使用 add() 方法插入数据之后，返回的结果总是 1，而不是新插入数据的自增 ID。
 
+**原因**
+
+ThinkPHP 3.2.3 中，所有的数据库都是采用 PDO 方式连接数据库的。PDO 中返回插入数据的自增 ID 的方法是下面的这个方法：
+
+```php
+string PDO::lastInsertId ([ string $name = NULL ] )
+```
+参数 name 表示应该返回 ID 的那个序列对象的名称，是可选的。
+
+但是这个函数的具体行为是基于具体的底层驱动实现的。在不同的 PDO 驱动之间，此方法可能不会返回一个有意义或一致的结果，因为底层数据库可能不支持自增字段或序列的概念。
+
+对于 pgsql 来说：PDO_PGSQL() 要求为 name 参数指定序列对象的名称。
+
+而这正是导致问题的所在：
+在 ThinkPHP 的 DB 类 Driver.class.php 中，其获取自增 ID 的方式是使用无参数的 lastInsertId() 方法。增加数据后，没有参数时，pgsql 返回的就是 1。
+
+**解决**
+
+对于 pgsql，如果要返回正确的自增 ID，必然就是需要在调用 lastInsertId() 方法时添加对应的序列对象的名称(sequence name)。
+
+所以，首先，我们需要在 pgsql 的对应驱动中重写 DB 驱动的`getLastInsID()`方法，给其传入参数：
+
+```php
+# 位置：ThinkPHP/Library/Think/Db/Driver/Pgsql.class.php
+/**
+* 用于获取最后插入的ID
+* @access public
+* @return integer
+*/
+public function getLastInsID($sequenceName) {
+   return $this->_linkID->lastInsertId($sequenceName);
+}
+```
+
+那么，这个参数应该是什么呢？
+
+一般情况下，pgsql 数据表中设置了自增主键的话，那么自增主键的命名方式为：
+
+`tableNmae_columnName_seq`
+
+其中：
+
+* tableName 表示当前表的名称(如果不是 public 命名空间，则需要添加命名空间)；
+* columnName 表示设置主键的列的名称；
+* seq 就是默认设置的，一般不需要修改。
+
+所以，参数不是一个确定的字符串：表名不确定、主键列名不确定：
+
+* 对于表名，我们在用 M() 或者 D() 方法的时候，一般都会传入表名，那么可以考虑在 Model 类中进行拼接参数；
+* 对于主键列名，如果做一个约定：数据表中，主键列名均为`id`，那我们就可以绕过去这个问题了。如果不能遵守这个约定，那就只能考虑在 Model 类中增加一个方法来传入对应的参数了。
+
+现在来实现上述的方法，找到并修改 Model 类中的`getLastInsID()`方法：
+
+```php
+# 位置：ThinkPHP/Library/Think/Model.class.php
+/**
+* 返回最后插入的ID
+* @access public
+* @return string
+*/
+public function getLastInsID() {
+   $col = null;
+   if (strtolower(C('DB_TYPE')) == 'pgsql')
+       $col = strtolower($this->trueTableName).'_id_seq';
+
+   return $this->db->getLastInsID($col);
+}
+```
+> 这里使用`$this->trueTableName`来获取表名，就可以获取到包含前缀，甚至数据库名的真实表名了，能避免出错。
+
+这样修改之后，基本上就能正常了。但是很快就会发现，有时候还是会出错，提示`relation xx does not exist`。一般这是在访问没有设置主键的表的时候出现的错误。因为使用 pgsql 驱动的`lastInsertId()`方法获取没有主键的表的时候，这个序列对象不存在，于是报错。
+
+知道原因之后，就可以考虑使用`try...catch`语句来重写一下 pgsql 的`lastInsertId()`方法：
+
+```php
+# 位置：ThinkPHP/Library/Think/Db/Driver/Pgsql.class.php
+/**
+* 用于获取最后插入的ID
+* @access public
+* @return integer
+*/
+public function getLastInsID($sequenceName) {
+   try {
+       return $this->_linkID->lastInsertId($sequenceName);
+   } catch (\PDOException $e) {
+       return $this->lastInsID;
+   }
+}
+```
 
 
 
