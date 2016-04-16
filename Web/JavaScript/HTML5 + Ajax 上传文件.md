@@ -149,75 +149,7 @@ var reader = new FileReader();
 Safari 和 IE 10- 不支持。
 
 ### DataTransfer
-[MDN DataTransfer](https://developer.mozilla.org/zh_CN/docs/Web/API/DataTransfer)
-
-在进行拖放操作时，DataTransfer 对象用来保存被拖动的数据。它可以保存一项或多项数据、一种或者多种数据类型。关于拖放的更多信息，请参见 [Drag and Drop](https://developer.mozilla.org/zh_CN/DragDrop/Drag_and_Drop)。
-
-这个对象可以从所有的拖动事件的 dataTransfer 属性来调用，但是不能单独创建。
-
-**属性**
-
-- `dropEffect` 
-    设置实际的放置效果，它应该始终设置成 effectAllowed 的可能值之一。
-    分配任何其他值时不会有任何影响并且保留旧值。
-    可能的值：
-    * copy: 复制到新的位置
-    * move: 移动到新的位置.
-    * link: 建立一个源位置到新位置的链接.
-    * none: 禁止放置（禁止任何操作）
-    
-- `effectAllowed`
-    用来指定拖动时被允许的效果。
-    分配任何其他值时不会有任何影响并且保留旧值。
-    可能的值:
-    * copy: 复制到新的位置.
-    * move:移动到新的位置 .
-    * link:建立一个源位置到新位置的链接.
-    * copyLink: 允许复制或者链接.
-    * copyMove: 允许复制或者移动.
-    * linkMove: 允许链接或者移动.
-    * all: 允许所有的操作.
-    * none: 禁止所有操作.
-    * uninitialized: 缺省值（默认值）, 相当于 all。
-    
-- `files`
-    一个 FileList 对象，包含一个在数据传输上所有可用的本地文件列表。
-    如果拖动操作不涉及拖动文件，此属性是一个空列表。
-    此属性访问指定的 FileList 中无效的索引将返回未定义（undefined）。
-    
-- `types`
-    保存一个被存储数据的类型列表作为第一项，顺序与被添加数据的顺序一致。
-    如果没有添加数据将返回一个空列表。
-
-**方法**
-
-- `void addElement(in Element element)`
-    设置拖动源。通常你不需要改变这项，如果修改这项将会影响拖动的那个节点和 dragend 事件的触发。默认目标是被拖动的节点。
-    参数 element 表示要添加的元素。
-
-- `void clearData([in String type])`
-    删除与给定类型关联的数据。
-    可选类型参数 type 表示要删除的数据类型。
-    如果类型为空或未指定，将删除所有类型相关联的数据。
-    如果不存在指定类型的数据，或数据传输不包含任何数据，此方法将没有任何效果。
-
-- `String getData(in String type)`
-    检索（取得）给定类型的数据，如果给定类型的数据不存在或者数据转存（data transfer）没有包含数据，方法将返回一个空字符串。
-    如果你试图获取从不同域中拖动的数据将发生一个安全性错误或者无法访问，这个数据将仅仅在放置动作发生时在 drop 时间中是可用的。
-    参数 type 表示要检索的数据类型。
-
-- `void setData(in String type, in String data)`
-    为一个给定的类型设置数据。
-    如果该数据类型不存在，它将添加到的末尾，这样类型列表中的最后一个项目将是新的格式。如果已经存在的数据类型，替换相同的位置的现有数据。
-    就是，当更换相同类型的数据时，不会更改类型列表的顺序。
-    参数 type 表示要添加的数据类型；参数 data 表示要添加的数据。
-
-- `void setDragImage(in nsIDOMElement image, in long x, in long y)`
-    自定义一个期望的拖动时的图片。大多数情况下，这项不用设置，因为被拖动的节点被创建成默认图片。
-    如果该节点是 HTML img 元素、 HTML 画布元素或一个 XUL 图像元素，则会使用图像数据[拖动时的效果将使用这里的图片]。否则为图像应该是可见的节点，根据这个可见的节点创建拖动图像。
-    如果参数 image 是 null，任何自定义拖动图像都会被清除，并且使用默认值代替。
-    参数 x，y 是分别是图像内的水平偏移量和垂直偏移量，指定图像相对于鼠标光标位置的偏移量。例如，为使鼠标在图像中心，可以使用图像宽度和高度的值的一半。
-
+参见：[MDN DataTransfer](https://developer.mozilla.org/zh_CN/docs/Web/API/DataTransfer)
 
 ## JS 操作
 可以参考 MDN 的一个文档：[在web应用中使用文件](https://developer.mozilla.org/zh-CN/docs/Using_files_from_web_applications)
