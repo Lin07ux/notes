@@ -196,7 +196,7 @@ dataTransfer 对象还有一些属性，通过这些属性，我们能够设置�
     * none: 禁止所有操作.
     * uninitialized: 缺省值（默认值），相当于 all。
 
-    在一次拖拽操作中，绑定在 dragenter 事件以及 dragover 事件上的监听器能够检查 effectAllowed 属性来确认哪些操作是允许的。在这些事件中，可以设定一个相关的属性 dropEffect，用以指定一种允许的操作。该属性的值可以是 none, copy, move或者 link。不能是形如 copyMove 这样的复合值。
+    在一次拖拽操作中，绑定在 dragenter 事件以及 dragover 事件上的监听器能够检查 effectAllowed 属性来确认哪些操作是允许的。在这些事件中，可以设定一个相关的属性 dropEffect，用以指定一种允许的操作。该属性的值可以是 none, copy, move或者 link。不能是形如 copyMove 这样的复合值。另外，这两个属性能够影响到是否发生 drop 事件。
     
     **注意**：effectAllowed 和 dropEffect 能够在一定程度上影响拖拽时鼠标的形状。例如，当 effectAllowed 和 dropEffect 都支持 copy 操作的时候，拖拽元素到目标元素上时，鼠标会多出一个加号，表示允许放置操作。但是这种提示是依赖浏览器的实现的，兼容性和一致性和差。所以建议在事件监听器中特别设置 css 来进行操作提示(可放置、不可放置等)。
 
@@ -255,6 +255,70 @@ var url = dataTransfer.getData("url") || dataTransfer.getData("text/uri-list");
 //读取文本
 var text = dataTransfer.getData("Text");
 ```
+
+#### 推荐的数据类型
+MDN 文档：[Recommended Drag Types](https://developer.mozilla.org/zh-CN/docs/DragDrop/Recommended_Drag_Types)
+
+1. text 文本数据
+拖拽文本的时候，使用 text/plain 类型。数据应该是被拖拽的字符串。例如：
+
+```js
+event.dataTransfer.setData("text/plain", "This is text to drag")
+```
+
+拖拽网页上的文本框内文本及已选文本是自动完成的，所以你不需要自己处理。
+
+建议你总是添加 text/plain 类型数据作为不支持其它类型的应用或投放目标的降级，除非没有可选的符合逻辑的文本。总是将纯文本类型添加在最后，因为这是最不具体的数据。
+
+在旧的代码中，你可能会遇到 text/unicode 或 Text 类型。这些与 text/plain 类型是等效的，存储、获取到的都是纯文本数据。
+
+2. URL 链接数据
+链接需要包含两种类型的数据；第一种是 text/uri-list 类型的 URL，第二种是 text/plain 类型的 URL。两种类型要使用相同的数据，即链接的 URL。例如：
+
+```js
+var dt = event.dataTransfer;
+dt.setData("text/uri-list", "http://www.mozilla.org");
+dt.setData("text/plain", "http://www.mozilla.org");
+```
+
+与之前一样，将text/plain类型添加在最后，因为它不如 uri 类型具体。
+
+**注意**：URL 类型是 uri-list，“uri”中包含的是“i”，而不是“l”。
+
+拖拽多条链接时，你可以使用**换行**将每条链接分开。以井号（#）开头的行是注释，不应该认为是合法的 URL。你可以使用注释来指明链接的含义，或保存与链接相关的标题。text/plain 版本的数据应该包含所有的链接但不应该包含注释。
+
+下面这个 text/uri-list 数据样例包含两条链接和一条注释：
+
+```
+http://www.mozilla.org
+# A second link
+http://www.xulplanet.com
+```
+
+当得到一条拖放的链接，你需要确保你能处理包含多条链接以及注释的数据。出于便利考虑，特殊类型 URL 可以用来获得 text/uri-list 类型数据中的第一条合法的链接，但是不应该使用 URL 类型来添加数据，这样做只是设置了 text/uri-list 类型的数据：`var url = event.dataTransfer.getData("URL");`。
+
+**注意**：特殊类型 URL 在 chrome 中则是得到 text/uri-list 的完整数据。
+
+3. HTML 与 XML 数据
+HTML 内容可以使用 text/html 类型。这种类型的数据需要是序列化的 HTML。例如，使用元素的 innerHTML 属性值来设置这个类型的值是合适的。
+
+XML 内容可以使用 text/xml 类型，但你要确保数据值是格式良好的 XML。
+
+你也可以包含使用 text/plain 类型表示的 HTML 或 XML 的纯文本。该数据应该只包含文本内容而不包含源标签或属性。
+
+例如：
+
+```js
+var dt = event.dataTransfer;
+dt.setData("text/html", "Hello there, <strong>stranger</strong>");
+dt.setData("text/plain", "Hello there, stranger");
+```
+
+4. 其他数据
+除了上面介绍的三种常用数据，还有以下几种数据类型：Files 文件数据，Images 图片数据、Nodes 节点数据，甚至可以自定义数据。
+
+不过，这几种数据类型的支持可能并不是很好，每个浏览器可能有不同的实现。比如，在 FireFox 浏览器中，需要使用 dataTransfer 对象的`mozSetDataAt()`方法设置数据，使用`mozGetDataAt()`方法来获取设置的数据。
+
 
 
 ### 拖动反馈图片
