@@ -240,5 +240,12 @@ public function getLastInsID($sequenceName) {
 }
 ```
 
+### 批量插入提示数据类型错误
+在使用`addAll()`方法批量插入数据的时候，如果 pgsql 中对应的字段是 int 类型时，会出现错误，提示这个 int 类型的字段的格式不正确，传入的数据是 text 格式。
 
+追踪`addAll()`方法，发现其调用了 DB 类中的`insertAll()`方法。
+
+在基础 DB 类中，`insertAll()`方法是使用`INSERT INTO ... SELECT ... UNION ALL SELECT`的方式插入数据的。而 ThinkPHP 中，pgsql 的驱动类并没有重写这个方法，所以批量插入时，也是使用这种方式插入数据，这时数据库插入数据时就不会自动做类型转换了。而 TP 在预处理插入数据时，会将数据都使用引号包裹，从而把数值也变成了字符串，所以插入数据的时候就会出现类型错误。
+
+为了解决这个问题，我们可以改变插入数据的方式，将`SELECT`改成`VALUES(...)`的方式。可以直接将 ThinkPHP 中的 mysql 数据库的驱动类中的`insertAll()`方法拷贝到 pgsql 的驱动类中，即可解决批量插入的问题。
 

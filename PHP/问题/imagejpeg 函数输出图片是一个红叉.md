@@ -1,0 +1,20 @@
+## 问题
+最近在使用 imagejpeg 函数向浏览器输出图片的时候，无法正常显示：显示一个红叉或者一个四不像。
+
+## 原因
+一般情况，排除代码的错误问题，就是输出缓存引起的了。
+因为输出图片的时候
+
+## 解决
+在输出图片的时候，清理输出缓存即可。
+
+```php
+// 使用 ob_end_clean() 函数保证程序的输出缓存区是很干净的二进制图像数据
+ob_end_clean();
+header('Content-type: image/jpeg');
+
+// 创建一个图片流
+$img = imagecreatetruecolor(500, 500);
+imagejpeg($img);
+```
+
