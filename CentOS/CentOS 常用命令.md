@@ -1,3 +1,6 @@
+### 查看系统
+- `cat  /etc/redhat-release`  系统版本
+- `uname  -r`  内核版本
 
 ### 查看大小
 `df` 可以查看磁盘的使用情况以及文件系统被挂载的位置
@@ -8,6 +11,12 @@
 	du -h [filename]
 	# 查看文件夹大小用 -sh 选项
 	du -sh [directory]
+
+### 查看系统安装包
+`cat -n /root/install.log`可以查看系统中安装的软件包
+
+`rpm -qa` 查看现在已经安装了哪些软件包
+
 
 
 ### 查看 CPU 负载
@@ -218,5 +227,9 @@ buffer 和 cache 是 linux 中的缓存技术。
 可以用 egrep 命令过滤其中的内容。
 	# 显示系统日志中关于 oom、kill 以及 mysql 的信息
 	egrep -i "oom|kill|mysql" /var/log/messages
+
+
+### 查看防火墙设置
+防火墙配置文件一般位于：`etc/sysconfig/iptables`
 
 

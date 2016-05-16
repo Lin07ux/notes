@@ -26,7 +26,7 @@ service vsftpd status		# 查看 vsftpd 服务的状态
 ### 基础配置
 
 ```shell
-vi /etc/vsftpd/vsftpd.conf
+vvi /etc/vsftpd/vsftpd.conf
 ```
 	
 主要的配置项如下(配置完成之后记得需要重启 vsftpd 服务)：
@@ -96,7 +96,7 @@ useradd -d /home/wwwroot/magento -g ftp -s /sbin/nologin ftpuser
 
 # 一般建议添加的用户都是 web 服务的守护者，如 www，
 # 可以设置用户的 uid 为 www 的 uid(需要使用 -o 选项)
-useradd -d /home/wwwroot/test - s /sbin/nologin -g www -o -u 500 test
+useradd -d /home/wwwroot/test -s /sbin/nologin -g www -o -u 500 test
 
 # 设置密码，之后会提示输入密码并确认重输入
 passwd ftpuser

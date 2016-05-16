@@ -42,7 +42,7 @@ CentOS 上已经预安装了 rpm 包，但由于 CentOS 上安装的源都比较
 
 ```shell
 # RHEL/CentOS 7 64 Bit
-wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+-
 rpm -ivh epel-release-7-5.noarch.rpm
 
 # RHEL/CentOS 6 32-Bit
@@ -69,7 +69,7 @@ useradd  www -s /sbin/nologin -d /var/www/ -g www
 ```
 
 添加了 www 账户之后，可以查看其 uid，在后面添加 ftp 用户的时候会用到：
-`cat /etc/passwd`
+` `
 
 
 -------------------------------------------------------------------------------
@@ -191,8 +191,19 @@ user www www;
 
 CentOS 上的源很久没有更新了，需要更新源之后才能安装 PHP 5.3 以后的版本。
 
-1. 追加CentOS 6.5的 epel 及 remi 源：
-	rpm -Uvh https://mirror.webtatic.com/yum/el6/latest.rpm
+1. 追加对应版本的源：
+
+```shell
+# CentOs 5.x
+rpm -Uvh http://mirror.webtatic.com/yum/el5/latest.rpm
+  
+# CentOs 6.x
+rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
+  
+# CentOs 7.X
+rpm -Uvh https://mirror.webtatic.com/yum/el7/epel-release.rpm
+rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+```
 
 > 注意，不能安装错了源，否则会提示错误，无法安装其他程序了。
 
@@ -203,7 +214,7 @@ CentOS 上的源很久没有更新了，需要更新源之后才能安装 PHP 5.
 
 3. 安装 PHP 5.6
 	安装好源之后，就可以用下面的命令安装 PHP 5.6，当然也可以指定其他的版本。
-	`yum install -y php56w php56w-fpm php56w-opcache php56w-xml php56w-mcrypt php56w-gd php56w-devel php56w-mysql php56w-intl php56w-mbstring php56w-bcmath`
+	`yum install -y php56w php56w-fpm php56w-opcache php56w-xml php56w-mcrypt php56w-gd php56w-devel php56w-mysql php56w-intl php56w-mbstring php56w-bcmath php56w-cli.x86_64 php56w-common.x86_64 php56w-ldap.x86_64 php56w-pdo.x86_64`
 
 4. 查看 PHP 版本
 	安装好 PHP 之后，就可以使用如下命令查看 PHP 的版本：
@@ -300,8 +311,7 @@ mysql_secure_installation
 # % 表示外部任何地址都能访问
 mysql> create user 'magento'@'%' identified by '123456';
 # 给新用户授权，使其能从外部登陆和本地登陆
-# 并能管理数据库 magento 数据库的所有表
-mysql> grant all privileges on magento.* to 'magento'@'localhost' identified by '123456';
+# 并能管理数据库 magento 数据库 magento.* to 'magento'@'localhost' identified by '123456';
 mysql> grant all privileges on magento.* to 'magento'@'%' identified by '123456';
 # 刷新权限
 mysql> flush privileges;
