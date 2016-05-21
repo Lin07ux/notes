@@ -1,6 +1,18 @@
 
 Vagrant 的安装见文件《使用 Vagrant 打造跨平台开发环境.pdf》
 
+### box 存放位置
+add 一个新的 box 之后，Vagrant 会将 box 默认存放在`~/.vagrant.d/boxes`中。
+
+可以通过下面的方式更改默认的存放位置：
+
+```shell
+# 拷贝原先默认的 boxes 文件夹到新的目标位置
+cp ~/.vagrant.d /path/to/vagrant_home
+# 设置环境变量，添加 Vagrant 的主目录变量
+export VAGRANT_HOME='/path/to/vagrant_home'
+```
+
 ### Virtualbox 无法开启虚拟机
 **问题**
 使用 vagrant up 命令无法启动虚拟机，而且使用 Virtualbox GUI 界面也无法启动，提示启动遇到异常，代码为：1073741819 (0xc0000005)
