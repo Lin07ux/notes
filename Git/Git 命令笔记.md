@@ -42,3 +42,18 @@ git commit --amend
 
 `git rm --cached <file>`
 
+
+### 推送本地分支到远程
+如果在本地新建了一个分支，然后推送到远程，可以使用如下的方式：
+
+`git push origin local_branch:remote_branch`
+
+这个操作中，`local_branch`必须为你本地存在的分支，`remote_branch`为远程分支，如果`remote_branch`不存在则会自动创建分支。
+
+### 删除远程分支
+与推送本地分支到远程类似，只需要在命令中将本地分支名称留空，即可删除远程分支。
+
+`git push origin :remote_branch`
+
+在这里，`local_branch`留空，则是删除远程`remote_branch`分支。
+
