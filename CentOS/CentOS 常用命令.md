@@ -232,4 +232,16 @@ buffer 和 cache 是 linux 中的缓存技术。
 ### 查看防火墙设置
 防火墙配置文件一般位于：`etc/sysconfig/iptables`
 
+修改之后，需要重启一下 iptabels 服务：`service iptables restart`
+
+
+### 系统时区和时间
+1. 查看时间：`date`
+2. 修改时间：`date -s <date_time>`。
+    - 如：设置日期为 2016-06-07，`date -s 06/07/2016`
+    - 如：设置时间为 12:10:43，`date -s 12:10:43`
+3. 将时间写入到 COMS：`clock -w`。如果不写入 COMS，那么可能会在重启后时间设置失效。
+4. 查看时区：`date -R`。
+5. 修改时区：如，将`Asia/shanghai`上海时区设置为当前时区，`#cp -f /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime`。提示是否覆盖。输入Y回车即可。
+
 
