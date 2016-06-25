@@ -45,7 +45,7 @@ npm install
 参考：
 
 1. [(1/2)Vue构建单页应用最佳实战](https://github.com/MeCKodo/vue-tutorial/tree/549659f091e5b7a67402a422e774af09f8db5ae4)
-2. [vue.js学习笔记1 搭建vue.js本地开发框架](http://sugarball.me/vue-jsxue-xi-bi-ji-1-da-jia-vue-jskai-fa-kuang-jia/?utm_source=tuicool&utm_medium=referral)
+2. [vue.js学习笔记1 搭建vue.js本地开发框架](http://sugarball.me/vue-jsxue-xi-bi-ji-1-da-jia-vue-jskai-fa-kuang-jia/)
 
 ### 添加路由和 XHR 模块
 为了开发单页应用(SPA)，我们需要前端也有路由，并进行 XHR 请求。对于此需求，Vue 分别提供了`vue-router`和`vue-resource`两个模块。下面需要将其安装并添加到项目依赖中：
@@ -53,6 +53,33 @@ npm install
 `npm install --save vue-router vue-resource`
 
 ### 路由模块
+制作 SPA 的时候，需要注意的是，链接需要改成`v-link`的形式，而不能使用 HTML 原生的`href`，否则就是直接跳转，而不是通过 vue-router 代理跳转。
 
 ### Resource 模块
+1. 跨域访问
+
+对于需要跨域的请求，需要在跨域的服务器上设置相关的 Access-Control-Allow-* 头信息：
+
+```conf
+# Nginx 设置
+# 允许跨域访问的域名
+add_header 'Access-Control-Allow-Origin' 'http://localhost:8080';
+# 允许携带 Cookie 信息
+add_header 'Access-Control-Allow-Credentials' 'true';
+# 允许跨域使用的方法
+add_header 'Access-Control-Allow-Methods' 'GET, POST, DELETE, PUT, PATCH, OPTIONS';
+# 允许携带的头信息
+add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+```
+
+如果还需要跨域的时候传递 Cookie，那就需要后台设置之后，设置 Vue.htt.options.xhr 的信息：
+
+```js
+Vue.http.options.xhr = { withCredentials: true }
+```
+
+> [Cross-Origin Request - Github Issue](https://github.com/vuejs/vue-resource/issues/22)
+> * Backend server should set Access-Control-Allow-Origin to `*` or `[ Frontend server domains whitelist ]`
+> * `Vue.http.options.xhr = { withCredentials: true }` is not needed.
+> * url must begin with `http(s)://`. e.g. `localhost:8080` would fail.
 
