@@ -1,5 +1,5 @@
-## 特点
-单例模式按字面来看就是某一个类只有一个实例，这样做的好处还是很大的，比如说数据库的连接，我们只需要实例化一次，不需要每次都去new了，这样极大的降低了资源的耗费。
+## 模式定义
+简单说来，单例模式的作用就是保证在整个应用程序的生命周期中，任何一个时刻，单例类的实例都只存在一个，同时这个类还必须提供一个访问该类的全局访问点。
 
 单例类至少拥有以下三种特点：
 
@@ -9,21 +9,44 @@
 
 另外，一般还需要创建`__clone()`方法防止对象被复制（克隆）。
 
-## 实现
+常见使用实例：数据库连接器；日志记录器（如果有多种用途使用多例模式）；锁定文件。
+
+
+## UML 类图
+![单例模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467190546153.png)
+
+
+## 示例代码
+
+**Singleton.php**
 
 ```php
-<?php
+namespace DesignPatterns\Creational\Singleton;
+
+/**
+ * Singleton类
+ */
 class Singleton {
-    // 该属性用来保存实例对象
+    /**
+     * 用来保存实例对象
+     *
+     * @var Singleton reference to singleton instance
+     */
     private static $instance = null;
 
-    // 构造函数为 private，防止外部代码创建对象
+    /**
+     * 构造函数私有，不允许在外部实例化
+     */
     private function __construct()
     {
         echo '创建了一个实例<br>';
     }
 
-    // 通过这个方法获得实例化对象(创建实例对象)
+    /**
+     * 通过延迟加载（用到时才加载）获取实例
+     *
+     * @return self
+     */
     public static function getInstance()
     {
         if (!self::$instance instanceof self) {
@@ -33,10 +56,23 @@ class Singleton {
         return self::$instance;
     }
 
-    // 防止对象被复制
+    /**
+     * 防止对象实例被克隆
+     *
+     * @return void
+     */
     public function __clone()
     {
         trigger_error('Clone is not allow!', E_USER_ERROR);
+    }
+    
+    /**
+     * 防止被反序列化
+     *
+     * @return void
+     */
+    public function __wakeup()
+    {
     }
 
     // 其他正常的方法
@@ -50,5 +86,12 @@ class Singleton {
 $t = Singleton::getInstance();
 $t->test();
 ```
+
+## 参考
+[PHP 设计模式系列 —— 单例模式（Singleton）](http://laravelacademy.org/post/2599.html)
+
+
+
+
 
 
