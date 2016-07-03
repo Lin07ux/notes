@@ -2,6 +2,15 @@
 - `cat  /etc/redhat-release`  系统版本
 - `uname  -r`  内核版本
 
+### 查看 IP
+`ifconfig [eth]` 这样能够查看所有的网卡的 IP 相关信息，也可以指定具体的网卡。
+
+这样查看的信息会比较多。可以考虑使用`grep`过滤筛选：
+
+`ifconfig | grep "Bcast"`
+
+这样输出的信息就会比较少。
+
 ### 查看大小
 `df` 可以查看磁盘的使用情况以及文件系统被挂载的位置
 	df -lh
