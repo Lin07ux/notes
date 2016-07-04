@@ -19,7 +19,7 @@ collation_server=utf8mb4_unicode_ci
 init-connect="SET NAMES utf8mb4"
 
 [mysql]
-default-character-set=utf8emb4
+default-character-set=utf8mb4
 ```
 
 > 重启之后，登录 mysql，可以通过`show variables like 'character%';`查看编码是否已经修改成功。修改成功应该类似如下：
