@@ -84,7 +84,7 @@ abstract class Vehicle
         $this->workShop2 = $workShop2;
     }
     
-    public function manufacture();
+    abstract public function manufacture();
 }
 ```
 
@@ -130,4 +130,8 @@ class Car extends Vehicle
 桥梁模式的意图还是对变化的封装，尽量把可能变化的因素封装到最细、最小的逻辑单元中，避免风险扩散。
 
 也就是说，桥梁模式是把变化的行为独立出来成为一个类，然后在原本的对象创建的时候，将这些独立出来的行为添加进去，从而使得原本的对象具有执行不同行为的能力。
+
+
+## 参考
+[PHP 设计模式系列 —— 桥梁模式（Bridge）](http://laravelacademy.org/post/2680.html)
 
