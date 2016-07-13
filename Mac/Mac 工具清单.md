@@ -1,4 +1,41 @@
-### HTTPie
+## Dash 文档 API 查看
+写代码的时候是不是有些API记不住，比如画椭圆该用哪个类？计算开平方用什么函数？怎么连接远程的mysql服务器检索数据？这个时候一般怎么办？问度娘？问谷歌？直接查看在线编程文档？
+在国内问谷歌需要翻墙，那么涉及到另外工具的使用。查看在线文档，如果记不住入口网址怎么办？放收藏里啊，如果入口改变了呢？还是需要问搜索引擎啊！那么问题来了，度娘乱贴小广告咋办？用Dash吧，一个APP搜罗了这个世界上几乎所有的编程语言文档，而且更新速度快。
+
+它还可以和其他的软件整合，比如，安装好 Dash 之后，可以点击"Intengrtion"选项卡中的 Alfred，即可自动安装 Alfred 工作流，然后在 Alfred 搜索框中就可以输入 dasha + 关键字 进行搜索了。
+
+对于 Sublime Text 来说，可以安装 DashDocs 插件，然后就可以对处于选中状态，或者处于鼠标指针下的词使用`Ctrl + H`进行搜索。
+
+软件主页以及下载地址：[Dash](https://kapeli.com/dash)
+
+
+## GIMP 图片编辑器
+GIMP，PS该有的，它基本都有。
+
+软件主页以及下载地址：[GIMP](http://www.gimp.org/)
+
+
+## XMind 脑图工具
+主攻脑图（思维导图），流程图也支持，另外还有日程安排计划等额外的功能。
+
+软件主页以及下载地址[XMind 官网](http://www.xmind.net/)
+
+
+## Gliffy Diagrams
+并不是一个独立安装的APP，而是作为Chrome的插件，可以去Chrome的App Store下载安装，很轻量，运行速度快。
+
+软件主页：[Gliffy Diagrams 主页](https://www.gliffy.com/)
+
+
+## Wireshark 网络抓包
+老牌网络抓包利器，各种平台都可以玩耍。
+
+软件主页以及下载地址：[Wireshark](https://www.wireshark.org/)
+
+
+
+
+## HTTPie
 HTTPie 是一个更加人性化的 HTTP 命令行客户端。提供了一些简单常用的 HTTP 命令，可以用来测试服务器等。比 Curl 更加的人性化。
 
 [HTTPie - Github](https://github.com/jkbrzt/httpie)
