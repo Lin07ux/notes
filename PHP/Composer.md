@@ -74,9 +74,12 @@ composer self-update
 | 范围        | `>=1.0` `>=1.0,<2.0` `>=1.0,<1.1|>=1.2` |通过使用比较操作符可以指定有效的版本范围。|
 | 有效的运算符 | `>` `>=` `<` `<=` `!=`  | 你可以定义多个范围，用逗号隔开，这将被视为一个逻辑 AND 处理。<br>一个管道符号`|`将作为逻辑 OR 处理。<br>AND 的优先级高于 OR。|
 | 通配符      | `1.0.*`  | 你可以使用通配符`*`来指定一种模式。<br>`1.0.*`与`>=1.0,<1.1`是等效的。|
-| 赋值运算符   | `~1.2`	 | 这对于遵循语义化版本号的项目非常有用。<br>`~1.2`相当于`>=1.2,<2.0`。|
+| 赋值运算符   | `~1.2`	 | `~1.2`相当于`>=1.2,<2.0`。<br>如果`~`作用在主版本号上，只能增加小版本，不能增加主版本，如`~1`会被当作`~1.0`对待。|
+| 折音号(^)   | `^1.2.3` | 允许升级版本到安全的版本。<br>如，`^1.2.3`相当于`>=1.2.3 <2.0.0`，因为在 2.0 版本前的版本应该都没有兼容性的问题。<br>而对于 1.0 之前的版本，这种约束方式也考虑到了安全问题，例如`^0.3`会被当作`>=0.3.0 <0.4.0`对待。|
 
 > 注意： 虽然`2.0-beta.1`严格地说是早于`2.0`，但是，根据版本约束条件，例如`~1.2`却不会安装这个版本。就像前面所讲的`~1.2`只意味着`.2`部分可以改变，但是`1.`部分是固定的。
+
+> 参考：[Composer进阶使用 —— 常用命令和版本约束](https://segmentfault.com/a/1190000005898222)
 
 ### 模块安装目录
 Composer 会将安装的依赖下载到项目根目录目录中的`vendor`目录中的对应位置。
@@ -145,6 +148,59 @@ composer dump-autoload --optimize
 ```
 
 安装包的时候可以同样使用`--optimize-autoloader`。不加这一选项，你可能会发现 [20%到25%的性能损失](http://www.ricardclau.com/2013/03/apc-vs-zend-optimizer-benchmarks-with-symfony2/)。
+
+
+## 命令
+### update 命令
+通过`update`命令，可以更新项目里所有的包，或者指定的某些包。
+
+```shell
+# 更新所有依赖
+composer update
+
+# 更新指定的包
+composer update monolog/monolog
+
+# 更新指定的多个包
+composer update monolog/monolog symfony/dependency-injection
+
+# 还可以通过通配符匹配包
+composer update monolog/monolog symfony/*
+```
+
+需要注意的时，包能升级的版本会受到版本约束的约束，包不会升级到超出约束的版本的范围。例如如果`composer.json`里包的版本约束为`^1.10`，而最新版本为`2.0`。那么`update`命令是不能把包升级到`2.0`版本的，只能最高升级到`1.x`版本。
+
+### remove 命令
+使`remove`命令可以移除一个包及其依赖（在依赖没有被其他包使用的情况下）：
+
+```shell
+composer remove monolog/monolog
+```
+
+### search 命令
+使用`search`命令可以进行包的搜索：
+
+```shell
+composer search monolog
+# 输出：monolog/monolog Sends your logs to files, sockets, inboxes, databases and various web services
+
+# 如果只是想匹配名称可以使用--only-name选项
+composer search --only-name monolog
+```
+
+### show 命令
+使用`show`命令可以列出项目目前所安装的包的信息：
+
+```shell
+# 列出所有已经安装的包
+composer show
+
+# 可以通过通配符进行筛选
+composer show monolog/*
+
+# 显示具体某个包的信息
+composer show monolog/monolog
+```
 
 
 ## 其他
