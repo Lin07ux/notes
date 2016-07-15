@@ -1,3 +1,37 @@
+## Homebrew Cask
+对 Homebrew 的增强，能够更方便的使用命令行安装各种所需的应用。
+
+安装：`brew tap caskroom/cask`
+
+[官网](https://caskroom.github.io/)
+[Github](https://github.com/caskroom/homebrew-cask)
+
+
+## quick-look-plugins
+快速预览插件。是通过 Homebrew Cask 来安装的一系列的增强 Mac OSX 预览功能的插件。
+
+[Github](https://github.com/sindresorhus/quick-look-plugins)
+
+安装语法：`brew cask install <package>`
+
+可用的插件：
+
+```qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql qlimagesize webpquicklook suspicious-package```
+
+* QLColorCode  预览代码时有语法高亮
+![QLColorCode](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1468473598144.png)
+
+* QLStephen  预览没有扩展名的文件内容
+![QLStephen](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1468473682574.png)
+
+* QLMarkdown  预览 Markdown 文档
+![QLMarkdown](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1468473740091.png)
+
+* QuickLookJSON  预览 JSON
+![QuickLookJSON](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1468473790781.png)
+
+
+
 ## Dash 文档 API 查看
 写代码的时候是不是有些API记不住，比如画椭圆该用哪个类？计算开平方用什么函数？怎么连接远程的mysql服务器检索数据？这个时候一般怎么办？问度娘？问谷歌？直接查看在线编程文档？
 在国内问谷歌需要翻墙，那么涉及到另外工具的使用。查看在线文档，如果记不住入口网址怎么办？放收藏里啊，如果入口改变了呢？还是需要问搜索引擎啊！那么问题来了，度娘乱贴小广告咋办？用Dash吧，一个APP搜罗了这个世界上几乎所有的编程语言文档，而且更新速度快。
