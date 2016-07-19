@@ -17,6 +17,44 @@ mysqldump 工具有如下几种使用方式：
 > `dbname`表示数据库名称；`tablename`表示数据库中的表名；
 
 
+### 定时备份
+1. 结合 Linux 的 cron 命令可以实现定时备份
+
+比如需要在每天凌晨 1:30 备份某个主机上的所有数据库并压缩 dump 文件为 gz 格式，那么可在`/etc/crontab`配置文件中加入下面代码行：
+
+```
+30 1 * * * root mysqldump -u root -pPASSWORD --all-databases | gzip > /mnt/disk2/database_`date '+%m-%d-%Y'`.sql.gz
+```
+
+> `date '+%m-%d-%Y'`得到当前日期的`MM-DD-YYYY`格式，也可以自行修改格式。
+
+2. Shell 脚本备份
+
+首先边写备份任务脚本：
+
+```sh
+#vi /backup/backup.sh
+
+#!bin/bash
+cd /backup
+echo "You are in backup dir"
+mv backup* /oldbackup
+echo "Old dbs are moved to oldbackup folder"
+File = backup-$Now.sql
+mysqldump -u user -p password database-name > $File
+echo "Your database backup successfully completed"
+```
+
+上面脚本文件保存为`backup.sh`，并且系统中已经创建两个目录`/olcbackup`和`/backup`。每次执行`backup.sh`时都会先将`/backup`目录下所有名称为`backup`开头的文件移到`/oldbackup`目录。
+
+为上述脚本制定执行计划如下：
+
+```
+#crontab -e
+30 1 * * * /backup.sh
+```
+
+
 ### 常用参数
 - `--all-databases`, `-A` 导出全部数据库。`mysqldump -uroot -p --all-databases`
 
