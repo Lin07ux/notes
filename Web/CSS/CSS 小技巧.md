@@ -1,3 +1,20 @@
+### transform 问题
+在 Chrome 和 Opera 浏览器下，使用 CSS3 的`transform: translate(0, 0)`转化位置节点，其所有使用`position:fixed`定位的子孙节点的定位功能均无效。
+
+
+### 微信浏览器隐藏滚动条
+
+```css
+<style type="text/css">
+    ::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        background-color: rgba(240,240,240,0)
+    }
+</style>
+```
+
+
 ### 用`attr()`显示 HTML 属性值
 `attr()`功能早在CSS 2.1标准中已经出现，它提供了一个巧妙的方法在 CSS 中使用 HTML 标签上的属性，在很多情况下都能省去以往需要 Javascript 处理的过程。
 
