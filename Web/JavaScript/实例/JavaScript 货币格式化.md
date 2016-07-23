@@ -8,7 +8,6 @@
 首先把数字转换成字符串，然后打散为数组，再从末尾开始，逐个把数组中的元素插入到新数组（result）的开头。每插入一个元素，counter 就计一次数（加1），当 counter 为 3 的倍数时，就插入一个逗号，但是要注意开头（i 为 0 时）不需要逗号。最后通过调用新数组的 join 方法得出结果。
 
 ```js
-//1.
 function toThousands(num) {
     var result = [ ], counter = 0;
     num = (num || 0).toString().split('');
