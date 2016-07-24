@@ -1,3 +1,7 @@
+
+## Foldery
+更改文件夹的颜色。在 AppStore 中可以搜索到。
+
 ## Homebrew Cask
 对 Homebrew 的增强，能够更方便的使用命令行安装各种所需的应用。
 
