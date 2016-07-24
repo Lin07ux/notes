@@ -35,6 +35,9 @@ REPLACE 的运行与 INSERT 很相像，但是如果旧记录与新记录有相�
     - 从表中删除含有重复关键字值的冲突行
     - 再次尝试把新行插入到表中
 
+> 需要注意的是：REPLACE 语句在发生冲突的时候，是先删除原先的冲突行的，所以插入冲突的数据后，这条记录的主键可能会发生变化。
+> 比如，对于主键是自增的，而由于其他的唯一键导致有冲突，在插入数据的时候，旧数据整行被删除，包括主键，然后插入数据的时候，主键会被设置为插入数据中的主键值，或者是自动生成。
+
 *这个语句起作用的前提是：表有一个 PRIMARY KEY 或 UNIQUE 索引*。否则，使用一个 REPLACE 语句没有意义，会与 INSERT 作用相同，因为没有索引被用于确定是否新行复制了其它的行。
 
 所以，这个方案适用于用新数据替换旧数据的情况。注意：这里的替换是删除原有重复记录，然后插入新的记录。如果这个表有字段是其他表的外键，那么就可能会导致失败。
@@ -57,6 +60,29 @@ IF NOT EXISTS (SELECT phone FROM t WHERE phone= '1')
 else 
     UPDATE t SET update_time = getdate() WHERE phone= '1'
 ```
+
+下面是一个另例子，其中 id 是自增主键，name 是唯一键，age 是普通字段：
+
+```sql
+# 初始数据
+# 数据： 1  Lin07ux  26
+INSERT INTO test VALUE (1, 'Lin07ux', 26);
+
+# 插入无冲突数据，效果和 INSERT INTO 语句一样
+# 数据： 2  lin  25
+REPLACE INTO test (`name`, `age`) VALUE ('lin'， 25);
+
+# 插入 id 冲突数据，和 UPADTE 语句效果类似
+# 数据： 1  L7  26
+REPLACE INTO test VALUE (1, 'L7', 26);
+
+# 插入 name 冲突数据，数据的 id 发生了变换
+# 数据： 3  lin  26
+REPLACE INTO test (`name`, `age`) VALUE ('lin'， 26);
+```
+
+从这个例子可以看出，REPLACE INTO 对待冲突是先删除旧的整行数据，然后重新插入数据(像插入新的没有冲突的数据一样)，也即是先`DELETE`，然后`INSERT INTO`。
+
 
 ### 使用 ON DUPLICATE KEY UPDATE
 如果您指定了`ON DUPLICATE KEY UPDATE`，并且插入行后会导致在一个 UNIQUE 索引或 PRIMARY KEY 中出现重复值，则执行旧行 UPDATE 操作。
