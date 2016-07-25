@@ -39,3 +39,24 @@ function setTimer(obj, counter) {
 }
 ```
 
+## 浏览器鼠标选取操作
+1. 屏蔽鼠标右键  `oncontextmenu='window.event.returnValue=false'`
+2. 取消选取、防止复制  `onselectstart='return false'`
+3. 不允许粘贴 `onpaste='return false'`
+4. 防止复制、剪切 `oncopy='return false;' oncut='return false;'`
+
+## 防止被人 frame
+
+```html
+<script>< !–
+if (top.location != self.location)top.location=self.location;
+// –></script>
+```
+
+## 查看网页源代码
+`onclick='window.location="view-source:" + window.location.href'>`
+
+## ENTER 键可以让光标移到下一个输入框
+也就是当按下 Enter 键的时候，改成 Tab 键。
+`<input onkeydown='if(event.keyCode==13) event.keyCode=9'>`
+
