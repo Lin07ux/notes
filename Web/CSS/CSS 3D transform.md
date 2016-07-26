@@ -21,11 +21,11 @@
 
 例如，下面一个包含两个变换函数的 transform 的效果（gif）：
 
-![两个变换函数效果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466693558133.png)
+![两个变换函数效果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/transform-1.gif)
 
 如果交换这两个变换函数的顺序，是这样的效果：
 
-![交换顺序](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466693632113.png)
+![交换顺序](http://7xkt52.com1.z0.glb.clouddn.com/markdown/transform-2.gif)
 
 可以看到，由于坐标系会随着每一次变换发生改变，因此不同顺序的情况下，元素最终的位置也不同。
 

@@ -19,7 +19,7 @@ INSERT IGNORE INTO table_name(fields...) VALUES(values...);
 INSERT IGNORE INTO table(name) SELECT  name FROM table2;
 ```
 
-### 使用 replace into
+### 2. 使用 replace into
 **语法格式**
 
 1. `replace into table_name(col_name, ...) values(...);`
@@ -84,7 +84,7 @@ REPLACE INTO test (`name`, `age`) VALUE ('lin'， 26);
 从这个例子可以看出，REPLACE INTO 对待冲突是先删除旧的整行数据，然后重新插入数据(像插入新的没有冲突的数据一样)，也即是先`DELETE`，然后`INSERT INTO`。
 
 
-### 使用 ON DUPLICATE KEY UPDATE
+### 3. 使用 ON DUPLICATE KEY UPDATE
 如果您指定了`ON DUPLICATE KEY UPDATE`，并且插入行后会导致在一个 UNIQUE 索引或 PRIMARY KEY 中出现重复值，则执行旧行 UPDATE 操作。
 
 也就是说，如果有重复记录，新数据会被用来更新旧数据，这样原有记录的主键不会改变，而且一般也不会因存在某字段是其他表的外键而导致的失败。
