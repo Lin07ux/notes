@@ -231,14 +231,17 @@ $("#img_input").on("change", function(e){
   reader.readAsDataURL(file); // 读取文件内容
 
   // 渲染文件
-  reader.onload = function(arg) {
+  reader.onload = function(e) {
 
-    var img = '<img class="preview" src="' + arg.target.result + '" alt="preview"/>';
+    var img = '<img class="preview" src="' + e.target.result + '" alt="preview"/>';
     $(".preview_box").empty().append(img);
   }
 });
 </script>
 ```
+
+> 参考：[H5上传图片](http://imweb.io/topic/568225bb57d7a6c47914fbf2)
+
 
 ### 拖拽上传
 拖拽上传和一般的`input`元素选择文件进行上传没有什么不同，只是其操作形式上的区别：可以通过将文件拖拽到指定区域从而进行上传。
