@@ -21,8 +21,6 @@ ALTER TABLE device_label MODIFY origin_model VARCHAR(32);
 
 # 修改字段名称
 ALTER TABLE device_label CHANGE origin_model device_model VARCHAR(16);
-# 或者
-ALTER TABLE device_label origin_model RENAME device_model;
 
 # 追加列
 ALTER TABLE device_label ADD os_type VARCHAR(8) COLLATE utf8_bin NOT NULL COMMENT '操作系统' after id;
