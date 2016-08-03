@@ -74,10 +74,10 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 #### flex-direction 属性
 该属性设置 flex 的主轴方向。可选值如下：
 
+* column-reverse  主轴在垂直方向，起点在下沿。
+* column  主轴在垂直方向，起点在上沿。
 * row  默认值。主轴在水平方向，起点在左端。
 * row-reverse  主轴在水平方向，起点在右端。
-* column  主轴在垂直方向，起点在上沿。
-* column-reverse  主轴在垂直方向，起点在下沿。
 
 效果分别如下所示：
 
