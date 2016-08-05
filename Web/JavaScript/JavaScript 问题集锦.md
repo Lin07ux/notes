@@ -8,9 +8,19 @@ typeof g();
 
 会报错。
 
-因为在这里`function g () { return 2; }`作为一个函数表达式，被赋值给了变量`f`。函数实际上是绑定到变量`f`，不是`g`。
+因为在这里`function g () { return 2; }`作为一个函数表达式(`function expression`)，被赋值给了变量`f`。函数实际上是绑定到变量`f`，不是`g`。
 
 不过，在`function g () { return 2; }`函数内部是能够使用`g`来指代这个函数的。
+
+同样的，下面的代码也是函数表达式的问题：
+
+```javascript
+var x = 1;
+if (function f(){}) {
+    x += typeof f;
+}
+x; // "1undefined"
+```
 
 
 ### 组合语句
@@ -90,5 +100,33 @@ typeof x;
 ```
 
 所以输出的就是字符串类型了。
+
+
+### delete 操作符
+
+```javascript
+(function(x){
+    delete x;
+    return x;  // 1
+})(1);
+```
+
+`delete`操作符可以从对象中删除属性，只能作用在对象的属性上，对变量和函数名无效。所以这里的`delete x`是没有意义的。
+
+另外，`delete`是不会直接释放内存的，她只是间接的中断对象引用
+
+
+### 逗号操作符
+
+```javascript
+var f = (function f(){ return '1'; }, function g(){ return 2; })();
+typeof f;  // "number"
+```
+
+逗号操作符对它的每个操作对象求值（从左至右），然后返回最后一个操作对象的值
+
+所以`(function f(){ return '1'; }, function g(){ return 2; })`的返回值就是函数 `g`，然后执行她，那么结果是 2 ；最后再`typeof 2`，根据问题一的表格，结果自然是`number`。
+
+
 
 
