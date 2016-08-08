@@ -1,6 +1,34 @@
 ### transform 问题
 在 Chrome 和 Opera 浏览器下，使用 CSS3 的`transform: translate(0, 0)`转化位置节点，其所有使用`position:fixed`定位的子孙节点的定位功能均无效。
 
+### 图片延迟加载方案图片处理
+浏览器解析img标签的时候，如果src属性为空，浏览器会认为这个图片是坏掉的图，会显示出图片的边框，会影响显示的效果。
+
+延迟加载过程中会改变图片的 class：默认`lazyload`，加载中`lazyloading`，加载结束：`lazyloaded`。结合这个特性我们有两种解决上述问题办法：
+
+1、设置`opacity:0`，然后在显示的时候设置`opacity:1`。
+
+```css
+.lazyload,
+.lazyloading{
+    opacity: 0;
+}
+.lazyloaded{
+    opacity: 1;
+    transition: opacity 500ms; //加上transition就可以实现渐现的效果
+}
+```
+
+2、用一张默认的图占位，比如1x1的透明图或者灰图。
+
+```html
+<img class="lazyload" 
+    src="data:image/gif;base64,R0lGODlhAQABAAA
+       AACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" 
+    data-src="真实url" 
+    alt="<%= article.title %>">
+```
+
 
 ### 微信浏览器隐藏滚动条
 
