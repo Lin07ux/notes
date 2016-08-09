@@ -18,4 +18,24 @@ UPDATE tbl_name SET column=CONCAT(column, str1, str2, ...) WHERE ...
 UPDATE tbl_name SET name=REPLACE(name, '*', '') WHERE name like '*%';
 ```
 
+### VERSION
+查看数据库版本号。
+
+```sql
+SELECT VERSION();
+```
+
+### USER
+查看当前的 user：
+
+```sql
+SELECT USER();
+```
+
+### DATABAE
+查看当前操作的数据库名：
+
+```sql
+SELECT DATABASE();
+```
 

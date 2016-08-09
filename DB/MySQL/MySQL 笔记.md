@@ -14,6 +14,12 @@ CREATE TABLE `device_label` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='设备标注表';
 ```
 
+还可以使用已存在的表结构来创建一个新的表，但是不包含原表的数据：
+
+```sql
+CREATE TABLE new_table LIKE old_table
+```
+
 ### ALTER 修改
 ```sql
 # 修改字段类型
@@ -95,6 +101,13 @@ FLUSH PRIVILEGES;
 
 ### REVOKE 撤销授权
 使用 GRANT 授权后，还可以使用 REVOKE 来取消授权。
+
+### 删除用户
+
+```sql
+use mysql;
+delete from user where User="用户名" and Host="主机地址";
+```
 
 ## DML
 数据定义语言（Data manipulation language, DML）主要用于表达数据库的查询与更新，主要包括增删改查（`INSERT`，`UPDATE`，`DELETE`，`SELECT`）。
