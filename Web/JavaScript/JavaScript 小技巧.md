@@ -5,6 +5,18 @@
 this.value = this.value.replace(/[^\d]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ");
 ```
 
+## 字符串换行
+直接在字符串行结束时添加`\`可以将一个字符串分行书写：
+
+```javascript
+var str = "this string \
+is broken \
+across multiple\
+lines."
+
+console.log(str); // this string is broken across multiplelines.
+```
+
 ## 移动 web 端自定义 tap 事件
 ```js
 // 自定义tap
@@ -76,6 +88,24 @@ if (top.location != self.location)top.location=self.location;
 `<input onkeydown='if(event.keyCode==13) event.keyCode=9'>`
 
 
+## 自定义异常
+```javascript
+// 创建一个对象类型UserException
+function UserException(message) {
+this.message = message;
+this.name = "UserException";
+}
+
+//重写toString方法，在抛出异常时能直接获取有用信息
+UserException.prototype.toString = function() {
+return this.name + ': "' + this.message + '"';
+}
+
+// 创建一个对象实体并抛出它
+throw new UserException("Value too high");
+```
+
+
 ## 判断 webp 兼容性
 
 ```javascript
@@ -116,5 +146,53 @@ if (top.location != self.location)top.location=self.location;
     webpTest(webpSrc, 'webp');
     webpTest(webpanimationSrc, 'webpanimation');
 })();
+```
+
+## try...catch...finally
+**finally 返回值**：如果 finally 添加了 return 语句，则不管整个 try.catch 返回什么，返回值都是 finally 的 return。
+
+```javascript
+function f() {
+    try {
+        console.log(0);
+        throw "bogus";
+    } catch(e) {
+        console.log(1);
+        return true; // 返回语句被暂停，直到finally执行完成
+        console.log(2); // 不会执行的代码
+    } finally {
+        console.log(3);
+        return false; //覆盖try.catch的返回
+        console.log(4); //不会执行的代码
+    }
+    // "return false" is executed now 
+    console.log(5); // not reachable
+}
+f(); // 输出 0, 1, 3; 返回 false
+```
+
+**finally 吞并异常**：如果 finally 有return 并且 catch 中有 throw 异常，throw 的异常不会被捕获，因为已经被 finally 的 return 覆盖了。
+
+```javascript
+function f() {
+    try {
+        throw "bogus";
+    } catch(e) {
+        console.log('caught inner "bogus"');
+        throw e; // throw语句被暂停，直到finally执行完成
+    } finally {
+        return false; // 覆盖try.catch中的throw语句
+    }
+    // 已经执行了"return false"
+}
+
+try {
+    f();
+} catch(e) {
+    //这里不会被执行，因为catch中的throw已经被finally中的return语句覆盖了
+    console.log('caught outer "bogus"');
+}
+// 输出
+// caught inner "bogus"
 ```
 
