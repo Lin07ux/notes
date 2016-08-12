@@ -1,0 +1,107 @@
+### ls (List)
+`ls`会列举出当前工作目录的内容（文件或文件夹），就跟你在 GUI 中打开一个文件夹去看里面的内容一样。
+
+这个命令还可以结合`-l`、`-a`等参数来用不同的方式显示当前目录的内容。
+
+![ls](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470977375989.png)
+
+### mkdir (Make Directory)
+新建一个新目录
+
+### pwd (Print Working Directory)
+显示当前工作目录
+
+### cd (Change Directory)
+对于当前在终端运行的会中中，`cd`将给定的文件夹（或目录）设置成当前工作目录。
+
+> 使用`cd -`可以返回前一个进入的工作目录。
+
+![cd](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470977556815.png)
+
+### rm (Remove)
+删除给定的文件或文件夹，可以使用`rm -r`递归删除文件夹，用`rm -f`删除不会进行确认。
+
+### rmdir (Remove Directory)
+删除给定的目录。
+
+### cp (Copy)
+对文件或文件夹进行复制，可以使用`cp -r`选项来递归复制文件夹。
+
+### mv (Move)
+对文件或文件夹进行移动，如果文件或文件夹移动后和原先处于同一个父目录，则是对该文件或文件夹进行重命名。
+
+### cat (concatenate and print files)
+在标准输出（监控器或屏幕）上查看文件内容
+
+### tail (print TAIL (from last))
+`tail`默认在标准输出上显示给定文件的最后 10 行内容，可以使用`tail -n N`指定在标准输出上显示文件的最后 N 行内容。也可以使用`tail -f file_name`来监视文件的变化。
+
+### less (print LESS)
+`less`按页或按窗口打印文件内容。在查看包含大量文本数据的大文件时是非常有用和高效的。你可以使用`Ctrl + F`向前翻页，`Ctrl + B`向后翻页。
+
+### grep
+`grep ""`在给定的文件中搜寻指定的字符串。`grep -i ""`在搜寻时会忽略字符串的大小写，而`grep -r ""`则会在当前工作目录的文件中递归搜寻指定的字符串。
+
+### Find
+这个命令会在给定位置搜寻与条件匹配的文件。你可以使用`find -name`来进行区分大小写的搜寻，`find -iname`来进行不区分大小写的搜寻。
+
+```shell
+find <folder-to-search> -iname <file-name>
+```
+
+### tar
+`tar`命令能创建、查看和提取 tar 压缩文件。
+
+`tar -cvf` 创建对应压缩文件
+`tar -tvf` 查看对应压缩文件
+`tar -xvf` 提取对应压缩文件
+
+### gzip
+创建和提取 gzip 压缩文件，还可以用`gzip -d`来提取压缩文件。
+
+### unzip
+对 gzip 文档进行解压。在解压之前，可以使用`unzip -l`命令查看文件内容。
+
+### help
+`--help`会在终端列出所有可用的命令，可以使用任何命令的`-h`或`--help`选项来查看该命令的具体用法。
+
+### whatis (What is this command)
+`whatis`会用单行来描述给定的命令。
+
+### man (Manual)
+`man`会为给定的命令显示一个手册页面。
+
+### exit
+`exit`用于结束当前的终端会话。
+
+### ping
+`ping`通过发送数据包ping远程主机(服务器)，常用与检测网络连接和服务器状态。
+
+### who (Who Is logged in)
+`who`能列出当前登录的用户名。
+
+### su (Switch User)
+切换不同的用户。即使没有使用密码，超级用户也能切换到其它用户。
+
+### uname
+显示出关于系统的重要信息，如内核名称、主机名、内核版本、处理机类型等等，使用`uname -a`可以查看所有信息。
+
+### free (Free memory)
+`free`会显示出系统的空闲内存、已经占用内存、可利用的交换内存等信息，`free -m`将结果中的单位转换成 MB，而`free –g`则转换成 GB。
+
+### df (Disk space Free)
+`df`查看文件系统中磁盘的使用情况–硬盘已用和可用的存储空间以及其它存储设备。你可以使用`df -h`将结果以人类可读的方式显示。
+
+### ps (ProcesseS)
+`ps`显示系统的运行进程。
+
+### top (TOP processes)
+`top`命令会默认按照 CPU 的占用情况，显示占用量较大的进程,可以使用`top -u`查看某个用户的 CPU 使用排名情况。
+
+### shutdown
+`shutdown`用于关闭计算机，而`shutdown -r`用于重启计算机。
+
+
+## 参考
+[29个你必须知道的Linux命令](https://github.com/dwqs/blog/issues/24)
+
