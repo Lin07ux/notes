@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Puzzle</title>
+
+    <style type="text/css">
+      div, ul, li {box-sizing: border-box; margin: 0; padding: 0;}
+      .puzzle-wrap {width: 400px; height: 400px;}
+      .puzzle {float: left; width: 100px; height: 100px; border: 1px solid #ccc; list-style: none; background-color: #69ab01; box-shadow: 1px 1px 4px; text-align: center; line-height: 100px; font-size: 20px; text-shadow: 1px 1px 1px #B9B4B4; cursor: pointer;}
+      .puzzle-empty {background: #ccc; box-shadow: inset 2px 2px 18px;}
+    </style>
+</head>
+<body>
+<div id="box" class="box">
+  <ul class="puzzle-wrap">
+    <li v-for="puzzle in puzzles" :class="{'puzzle': true, 'puzzle-empty': !puzzle}" @click="movePuzzle($index)">
+      {{ puzzle }}
+    </li>
+  </ul>
+</div>
+
+<script src="http://cdn.bootcss.com/vue/1.0.26/vue.min.js"></script>
+<script>
+var vm = new Vue({
+  el: '#box',
+  data () {
+    return {
+      puzzles: []
+    }
+  },
+  methods: {
+    render () {
+      let puzzleArr = [],
+          i = 0
+      // 生成包含0 ~ 15数字的数组
+      for (i; i < 16; i++) {
+          puzzleArr.push(i)
+      }
+      // 随机打乱数组
+      this.puzzles = puzzleArr.sort(() => {
+          return Math.random() - 0.5
+      });
+    },
+    movePuzzle (index) {
+      
+      let cur  = this.puzzles[index],
+        left   = index - 1,
+        right  = index + 1,
+        top    = index - 4,
+        bottom = index + 4,
+        pos    = index % 4
+
+      if (0 === this.puzzles[left]) {
+        this.puzzles.$set(left, cur)
+        this.puzzles.$set(index, 0)
+      } else if (0 === this.puzzles[right]) {
+        this.puzzles.$set(right, cur)
+        this.puzzles.$set(index, 0)
+      } else if (0 === this.puzzles[top]) {
+        this.puzzles.$set(top, cur)
+        this.puzzles.$set(index, 0)
+      } else if (0 === this.puzzles[bottom]) {
+        this.puzzles.$set(bottom, cur)
+        this.puzzles.$set(index, 0)
+      }
+
+      this.pass()
+    },
+    pass () {
+      const pass = this.puzzles.every((e, i) => e === i)
+
+      if (pass) {
+        alert('恭喜您！过关了！')
+      }
+    }
+  },
+  ready () {
+    this.render()
+  }
+})
+</script>
+</body>
+</html>
