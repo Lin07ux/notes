@@ -51,10 +51,12 @@ var vm = new Vue({
         bottom = index + 4,
         pos    = index % 4
 
-      if (0 === this.puzzles[left]) {
+      if (pos && 0 === this.puzzles[left]) {
+        // index 不在左边界的时候，left有效
         this.puzzles.$set(left, cur)
         this.puzzles.$set(index, 0)
-      } else if (0 === this.puzzles[right]) {
+      } else if (3 !== pos && 0 === this.puzzles[right]) {
+        // index 不在右边界的时候，right 有效
         this.puzzles.$set(right, cur)
         this.puzzles.$set(index, 0)
       } else if (0 === this.puzzles[top]) {
