@@ -2,6 +2,60 @@
 
 MDN文档：[Drag and Drop](https://developer.mozilla.org/zh_CN/DragDrop/Drag_and_Drop)。
 
+
+## 一个完整的拖放流程
+1. 创建一个可拖拽对象
+
+如果想要拖动某个元素，需要设置元素的`draggable`属性为`true`。并给被该拖放元素的`dragstart`事件设置一个监听器，存储拖拽数据。
+
+```html
+<img id="dragImg" draggable="true" />
+```
+
+```javascript
+document.getElementById("dragImg").addEventListener("dragstart", function(event) {
+    // 存储拖拽数据和拖拽效果...
+    event.dataTransfer.setData("Text",ev.target.id);
+}, false);
+```
+
+2. 设置放置对象
+假设放置对象的 DOM 为：
+
+```html
+<div id="dragTarget"></div>
+```
+
+首先要处理放置对象的`dragenter`事件，用来确定放置目标是否接受放置：如果放置被接受，那么必须要取消这个事件的默认行为。
+
+```javascript
+document.getElementById('dragTarget').addEventListener('dragenter', function (event) {
+    // 阻止浏览器默认事件
+    event.preventDefault();
+}, false);
+```
+
+接下来，可以处理`dragover`事件，用来确定给用户显示怎样的反馈信息：如果这个事件被取消了默认操作，反馈信息（通常就是光标）就会基于`dropEffect`属性的值更新。
+
+```javascript
+document.getElementById('dragTarget').addEventListener('dragover', function (event) {
+    // 阻止浏览器默认事件
+    event.preventDefault();
+}, false);
+```
+
+最后，还要设置`drop`事件，以便能够对被拖放进来的元素进行处理。
+
+```javascript
+document.getElementById('dragTarge').addEventListener('drop', function (event) {
+    event.preventDefault();
+    
+    var data = event.dataTransfer.getData('Text');
+    event.target.appendChild(document.getElementById(data));
+}, false);
+```
+
+
 ## 拖放操作
 MDN文档：[拖放操作](https://developer.mozilla.org/zh-CN/docs/DragDrop/Drag_and_Drop)
 
