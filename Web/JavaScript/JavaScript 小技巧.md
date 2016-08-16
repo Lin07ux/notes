@@ -5,6 +5,19 @@
 this.value = this.value.replace(/[^\d]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ");
 ```
 
+## 滚动到最底部
+对于一个不时更新的容器内，如果在每次更新的时候，都要滚动到最底部，以显示最新内容，那么可以使用`scrollIntoView()`方法。这是 HTML5 新增的一个 DOM 方法。
+
+```javascript
+function onGetMessage(context) 
+{
+    msg.innerHTML+=context;
+    msg_end.scrollIntoView(); 
+} 
+```
+
+> 还可以使用锚标记要滚动到的位置，然后通过`click`方法模拟点击滚动到锚所在位置。
+
 ## 字符串换行
 直接在字符串行结束时添加`\`可以将一个字符串分行书写：
 
