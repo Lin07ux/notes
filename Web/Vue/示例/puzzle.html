@@ -70,7 +70,8 @@ var vm = new Vue({
       this.pass()
     },
     pass () {
-      const pass = this.puzzles.every((e, i) => e === i)
+      // 正序排列或者倒序排列都算通过
+      const pass = this.puzzles.every((e, i) => e === i) || this.puzzles.every((e, i) => e === 15 - i)
 
       if (pass) {
         alert('恭喜您！过关了！')
