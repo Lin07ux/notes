@@ -39,6 +39,8 @@ $  － 到本行行尾
 g_ － 到本行最后一个不是blank字符的位置。
 gg － 到第一行
 G  － 到最后一行
+[[ -  到第一行
+]] -  到最后一行
 :N － 到第N行
 NG － 到第N行
 w  － 到下一个单词
@@ -54,7 +56,9 @@ t, － 到逗号前的第一个字符。逗号可以变成其它字符。
 
 ### 常用的可视模式命令
 ```
-x或d   - 剪切(即删除，同时所选的文本进入剪贴板) 
+x      - 删除 
+dd     - 剪切当前行
+cc     - 剪切当前行
 y      - 复制 
 r字符   - 所有字符替换为新字符 
 u U ~  - 分别是所有字母变小写、变大写、反转大小写 
@@ -132,6 +136,10 @@ Vim 查找支持正则表达式，例如`/vim$`匹配行尾的"vim"。 需要查
 > set smartcase
 ```
 
+**gd**
+
+另外，还可以使用`gd`来选中当前光标所在位置的关键词。
+
 ### 查找当前单词
 在 normal 模式下按下`*`即可查找光标所在单词（word），要求每次出现的前后为空白字符或标点符号。例如当前为`foo`， 可以匹配`foo bar`中的`foo`，但不可匹配`foobar`中的`foo`。 这在查找函数名、变量名时非常有用。
 
@@ -194,8 +202,30 @@ noremap * *:set hlsearch<cr>
 
 将上述配置粘贴到`~/.vimrc`，重新打开 vim 即可生效。
 
-## 参考
-[Vim 初探](http://imweb.io/topic/579deaee93d9938132cc8d88)
-[在 Vim 中优雅地查找和替换](http://harttle.com/2016/08/08/vim-search-in-file.html)
 
+## 常用配置
+```
+syntax on
+set background=dark
+colorscheme solarized
+
+" 设置默认进行大小写不敏感查找
+set ignorecase
+" 如果有一个大写字母，则切换到大小写敏感查找
+set smartcase
+set number
+set cindent
+set backspace=indent,eol,start
+set tabstop=4
+set shiftwidth=4
+let &termencoding=&encoding
+set fileencodings=utf-8
+set hls
+```
+
+
+## 参考
+1. [Vim 初探](http://imweb.io/topic/579deaee93d9938132cc8d88)
+2. [在 Vim 中优雅地查找和替换](http://harttle.com/2016/08/08/vim-search-in-file.html)
+3. [使用Vim](http://www.wushxin.top/2016/08/15/%E4%BD%BF%E7%94%A8Vim.html)
 
