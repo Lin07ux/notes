@@ -8,17 +8,19 @@
 
 安装完成之后，需要配置一下 Git：
 
-`$ git config --global user.name "Your Name"`
-
-`$ git config --global user.email "email@example.com"`
+```shell
+git config --global user.name "Your Name"
+git config --global user.email "email@example.com"
+```
 
 这里的"Your Name"和"email@example.com"需要替换成你自己的名称和 email 地址。
 
 另外，可能还需要重新生成 SSH Keys 秘钥对。在 git bash 程序中，执行下面的命令，会先生成一个 SSH Key，然后拷贝公钥到剪贴板中：
 
-`$ ssh-keygen -t rsa -b 4096 -C "linshengli.linux7@qq.com"`
-
-`$ clip < ~/.ssh/id_rsa.pub`
+```shell
+ssh-keygen -t rsa -b 4096 -C "linshengli.linux7@qq.com"
+clip < ~/.ssh/id_rsa.pub
+```
 
 然后在 GitHub 中个人账户的 setting 中新建一个秘钥，并将剪贴板中的内容粘贴到相应位置，即可使用 GitHub 上的远程仓库。
 
@@ -28,11 +30,11 @@
 
 所以创建一个版本库，首先创建一个文件夹，然后用 Git 初始化这个文件夹即可：
 
-`$ mkdir git-learn`
-
-`$ cd git-learn`
-
-`$ git init`
+```shell
+mkdir git-learn
+cd git-learn
+git init
+```
 
 这样就创建好了一个本地空仓库了。在这个目录下，有一个 .git 文件夹(Windows 下是隐藏的)。
 这个 .git 目录是 Git 用来跟踪管理版本库的，不要手动修改这个目录里面的文件，否则容易破坏 Git 仓库。
@@ -44,9 +46,10 @@
 
 比如，我们创建了一个 readme.md 文件，然后可以将其添加并提交到 Git 版本库中：
 
-`$ git add readme.md`
-
-`$ git commit -m "wrote a readme file"`
+```shell
+git add readme.md
+git commit -m "wrote a readme file"
+```
 
 这两个命令，先将文件添加到版本仓库中，然后使用 commit 命令将其提交到仓库里面，使仓库记录这个文件及其内容的变动。
 
@@ -54,17 +57,21 @@
 
 `git commit`命令中，选项 -m 后面输入的是本次提交的说明，可以输入任意内容。虽然可以不添加这个选项，但是强烈建议添加一个有意义的说明。
 
-每一次的变动，都需要先用 add 将变动的文件添加到 Git 版本库中，然后用 commit 提交到版本库中。
-因为 Git 有一个暂存区的概念。Git 中包含三个分区：工作区、暂存区、分支区。
+每一次的变动，都需要先用 add 将变动的文件添加到 Git 版本库中，然后用 commit 提交到版本库中。因为 Git 有一个暂存区的概念。
+
+Git 中包含三个分区：工作区、暂存区、分支区。
 
 - 工作区就是我们项目目录，我们对文件的增删改都是在工作区进行的；
-
 - 当我们修改了工作区的文件之后，就需要先提交到暂存区，此时文件的更改尚未反应到版本库中；
-
 - 当做了一阶段的任务之后，就可以统一一次性将暂存区的内容同步到当前的分支上，从而反映到版本库中了。
 
 add 就是将文件变动添加到暂存区，commit 就是将暂存区的所有内容提交到当前分支中。
 在这里，将文件添加到版本库，之所以分成 add 和 commit 两步，是因为：add 能够多次使用，添加不同的文件，而 commit 可以一次提交很多文件。
+
+commit 的时候，可以关联对应的 issue 和关闭 issue：
+
+* `git commit -m '#133'`  在任意位置带上`#`符号加上 issue 号码即表示关联 issue
+* `git commit -m 'fix #133` 使用`fix #`加上 issue 号码表示关闭对应的 issue
 
 
 ## 版本状态
@@ -72,10 +79,9 @@ add 就是将文件变动添加到暂存区，commit 就是将暂存区的所有
 
 可以使用 status 命令来查看当前版本库的状态：
 
-`$ git status`
+`git status`
 
-在我们上面建立一个文件，并 add 和 commit 到版本库之后，版本库的状态会显示'nothing to commit, working directory clean'。
-而如果我们新增一个文件、或者改动了当前版本库中文件的内容，或者删除了一个文件的时候，版本库的状态中就会显示出相应的变化。
+在我们上面建立一个文件，并 add 和 commit 到版本库之后，版本库的状态会显示'nothing to commit, working directory clean'。而如果我们新增一个文件、或者改动了当前版本库中文件的内容，或者删除了一个文件的时候，版本库的状态中就会显示出相应的变化。
 
 也可以使用 diff 命令查看文件具体的修改地方：
 
@@ -84,28 +90,34 @@ add 就是将文件变动添加到暂存区，commit 就是将暂存区的所有
 这样就能查看 readme.md 文件中具体的修改，指明那里增加了行，修改了内容，删除了东西等。
 如果没有指定文件名，则会显示从上次 commit 之后，到现在的所有的变动。
 
-需要用 q 来退出 diff 命令的显示。
+> 需要用`q`来退出 diff 命令的显示。
 
 还可以使用 log 命令显示出提交的日志：
 
 `git log`
 
-这个命令会显示从最近到最远的提交日志，包括提交的 hash 值、提交者、提交日期，以及提交的备注。
-
-如果添加了 --pretty=oneline 选项，可以只显示 hash 值、提交备注，每次的提交信息都放在一行中。
+这个命令会显示从最近到最远的提交日志，包括提交的 hash 值、提交者、提交日期，以及提交的备注。如果添加了`--pretty=oneline`选项，可以只显示 hash 值、提交备注，每次的提交信息都放在一行中。
 
 `git log --pretty=oneline`
 
 ## 版本回退和恢复
-在 Git 中，用 HEAD 表示当前版本，也就是最新的提交版本。那上一个版本就是 HEAD^，上上个版本就是 HEAD^^，可以一直添加 ^ 表示更上一级。当然，如果返回的版本太多，也可以使用 ~10 这样的方式表示，比如前面的 5 个版本就是 HEAD~5。
-另外，每个版本都有一个唯一的 commit id 值作为标识。
+在 Git 中，用 HEAD 表示当前版本，也就是最新的提交版本。那上一个版本就是 HEAD^，上上个版本就是 HEAD^^，可以一直添加 ^ 表示更上一级。当然，如果返回的版本太多，也可以使用 ~10 这样的方式表示，比如前面的 5 个版本就是 HEAD~5。另外，每个版本都有一个唯一的 commit id 值作为标识。
 
 用 reset 命令和版本标识能够回退或恢复到任意的版本上去：
 
-`git reset --hard commit-id`
+`git reset [--hard|--mixed|--soft] commit-id`
 
 这里的 commit-id 可以是当前版本前面的某个版本的标识，也可以是当前版本之后的某个版本的标识，这样就分别实现了回退和恢复功能。
-参数 --hard 的意思是：
+
+- --hard 将指定的历史版本的内容同步到当前分支的 HEAD、暂存区、工作区中。
+- --mixed 默认值。将指定的历史版本的内容同步到当前分支的 HEAD、暂存区中，而不改变工作区的内容。
+- --soft 仅仅改变当前分支的 HEAD 到指定的历史版本上。
+
+另外，还可以指定将某个文件恢复到历史版本，而不是整个分支回退：
+
+`git reset [--hard|--mixed] filename commit-id`
+
+这里的 --hard 和 --mixed 和上面的作用类似。
 
 ### 回退
 回退版本，可以使用要回退的版本的 commit id，也可以使用相对标识，比如 HEAD^。
@@ -114,17 +126,15 @@ add 就是将文件变动添加到暂存区，commit 就是将暂存区的所有
 
 `git reset --hard HEAD^`
 
-这里，HEAD^ 就表示上一个版本，你可以根据自己的需要来回到指定的版本。
-回退版本之后，被回退掉的提交信息就不会显示在 log 命令的输出中了。
+这里，HEAD^ 就表示上一个版本，你可以根据自己的需要来回到指定的版本。回退版本之后，被回退掉的提交信息就不会显示在 log 命令的输出中了。
 
 ### 恢复
-如果之后想重新恢复到被回退钱的某个版本，就必须找到你想恢复的版本的 commit id。
+如果之后想重新恢复到被回退前的某个版本，就必须找到你想恢复的版本的 commit id。
 
 有两种方法找到这个 id：
 
 - 1. 如果使用 reset 命令之后，命令行窗口没有关闭，此时可以直接翻回命令行的记录，查看相关的 commit id。
-
-- 2. 还可以使用 reflog 命令来查找
+- 2. 使用 reflog 命令来查找。
 
 `git reflog`
 
@@ -169,38 +179,34 @@ add 就是将文件变动添加到暂存区，commit 就是将暂存区的所有
 
 
 ## 删除文件
-在 Git 中，删除也是一个修改操作，也会被 Git 记录到。
-
-在 Git 中删除文件，建议使用 git rm 命令删除，而不是用系统的 rm 命令删除：
+在 Git 中，删除也是一个修改操作，也会被 Git 记录到。在 Git 中删除文件，建议使用 git rm 命令删除，而不是用系统的 rm 命令删除：
 
 `git rm <file>`
 
-这个命令和 git add 是相反的操作，表示从暂存区中删除指定的文件。
-所以执行这个命令之后，还需要 commit，将删除操作提交到分支中。
-可以一次性删除多个文件，每个文件名之间使用空格分隔。
+这个命令和 git add 是相反的操作，表示从暂存区中删除指定的文件。所以执行这个命令之后，还需要 commit，将删除操作提交到分支中。可以一次性删除多个文件，每个文件名之间使用空格分隔。
 
 对于已经 add 到了缓存区，但是没有 commit 到分支区中的文件，是不能直接使用 git rm 来删除的，需要增加下面的两个选项中的一个：
 
 - --cached ：保留这个文件
-
 - --f      ：强制删除这个文件，会将暂存区中的这个文件也删除掉，删除之后的状态是待 commit。
 
-如果直接删除了文件(比如用命令`rm <file>`删除文件)，那么 Git 知道你删除了文件，因此工作区和版本库就不一致了。
-这时，有两个选择：
+如果直接删除了文件(比如用命令`rm <file>`删除文件)，那么 Git 知道你删除了文件，因此工作区和版本库就不一致了。这时，有两个选择：
 
 - 确定要从版本库中删除该文件，就用命令 git rm 删掉这个文件，然后 commit 这个操作；
-
 - 如果是删错了，就使用前面介绍的撤销操作的 checkout 命令恢复文件到最新版本：`git checkout -- <file>`
 
 如果使用 git rm 命令删除之后，尚未 commit 到版本库，需要重新恢复，则要先恢复当前文件到暂存区，然后从暂存区恢复到工作区：
 
-`git reset HEAD -- <file>`
-
-`git checkout -- <file>`
+```shell
+git reset HEAD -- <file>
+git checkout -- <file>
+```
 
 需要注意的是：这样恢复出来的文件，是不包含最后一次 commit 之后修改的内容的。
 
 如果删除了文件，而且也 commit 到了版本库中，需要重新恢复，则只能版本回退了。此时，随删除文件操作一起 commit 的操作都没有了，需要重新来过。
+
+> 如果是想要移动文件(重命名)，可以使用 mv 命令：`git mv file_from file_to`。
 
 
 ## 远程仓库
@@ -224,8 +230,7 @@ add 就是将文件变动添加到暂存区，commit 就是将暂存区的所有
 
 `git remote add origin git@github.com:Lin07ux/git-learn.git`
 
-这个命令将位于 git@github.com 服务器上的 Lin07ux/git-learn.git 仓库关联到当前目录所对应的本地目录上。
-添加后，远程仓库的名字就是 origin，这是 Git 的默认叫法，当然，也可以改成别的。
+这个命令将位于 git@github.com 服务器上的 Lin07ux/git-learn.git 仓库关联到当前目录所对应的本地目录上。添加后，远程仓库的名字就是 origin，这是 Git 的默认叫法，当然，也可以改成别的。
 
 可以使用 remote 命令查看远程库的信息：
 
@@ -241,10 +246,45 @@ add 就是将文件变动添加到暂存区，commit 就是将暂存区的所有
 
 其中，origin 就是我们添加的远程仓库的名称，matser 是我们本地的版本库分支，默认是 master 分支，也可以改成其他的分支。
 
-如果远程仓库一开始是空的，我们第一次推送 master 分支的时候，加上 -u 参数，Git 不但会把本地的 master 分支内容推送到远程仓库中新的 master 分支，还会把本地的 master 分支和远程的 master 分支关联起来.
-在以后的推送或者拉取时就可以简化命令了：
+如果远程仓库一开始是空的，我们第一次推送 master 分支的时候，加上 -u 参数，Git 不但会把本地的 master 分支内容推送到远程仓库中新的 master 分支，还会把本地的 master 分支和远程的 master 分支关联起来。在以后的推送或者拉取时就可以简化命令了：
 
 `git push origin master`
+
+### 添加多个远程仓库
+有时候可能有需求，同一个项目同时要推送到多个仓库(可能不在同一个服务器上)。
+
+实现这个需求的方法有多个，比如在项目下添加多个远程仓库，也就是执行多次`git remote add [origin-name] [url]`，对每个远程仓库分别命名，然后每一次修改之后，分别 push 到着多个仓库中。
+
+还有另一个简单的方法：git 的一个远程库可以对应多个地址，即我能让远程库 origin 拥有多个 url 地址。
+
+假如我们需要添加三个远程仓库的地址，可以如下操作：
+
+```shell
+# 首先先添加初始远程仓库地址
+git remote add origin git@github.com:Lin07ux/gitskills.git
+# 然后添加第二个、第三个仓库地址
+git remote set-url --add origin git@coding.com:Lin07ux/gitskills.git
+git remote set-url --add origin git@oschain.net:Lin07ux/gitskills.git
+```
+
+这样就能给仓库的 origin 添加了三个远程仓库。使用`git remote -v`就可以看到远程仓库的详情：
+
+![添加多个远程仓库的结果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471764048297.png)
+
+以后只要使用`git push origin master`就可以一次性 push 到 3 各库里面了(使用`git push`也可)。
+
+其实，`git remote set-url --add origin`就是往当前 git 项目的 config 文件(路径为`.git/config`)里增加一行记录，每执行一次就会增加一行。所以说，你直接在 config 里面直接添加 url 来修改也是可以的，不必去执行 git 命令。
+
+![config 内容](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471764092521.png)
+
+> 虽然能够使用 git push 能同时推送到多个仓库，但是拉取的时候，只能拉取 origin 里的一个 url 地址(即`fetch-url`，如上图)，这个 fetch-url 默认为你添加的到 origin 的第一个地址。如果你想更改，只需要更改 config 文件里，那三个 url 的顺序即可，fetch-url 会自动对应排行第一的那个 url 连接。
+
+> set-url 的用法：
+> * `git remote set-url [--push] <name> <newurl> [<oldurl>]` 修改远程仓库地址
+> * `git remote set-url --add <name> <newurl>` 添加远程仓库地址
+> * `git remote set-url --delete <name> <url>` 删除远程仓库地址
+
+> 参考：[git 给远程库添加多个 url 地址](http://my.oschina.net/shede333/blog/299032)
 
 ### 从远程仓库克隆
 如果我们是从零开发，最好是先创建远程仓库，然后从远程仓库克隆。
@@ -259,7 +299,7 @@ add 就是将文件变动添加到暂存区，commit 就是将暂存区的所有
 ### 从远程仓库拉取
 使用 pull 命令即可从远程仓库拉取内容：
 
-`git pull`
+`git pull [origin-name] [branch-name]`
 
 这个命令会拉取和当前所在分支相关联的远程分支上最新的修改，然后在本地合并。
 
@@ -268,6 +308,20 @@ add 就是将文件变动添加到暂存区，commit 就是将暂存区的所有
 `git branch --set-upstream <branch-name> <origin/branch-name>`
 
 一般这个命令用于解决推送冲突。比如，当推送一个分支的更改到远程仓库中时，遇到了冲突，就会无法提交，此时需要使用 pull 命令将远程仓库上的相关分支上的修改拉取下来，手动解决冲突之后，再重新推送上去。
+
+* `git pull origin master` 获取远程仓库中的 master 分支
+* `git pull --all` 获取远程所有内容，包括 tag
+* `git pull origin next:master` 取回 origin 仓库中的 next 分支，与本地的 master 分支合并
+* `git pull origin next` 获取 origin 仓库中的 next 分支和当前分支合并
+
+如果远程主机删除了某个分支，默认情况下，git pull 在拉取远程分支的时候，不会删除对应的本地分支。这是为了防止，由于其他人操作了远程主机，导致 git pull 不知不觉删除了本地分支。但是，你可以改变这个行为，加上参数 -p 就会在本地删除远程已经删除的分支。
+
+```shell
+git pull -p
+# 等同于下面的命令
+git fetch --prune origin 
+git fetch -p
+```
 
 ## 分支
 默认情况下，Git 在初始化时就创建了一个名为 master 的主分支，我们一般会将最终的项目放在主分支上发布出去。

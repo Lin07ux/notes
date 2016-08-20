@@ -1,13 +1,12 @@
-
 ## 基本命令
 ### 状态切换
 可以使用以下命令使文件在三种状态间切换：
 
-![切换状态](7xkt52.com1.z0.glb.clouddn.com/markdown/1464932592834.png)
+![切换状态](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1464932592834.png)
 
 也可以跳过中间状态切换：
 
-![跳过中间状态的切换](7xkt52.com1.z0.glb.clouddn.com/markdown/1464932635964.png")
+![跳过中间状态的切换](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1464932635964.png")
 
 ### 追加 Commit
 如果想对刚才做的 commit 做适当修改，可以紧接着写修改的操作，然后执行命令`git commit --amend`即可将暂存区中的内容补充到最近的一次 commit 中。
