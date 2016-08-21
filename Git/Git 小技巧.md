@@ -1,4 +1,3 @@
-## 基本命令
 ### 状态切换
 可以使用以下命令使文件在三种状态间切换：
 
@@ -55,4 +54,30 @@ git commit --amend
 `git push origin :remote_branch`
 
 在这里，`local_branch`留空，则是删除远程`remote_branch`分支。
+
+### 撤销 git add
+如果需要撤销添加到暂存区中的文件，可以借助 reset 命令：
+
+`git reset <文件名>`
+
+如果想从暂存区移除所有没有提交的修改，就不需要使用文件名参数。
+
+之所以可以这样，是因为 reset 命令会将文件恢复到指定版本，同时其参数`--hard | --mixed | --soft`可以用来恢复效果影响的程度。默认情况(不带参数的时候)，就是 --mixed 效果，也就是会将指定版本的文件同步到当前分支的 HEAD 和暂存区中。
+
+### 从当前 Git 分支移除未追踪的本地文件
+假设你凑巧有一些未被追踪的文件（因为不再需要它们），不想每次使用 git status 命令时让它们显示出来。下面是解决这个问题的一些方法：
+
+```shell
+git clean -f -n         # 1
+git clean -f            # 2
+git clean -fd           # 3
+git clean -fX           # 4
+git clean -fx           # 5
+```
+
+* (1): 选项 -n 将显示执行（2）时将会移除哪些文件。-n option will let you know what files will be removed if you run (2).
+* (2): 该命令会移除所有命令（1）中显示的文件。This will remove all files as reported by command-(1).
+* (3): 如果你还想移除文件件，请使用选项 -d。-d if you also want to remove directories.
+* (4): 如果你只想移除已被忽略的文件，请使用选项- X。-X if you just want to remove ignored files.
+* (5): 如果你想移除已被忽略和未被忽略的文件，请使用选项 -x。 if you want to remove both ignored and non-ignored files
 
