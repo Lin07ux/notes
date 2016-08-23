@@ -176,4 +176,298 @@ Githug 提供了几个基本的命令来方便我们进行游戏操作：
 
 ![编辑信息](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471927676996.png)
 
+### #21 reset
+两个文件都被添加到了`staging area`，但是只想提交其中一个。使用`git reset`可以用仓库中的版本覆盖`staging area`的版本。
+
+`git reset`使用不同的参数`--hard/--mixed/--soft`可以使用仓库中的版本覆盖`working directory`、`staging area`和当前分支的 HEAD 中的版本。默认情况下，参数是`--mixed`。
+
+![reset](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471928055992.png)
+
+### #22 reset_soft
+撤销上一次提交。`git reset --soft`可以修改当前分支中的 HEAD 的指向，但是不更改`working directory`、`staging area`中的内容。
+
+![reset_soft](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471928328127.png)
+
+### #23 checkout_file
+抛弃某一次的修改，使用上次提交的版本。`git checkout <file>`会用暂存区中的版本覆盖工作区中的这个文件，从而能够丢弃当前的一些修改。
+
+![checkout_file](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471928510973.png)
+
+### #24 remote
+查看远端仓库。
+
+![remote](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471928588846.png)
+
+### #25 remote_url
+查看远程仓库的 url 地址。`git remote`加上参数`-v`就能查看到当前仓库的远程仓库的名称和 url 了。
+
+![remote_url](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471928719208.png)
+
+### #26 pull
+拉取远程仓库的版本。
+
+拉取和推送的时候，都可以指定本地和远程的分支，格式分别如下：
+
+* 拉取：`git pull origin [remote]:[local]`
+* 推送：`git push origin [local]:[remote]`
+
+可以这样记忆：拉取的时候，是从远程拉取，所以远程分支在前面；推送的时候，是从本地推送到远程，所有本地分支在前面。
+
+![pull](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471928965941.png)
+
+### #27 remote_add
+添加一个远端仓库。
+
+![remote_add](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471929047027.png)
+
+### #28 push
+先将本地的 master 分支和远程的 master 分支合并(rebase)，然后再推送本地修改到远端。
+
+![push](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471929774702.png)
+
+### #29 diff
+查看 staging area 和 working directory 中文件的差异。
+
+> 在命令行中可能无法看出具体的更改的行数，但是可以在编辑器中找到。
+
+![diff](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471930122471.png)
+
+### #30 blame
+`git blame`可以列出文件中每行的修改人是谁
+
+![blame](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471930264382.png)
+
+### #31 branch
+创建分支。
+
+![branch](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471930374407.png)
+
+### #32 checkout
+创建并切换分支。使用`git checkout -b`能够创建一个分支，并立即切换到该分支。
+
+![checkout branch](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471930456189.png)
+
+### #33 checkout_tag
+切换到一个标签。
+
+![checkout_tag](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471930562543.png)
+
+### #34 checkout_tag_over_branch
+切换到一个标签上，这个标签的名称和一个分支的名称相同。
+
+![checkout_tag_over_branch](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471930648494.png)
+
+### #35 branch_at
+根据一个特定的提交创建新分支。
+
+![branch_at](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471930767528.png)
+
+### #36 delete_branch
+删除分支。
+
+![delete_branch](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471930839717.png)
+
+### #37 push_branch
+推送分支到远程仓库。默认情况下，推送分支到远程仓库的时候，会推送到远程仓库的 master 分支上。如果要推送到其他的分支，需要明确的指定远程仓库的分支名。
+
+![push_branch](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471931031592.png)
+
+### #38 merge
+合并分支。合并之前，我们需要先切换到最终合并到的分支上。默认情况下，git 会优先使用 Fast-forward 方式合并。
+
+![merge](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471931116748.png)
+
+### #39 fetch
+获取远端的修改，但是并不合并到当前分支。其实，`git pull`就是`git fetch`和`git merge`组成的。
+
+![fetch](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471931234315.png)
+
+### #40 rebase
+`git rebase`这个命令，大概意思是从某个提交分化出两个分支，然后其中一个分支需要将另一个分支的修改合并过来，但是又不想在提交记录上留下两个分支合并的痕迹，只留下一个分支以前后顺序记录两边的修改。
+
+`git rebase`一个分支的所有修改在另一个分支上重新应用一遍，所以在提交记录上看，会发现一个分支的所有提交在另一个分支之前或者之后。然后删除另一个被合并的分支，保持分支简洁。
+
+`git rebase master feature`表示将 feature 上的修改在 master 上重新应用一遍。
+
+![rebase](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471931849912.png)
+
+`git log --graph -all`，`--graph`会用图形化将提交记录显示出来，而`--all`会显示所有分支的提交记录。
+
+对于第一个`git log --graph --all`，显示如下：
+
+![git log](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471931740241.png)
+
+对应第而二个`git log --graph -all`，可以发现只保留了一个分支，看起来简洁了很多。
+
+![git log](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471931817970.png)
+
+在使用此命令的时候，需要非常注意的是，不要 rebase 哪些已经推送到公共库的更新，因为此操作是重新应用修改，所以公共库的更新可能已经被其他协作者所同步，如果再次 rebase 这些修改，将可能导致冲突。
+
+### #41 repack
+项目时间长了，git 仓库会慢慢变大，可以将版本库未打包的松散对象打包来优化。
+
+![repack](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471931936758.png)
+
+### #42 cherry-pick
+应用另一个分支上的某一个提交的修改到当前分支上。一般这个会用在需要摘引另一个分支的部分有效提交的时候。
+
+首先，找到我们想要的那个提交，记录下它的 hash 值，然后使用`git cherry-pick`将其摘到这个提交。
+
+> 在查找对应提交的 hash 值的时候，除了可以使用`--all`之外，还可以指定分支，比如`git log new-feature -p README.md`。
+
+![cherry-pick](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471932224353.png)
+
+### #43 grep
+`git grep`支持各种条件搜索及正则表达式，平时用的不多，但功能强大。
+
+![grep](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471932398420.png)
+
+### #44 rename_commit
+修改提交信息。查看 log(`git log --oneline`)，可以看到中间的一个提交的信息出现了拼写错误：
+
+![git log --oneline](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471933397350.png)
+
+重命名提交。当涉及提交修改时，应该想到`git rebase -i`命令，它接受可以一个参数（提交的哈希值），它将罗列出此提交之后的所有提交，然后可以对各个提交做对应的操作。`-i`参数的意义就是`interactive`交互。
+
+首先，使用`git rebase -i HEAD~2`，以便能修改倒数第二次的提交。此时，会出现编辑框。修改第一行中的`pick`为`reword`或者`r`，然后保存退出。
+
+![reword](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471933973910.png)
+
+上一步退出之后，会立即有打开另一个编辑框，此时修改其中的 commit message 信息，改成拼写粗错误：
+
+![修改信息](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471934035350.png)
+
+改正后，保存退出，此时就可以验证通过了：
+
+![rename_commit](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471933835247.png)
+
+### #45 squash
+合并提交历史。当我们小步的提交太多的记录之后，以后的维护工作会增加。我们可以将一些相关性较高的提交合并在一起，从而简化提交历史。
+
+首先，查看提交历史：
+
+![git log](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471934212103.png)
+
+可以看到，它提示我们将最后三个提交合并到第二个提交`Adding README`中，我们可以使用上一关的`git rebase -i`命令，将第一行保持不变，后面的三行将`pick`都改成`s`或`squash`，意思是使用这个 commit，但将它合并到前一个 commit 中去。：
+
+![git rebase](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471934344309.png)
+
+保存退出，会提示我们编辑 commit message，再次保存退出后，查看一下提交记录，可以看到一件合并了：
+
+![squash](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471934469229.png)
+
+### #46 merge_squash
+在 merge 特性分支时，把所有的新提交合并成一个。
+
+首先，我们可以查看下 master 和 long-feature-branch 两个分支的提交历史：
+
+![git log](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471934723499.png)
+
+然后使用`git merge [branch] --squash`命令来将 long-feature-branch 合并成当前分支的一次修改，最后提交到当前分支即可：
+
+![merge_squash](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471934820770.png)
+
+### #47 reorder
+提交顺序错乱时，也可以使用`git rebase -i`进行调整。
+
+先看看 Log，最后两个提交颠倒了位置，然后执行`git rebase -i HEAD~2`，将两行`pick xxx`代码交换位置即可。
+
+![reorder](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471935004216.png)
+
+### #48 bisect
+代码中不知道什么时候引入了 bug，不过没关系，我们有自动化测试。我们可以不断手工 checkout 到某个 commit，结合二分法查找快速定位到引入 bug 的那一个 commit。不过这种纯手工重复的事情，已经包含在 git 的命令中了，就是 bisect。
+
+通过查看`githug hint`的提示信息，可以看到，他提示我们使用`git bisect`，先定义一个正常的起始点，一个不正常的提交点，然后在执行`git bisect run make test`即可。
+
+![githug hint](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471935360022.png)
+
+通过`git help bisect`可以看到有这样的使用方法：
+
+![git help bisect](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471935432619.png)
+
+我们知道 HEAD 的代码是有问题的，而第一个 commit 的代码是没问题的。通过`git log`获得第一个 commit 的 Hash，就可以执行 bisect 命令：
+
+![git bisect](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471935603938.png)
+
+然后，就可以进行测试查找了：
+
+![查找](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471935696737.png)
+
+这样，就能找到错误的地方，然后即可通过这一关：
+
+![githug](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471935737473.png)
+
+### #49 stage_lines
+开发了一个特性没提交，接着又开发了另一个特性。作为一个自律的程序员，应该是要分两次提交的，如果修改的是不同的文件，那可以轻松地通过 add 不同的文件进行两次提交。但这次好巧不巧的是居然修改了同一个文件，怎么办？看看提示：
+
+![githug hint](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471935870120.png)
+
+原来`git add`的最小粒度不是「文件」，而是`hunk`（代码块）。`git help add`然后查找 `hunk`：
+
+![git help add](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471936520657.png)
+
+执行如下命令：
+
+![git add feature.rb -p](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471936745470.png)
+
+Git 会让我们有机会选择对每一个 hunk 做什么样的操作。这里修改同一个位置，在一个 hunk 里，根据提示我们还要输入 e 手工编辑 hunk。
+
+![编辑 hunk](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471936783958.png)
+
+将第 5 行删除，保存退出，再看当前状态：
+
+![对比状态](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471936828477.png)
+
+这样就达到了目的了：
+
+![githug](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471936894720.png)
+
+### #50 find_old_branch
+正在特性分支上开发一个功能，被叫去修了一个紧急的 bug，修完后发现：那个特性分支叫啥？忘记了！这种情况说明分支命名太没有规律，或者分支太多，不然可以通过 git branch 看一下，也能很快找到特性分支。
+
+提示中说可以使用`git reflog`来查看曾经使用的命令。那么我们就可以使用这个命令来找到之前的分支。下面图中，根据`get reflog`的输出，可以看出其第二行就显示了我们之前工作的特性分支。
+
+![find_old_branch](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471937176321.png)
+
+### #51 revert
+有时代码 push 到远程仓库后发现某一块代码有问题，我们可以通过 revert 命令将特定 commit 完全恢复。
+
+首先我们要找到需要 revert 的 commit 的 hash，然后就可以 revert 到上面去：
+
+![revert](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471937497970.png)
+
+使用 revert 的时候，也会进入编辑提交信息的编辑器，输入提交信息，保存退出即可。
+![编辑信息](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471937426139.png)
+
+### #52 restore
+刚刚把最新的一次提交给毫无保留的扔掉，马上就改了主意，怎么办？只要进行 git 版本控制的一切都能找得回来。
+
+被我们抛弃的那个 commit 依旧存在，只是不被任何分支索引到。那么我们还能通过 git reflog 找到它的代号。找到它的 Hash 后就可以通过 cherry-pick 将它找回来。
+
+![restore](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471937690263.png)
+
+### #53 conflict
+冲突合并。当合并的时候，可能会出现冲突。此时我们需要先解决冲突，然后重新添加冲突的文件并提交到当前分支，才能完成合并。
+
+![conflict](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471937977010.png)
+
+处理冲突的时候，可以用任何编辑器将 git 提示冲突的地方处理下即可。
+![处理冲突后的内容](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471937944986.png)
+
+### #54 submodule
+submodule 是 Git 组织大型项目的一种方式，通常可把第三方依赖作为 submodule 包含进来，这个 submodule 本身也是一个独立的 Git 项目。
+
+![submodule](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471938646041.png)
+
+### #55 contribute
+最后这一关并非测试使用 GitHub 的能力，而是期望大家贡献代码，包括增加更多关卡，修复 Bug 或者完善文档。
+
+
+## 转摘
+1. [闯过这 54 关，点亮你的 Git 技能树](https://segmentfault.com/a/1190000004222489)
+2. [闯过这 54 关，点亮你的 Git 技能树（一）](https://segmentfault.com/a/1190000004234194)
+3. [闯过这 54 关，点亮你的 Git 技能树（二）](https://segmentfault.com/a/1190000005123830)
+4. [闯过这 54 关，点亮你的 Git 技能树（三）](https://segmentfault.com/a/1190000005160940)
+5. [闯过这 54 关，点亮你的 Git 技能树（四）](https://segmentfault.com/a/1190000005342274)
+6. [闯过这 54 关，点亮你的 Git 技能树（五）](https://segmentfault.com/a/1190000006214703)
 
