@@ -83,6 +83,58 @@ SELECT SUBSTRING_INDEX('www.mysql.com', '.', -2); # mysql.com
 SELECT SUBSTRING_INDEX(SUBSTRING_INDEX('www.mysql.com', '.', -2), '.' 1);
 ```
 
+### LENGTH
+语法：`LENGTH(str)`
+
+参数：`str`是要被统计字数的字符串，也可以指定为一个列名。
+
+效果：返回字符串 str 的长度。一般用来计算普通字符(ASCII)的长度，处理其他字符的时候，会有问题，比如，它会把一个中文字符的长度计算为 2 或 3。如果要计算中文等其他字符的长度的时候，可以使用`CHAR_LENGTH()`方法。
+
+示例：统计字符串`cover.jpg`和`中文`的字数。
+
+```sql
+SELECT LENGTH('cover.jpg');  # 9
+SELECT LENGTH('中文');        # 6
+```
+
+### CHAR_LENGTH
+语法：`CHAR_LENGTH(str)`
+
+参数：`str`是要被统计字数的字符串，也可以指定为一个列名。
+
+效果：返回字符串 str 的长度。这个函数能真实的反应字符的个数，比`LENGTH()`函数更安全。
+
+示例：统计字符串`cover.jpg`和`中文`的字数。
+
+```sql
+SELECT CHAR_LENGTH('cover.jpg');  # 9
+SELECT CHAR_LENGTH('中文');        # 2
+```
+
+
+### LEAST
+语法：`LEAST(v1, v2 [, ...])`
+
+参数：可以有两个或更多个参数，也可以指定列名。其值可以是数值、字符等。
+
+效果：当参数中是整数或者浮点数时，返回其中最小的值；当参数为字符串时，返回字母中顺序最靠前的字符；当比较值列表中有 NULL 时，不能判断大小，返回值为 NULL。
+
+示例：
+
+![LEAST](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472105123364.png) 
+
+### GREATEST
+语法：`GREATEST(v1, v2 [, ...])`
+
+参数：可以有两个或更多个参数，也可以指定列名。其值可以是数值、字符等。
+
+效果：当参数中是整数或者浮点数时，返回其中最大的值；当参数为字符串时，返回字母中顺序最靠后的字符；当比较值列表中有 NULL 时，不能判断大小，返回值为 NULL。
+
+示例：
+
+![GREAST](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472105323655.png)
+
+
 ## 系统方法
 ### VERSION
 查看数据库版本号。
