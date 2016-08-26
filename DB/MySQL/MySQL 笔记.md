@@ -112,6 +112,8 @@ delete from user where User="用户名" and Host="主机地址";
 ## DML
 数据定义语言（Data manipulation language, DML）主要用于表达数据库的查询与更新，主要包括增删改查（`INSERT`，`UPDATE`，`DELETE`，`SELECT`）。
 
+> 在向数据库中插入或者更新数据的时候，如果数据中包含`'`、`"`、`\`，则需要进行转译，对应写成：`\'`、`\"`、`\\`。如果要输入输入回车符使用`\r`，输入换行符使用`\n`，输入制表符使用`\tab`，输入退格符使用`\b`。
+
 ### INSERT INTO 增加
 ```sql
 # 增加一行数据
