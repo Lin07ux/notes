@@ -111,6 +111,66 @@ SELECT CHAR_LENGTH('cover.jpg');  # 9
 SELECT CHAR_LENGTH('中文');        # 2
 ```
 
+### HEX/UNHEX
+语法：`HEX(str)`，`UNHEX(hex_str)`
+
+参数：`str`是要被转换为十六进制的字符串；`hex_str`是要恢复成正常字符串的十六进制字符串。
+
+效果：HEX 会把字符串中的每一个字符转换成两个16进制数，UNHEX 会将字符串泛解析成一般的字符串。其中，UNHEX 和直接在字符串前面加上 0x 的效果相同。
+
+示例：
+
+```sql
+SELECT HEX('this is a test str');
+SELECT UNHEX('746869732069732061207465737420737472');
+SELECT 0x746869732069732061207465737420737472;
+```
+
+![HEX/UNHEX](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472189845587.png)
+
+## 数学方法
+### MOD 取余数
+语法：`MOD(x, y)`
+
+参数：x 是被除数，y 是除数。
+
+效果：返回 x 被 y 除后的余数。对于带有小数部分的数值也起作用，他返回除法运算后的精确余数。
+
+示例：
+
+```sql
+SELECT MOD(30, 7), MOD(8.3, 3);
+```
+
+![MOD](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472189100843.png)
+
+### ROUND 四舍五入
+语法：`ROUND(x[, y])`
+
+参数：x 是被舍入数，y 指定保留小数点后的位数，或小数点前的位数。
+
+效果：返回最接近于参数 x 的整数，对 x 值进行四舍五入。如果指定了 y 参数：当 y 是非负数的时候，保留 x 到小数点后面 y 位；当 y 为负值的时候，则将保留 x 值到小数点左边 y 位。
+
+示例：
+
+```sql
+SELECT ROUND(-2.34), ROUND(-4.56), ROUND(2.34), ROUND(4.56);
+```
+
+![ROUND](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472189450092.png)
+
+### TRUNCATE 截取数值
+语法：`TRUNCATE(x, y)`
+
+参数：x 是待截取数，y 是保留小数点后的位数或者截取小数点前的位数。
+
+效果：返回被舍去至小数点后 y 位的数字 x。若 y 的值为0，则结果不带有小数点或不带有小数部分。若 y 设为负数，则截去（归零）x 小数点左边起第 y 位开始后面所有低位的值。
+
+> TRUNCATE 是直接截取(归零)，而不是和 RUND 那样进行四舍五入。
+
+示例：
+
+![TRUNCATE](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472188948152.png)
 
 ### LEAST
 语法：`LEAST(v1, v2 [, ...])`
