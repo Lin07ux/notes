@@ -1,5 +1,117 @@
+## 时间方法
+### 获取当前日期和时间的
+`CURDATE()`、`CURRENT_DATE()`、`CURRENT_TIMESTAMP()`、`LOCALTIME()`、`NOW()`、`SYSDATE()`。
+
+![当前日期和时间](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472286403477.png)
+
+上面的这些方法都是获取本地的日期和时间的。如果要获取 UTC 的日期和时间，需要分别使用下面的这两个方法：`UTC_DATE()`、`UTC_TIME()`。
+
+![UTC的日期和时间](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472286494663.png)
+
+### MONTHNAME 获取月份的名称
+语法：`MONTHNAME(date)`
+
+参数：`date`一个表示日期的字符串 
+
+效果：返回日期 date 对应月份的英文全名。
+
+示例：
+
+```sql
+SELECT MONTHNAME('2016-8-27');
+```
+
+![MONTHNAME](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472291085563.png)
+
+### QUARTER 获取季度的名称
+语法：`QUARTER(date)`
+
+参数：`date`一个表示日期的字符串 
+
+效果：返回日期 date 对应的季度。范围是 1 ~ 4。
+
+示例：
+
+```sql
+SELECT QUARTER('2016-8-27'); # 8 月是第三季度，所有返回 3
+```
+
+![QUARTER](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472291179765.png)
+
+### MINUTE 获取分钟数
+语法：`MINTUE(time)`
+
+参数：`time`一个表示时间的字符串 
+
+效果：返回时间 time 对应的分钟数。范围是 0 ~ 59。如果给出的 time 字符串中分钟数超过 59 则会返回 NULL。
+
+示例：
+
+```sql
+SELECT MINUTE('11-02-03 10:10:06');
+```
+
+![MINUTE](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472291322899.png)
+
+### SECOND 获取秒数
+语法：`SECOND(time)`
+
+参数：`time`一个表示时间的字符串 
+
+效果：返回时间 time 对应的分钟数。范围是 0 ~ 59。如果给出的 time 字符串中秒数超过 59 则会返回 NULL。
+
+示例：
+
+```sql
+SELECT SECOND('10:23:12'), SECOND('10:23:60');
+```
+
+![SECOND](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472291465446.png)
+
+### EXTRACT 获取日期中指定的值
+语法：`EXTRACT(TYPE FROM time)`
+
+参数：`type`表示获取时间中的哪一部分。`time`一个表示时间的字符串 
+
+效果：返回时间 time 表示的时间中的年月日或时分秒部分。
+
+示例：
+
+```sql
+SELECT EXTRACT(YEAR FROM '2016-08-31 16:34:09');
+SELECT EXTRACT(MONTH FROM '2016-08-31 16:34:09');
+SELECT EXTRACT(HOUR FROM '2016-08-31 16:34:09');
+```
+
+![EXTRACT](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472291841640.png)
+
+### TIME_TO_SEC/SEC_TO_TIME 时间和秒的互换
+语法：`TIME_TO_SEC(time)`、`SEC_TO_TIME(second)`
+
+参数：`time`表示时间字符串，`second`表示秒数的数字。 
+
+效果：前者返回 time 时间对应的一天内的秒数，最大为`86399`，转换公式为`小时*3600+分钟*60+秒`；后者将秒数转成对应的时间，最大为`838:59:59`。
+
+示例：
+
+```sql
+SELECT TIME_TO_SEC('2016-08-28 23:22:00'), SEC_TO_TIME(1472300766);
+```
+
+![TIME_TO_SEC/SEC_TO_TIME](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472300948197.png)
+
+### 计算日期和时间
+* 增加日期：`DATE_ADD(date,interval  expr type)`，`ADDDATE(date,interval  expr type)`
+* 减去日期：`DATE_SUB(date,interval  expr type)`，`SUBDATE(date,interval  expr type)`
+* 增加时间：`ADD_TIME(date,expr)`
+* 减去时间：`SUBTIME(date,expr)`
+* 时间差：`DATEDIFF()`
+* 日期和时间格式化：`DATE_FORMAT(date,format)`，`TIME_FORMAT(time,format)`
+* 返回日期时间字符串的显示格式：`GET_FORMAT(val_type,format_type)`
+
+
 ## 字符串方法
-### CONCAT
+### CONCAT 链接字符串
 语法：`CONCAT(str1,str2,...)`
 
 参数：这个方法的参数可以是一个字符串、数字，也可以是当前操作的表中的某一列的名。 
@@ -12,7 +124,22 @@
 UPDATE tbl_name SET column=CONCAT(column, str1, str2, ...) WHERE ...
 ```
 
-### REPLACE
+### CONCAT_WS 使用分隔符连接字符串
+语法：`CONCAT_WS(sep, str1, str2,...)`
+
+参数：sep 是分隔符，后面的参数是要进行连接的参数。 
+
+效果：CONCAT_WS 代表`CONCAT with Separator`，是 CONCAT() 函数的特殊形式。返回连接参数量量之间用分隔符连接产生的字符串。如果分隔符为 NULL，则结果为 NULL。函数会忽略任何分隔符参数后的 NULL 值。
+
+示例：
+
+```sql
+SELECT CONCAT_WS('-','1st','2nd','3rd'), CONCAT_WS('-','1st',NULL,'3rd');
+```
+
+![CONCAT_WS](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472282084419.png)
+
+### REPLACE 替换字符串
 语法：`REPLACE(str, from_str, to_str)`
 
 参数：`str`是要被替换的原字符串，`from_str`是要被替换的那部分子字符串，`to_str`是要替换
@@ -26,7 +153,7 @@ UPDATE tbl_name SET column=CONCAT(column, str1, str2, ...) WHERE ...
 UPDATE tbl_name SET name=REPLACE(name, '*', '') WHERE name like '*%';
 ```
 
-### LEFT
+### LEFT 左截取字符串
 语法：`LEFT(str, length)`
 
 参数：`str`是要被截取的原字符串，`length`是要截取的长度
@@ -39,7 +166,7 @@ UPDATE tbl_name SET name=REPLACE(name, '*', '') WHERE name like '*%';
 SELECT LEFT(content, 200) as abstract FROM ... WHERE ...
 ```
 
-### RIGHT
+### RIGHT 右截取字符串
 语法：`RIGHT(str, length)`
 
 参数：`str`是要被截取的原字符串，`length`是要截取的长度
@@ -52,7 +179,7 @@ SELECT LEFT(content, 200) as abstract FROM ... WHERE ...
 SELECT RIGHT(content, 200) as abstract FROM ... WHERE ...
 ```
 
-### SUBSTRING
+### SUBSTRING 指定位置截取字符串
 语法：`SUBSTRING(str, pos [, length])`
 
 参数：`str`是要被截取的原字符串，`pos`是开始截取的起始位置(字符串起始位置为 1)，`length`是要截取的长度。
@@ -66,7 +193,7 @@ SELECT SUBSTRING(content, 5) as abstract FROM ... WHERE ...
 SELECT SUBSTRING(content, 5, 200) as abstract FROM ... WHERE ...
 ```
 
-### SUBSTRING_INDEX
+### SUBSTRING_INDEX 指定分隔符截取字符串
 语法：`SUBSTRING_INDEX(str, delim, count)`
 
 参数：`str`是要被截取的原字符串，`delim`是分隔符，可以是任意字符，`count`指定字符串中第几个 delim 处是截取点。
@@ -83,7 +210,7 @@ SELECT SUBSTRING_INDEX('www.mysql.com', '.', -2); # mysql.com
 SELECT SUBSTRING_INDEX(SUBSTRING_INDEX('www.mysql.com', '.', -2), '.' 1);
 ```
 
-### LENGTH
+### LENGTH 字符串长度
 语法：`LENGTH(str)`
 
 参数：`str`是要被统计字数的字符串，也可以指定为一个列名。
@@ -97,7 +224,7 @@ SELECT LENGTH('cover.jpg');  # 9
 SELECT LENGTH('中文');        # 6
 ```
 
-### CHAR_LENGTH
+### CHAR_LENGTH 多字节字符串长度
 语法：`CHAR_LENGTH(str)`
 
 参数：`str`是要被统计字数的字符串，也可以指定为一个列名。
@@ -111,7 +238,7 @@ SELECT CHAR_LENGTH('cover.jpg');  # 9
 SELECT CHAR_LENGTH('中文');        # 2
 ```
 
-### HEX/UNHEX
+### HEX/UNHEX 十六进制化和反十六进制化
 语法：`HEX(str)`，`UNHEX(hex_str)`
 
 参数：`str`是要被转换为十六进制的字符串；`hex_str`是要恢复成正常字符串的十六进制字符串。
@@ -127,6 +254,147 @@ SELECT 0x746869732069732061207465737420737472;
 ```
 
 ![HEX/UNHEX](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472189845587.png)
+
+### LPAD / RPAD 左填充和右填充
+语法：`LPAD(str1, len, str2)`，`RPAD(str1, len, str2)`
+
+参数：`str1`填充的字段；`len`填充的长度；`str2`是作为填充的字符串。
+
+效果：LPAD 首先将字符串 str1 用 str2 在 str1 的开头处向左填充，直到填充后的长度为 len，然后返回填充后的字符串。同样的，RPAD 是从 str1 的结尾处向右填充到指定的长度后，返回填充后的字符串。需要注意的是：**对于这两个方法，如果 len 的长度小于字符串 str1 的原始长度，那么会将 str1 从结尾处开始往起始处截断，使其符合 len 的长度。**
+
+示例：
+
+```sql
+SELECT LPAD('hello',4,'??'), LPAD('hello',10,'??');
+SELECT LPAD('hello',4,'?!'), LPAD('hello',10,'?!');
+```
+
+![LPAD/RPAD](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472282693452.png)
+
+注意其中的填充字符串的顺序。
+
+### TRIM 删除前后端空格或指定字符
+语法：`TRIM(str)`，`TRIM(str1 FROM str2)`
+
+参数：`str`是要被处理的字符串，`str1`是要删除的字符，`str2`是要被处理的字符串。
+
+效果：第一种方式调用会清理字符串 str 前后端的空白，字符中的字符不会被处理；第二种方式会删除字符串 str2 前后端的 str1 字符，str2 中间的 str1 字符不会被清理。
+
+示例：
+
+```sql
+SELECT TRIM(' book ');
+SELECT TRIM('xy' FROM 'xyxboxyokxxyxy');
+```
+
+![TRIM](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472283212063.png)
+
+### REPEAT 重复字符串
+语法：`REPEAT(str, count)`
+
+参数：`str`是要被重复的字符串，`count`重复的次数。
+
+效果：返回字符串 str 重复 count 次后的字符串。如果 count 小于 1，则返回一个空字符串。如果 str 或 count 为 NULL，返回 NULL。
+
+示例：
+
+```sql
+SELECT REPEAT('MySQL', 3), REPEAT('MySQL', 0), REPEAT('MySQL', NULL);
+```
+
+![REPEAT](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472284258724.png)
+
+### STRCPM 比较两个字符串的大小
+语法：`STRCMP(str1, str2)`
+
+参数：两个参数是要进行对比的两个字符串。
+
+效果：若所有的字符串均相同，则返回 0；若根据当前分类次序，第一个参数小于第二个，则返回 -1，其他情况返回 1。
+
+示例：
+
+```sql
+SELECT STRCMP('txt','txt2'), STRCMP('txt2','txt'), STRCMP('txt','txt');
+```
+
+![STRCPM](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472284405104.png)
+
+### LOCATE/POSITION/INSTR 查找子字符串的开始位置
+语法：`LOCATE(sub, str)`、`POSITION(sub IN str)`、`INSTR(str, sub)`
+
+参数：`sub`子字符串，`str`父字符串。
+
+效果：返回子字符串 sub 在字符串 str 中的开始位置。(位置从 1 开始计数)
+
+示例：
+
+```sql
+SELECT LOCATE('ball','football'), POSITION('ball' IN 'football'), INSTR('football','ball');
+```
+
+![LOCATE/POSITION/INSTR](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472284645441.png)
+
+### ELT 返回指定位置的字符串
+语法：`ELT(N, str1, str2, str3,…,)`
+
+参数：`N`指定返回的字符串的索引，后面的参数是一个字符串列表，分别代表对应索引位置的字符串。
+
+效果：若 N=1，则返回值为 str1，若 N=2，则返回值为 str2，以此类推。若 N 小于 1 或大于参数的数目，则返回值为 NULL。
+
+示例：
+
+```sql
+SELECT ELT(3,'1st','2nd','3rd'), ELT(3,'net','os');
+```
+
+![ELT](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472284938722.png)
+
+### FIELD 返回指定字符串位置
+语法：`FIELD(str, str1, str2, str3, …)`
+
+参数：`str`要查找的字符串，后面的参数是一个字符串列表。
+
+效果：返回字符串 str 在列表 str1，str2，…… 中第一次出现的位置，在找不到 str 的情况下，返回值为 0。
+
+示例：
+
+```sql
+SELECT FIELD('hi','hihi','hey','hi','bas') AS coll, FIELD('hi','hihi','lo','hilo','foo') AS col2;
+```
+
+![FIELD](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472285079749.png)
+
+### FIND_IN_SET 返回子串位置
+语法：`FIND_IN_SET(str, str_set)`
+
+参数：`str`要查找的字符串，`str_set`是一个字符串集合，字符串之间使用逗号分隔。(字符串集合是用一个逗号分隔的，如果逗号前后有空格，那么空格也会算进入字符串中。)
+
+效果：返回字符串 str 在字符串列表 str_set 中出现的位置。如果 str 不在 str_set 或 str_set 为空字符串，则返回值为 0。如果任意一个参数为 NULL，则返回值为 NULL。
+
+示例：
+
+```sql
+SELECT FIND_IN_SET('hi','hihi,hey,hi,bas');
+SELECT FIND_IN_SET('hi','hihi, hey, hi, bas');
+```
+
+![FIND_IN_SET](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472285407598.png)
+
+### MAKE_SET 选取字符串
+语法：`MAKE_SET(bin, str1, str2, str3 ...)`
+
+参数：`bin`要获取的字符串列表中的字符串的位置，会被解析为二进制数；后面的参数组成一个字符串列表。
+
+效果：先将第一个参数 bin 解析成二进制数，然后将二进制数中，值为 1 的位的位置所对应的字符串列表中的字符取出来。如果取出来有多个，那么会用逗号分隔。
+
+示例：1 的二进制表示为`0001`，5 的二进制表示为`0101`，那么当 bin 为 1 的时候，会取出字符串列表中的第一个字符串；bin 为 5 的时候，会取出字符串列表中的第 1 个和第 3 个字符串。
+
+```sql
+SELECT MAKE_SET(1,'a','b','c') AS col1, MAKE_SET(5, 'hello','nice','world') AS col2;
+```
+
+![MAKE_SET](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472285918191.png)
+
 
 ## 数学方法
 ### MOD 取余数
@@ -195,6 +463,40 @@ SELECT ROUND(-2.34), ROUND(-4.56), ROUND(2.34), ROUND(4.56);
 ![GREAST](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472105323655.png)
 
 
+## 条件判断
+### IF
+语法：`IF(expr, v1, v2)`
+
+参数：`expr`是一个表达式，作为条件。`v1`和`v2`是作为结果返回的值。
+
+效果：如果表达式 expr 是 TRUE（expr<>0 and expr<>NULL），则 IF() 的返回值为 v1；否则返回值为 v2。IF() 的返回值为数字值或字符串值，具体情况视其所在语境而定。
+
+示例：
+
+```sql
+SELECT IF(1>2, 2, 3);
+```
+
+![IF](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472301305841.png)
+
+### IFNULL
+语法：`IFNULL(v1, v2)`
+
+参数：`v1`和`v2`是作为结果返回的值。
+
+效果：假如 v1 不为 NULL，则返回值为 v1；否则其返回值为 v2。IFNULL() 的返回值是数字或是字符串，具体情况视语境而定。
+
+示例：
+
+```sql
+SELECT IFNULL(1, 2), IFNULL(NULL, 10);
+```
+
+![IFNULL](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472301445855.png)
+
+### CASE
+
+
 ## 系统方法
 ### VERSION
 查看数据库版本号。
@@ -216,4 +518,72 @@ SELECT USER();
 ```sql
 SELECT DATABASE();
 ```
+
+### CONNECTION_ID
+查看当前用户的连接 ID。每个连接都有各自唯一的 ID。
+
+```sql
+SELECT CONNECTION_ID();
+```
+
+### PROCESSLIST
+输出有哪些线程在运行，不仅可以查看当前所有的连接数，还可以查看当前的连接状态，帮助识别出有问题的查询语句等。
+
+如果是 root 帐号，能看到所有用户的当前连接。如果是其他普通帐号，则只能看到自己占用的连接。`show processlist`只能列出当前 100 条。如果想全部列出，可以使用`SHOW FULL PROCESSLIST`命令。
+
+![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472301719830.png)
+
+各个列的含义：
+
+* `id`列，用户登录 mysql 时，系统分配的 “connection_id”
+* `user`列，显示当前用户。如果不是 root，这个命令就只显示用户权限范围的 sql 语句
+* `host`列，显示这个语句是从哪个 ip 的哪个端口上发的，可以用来跟踪出现问题语句的用户
+* `db`列，显示这个进程目前连接的是哪个数据库
+* `command`列，显示当前连接的执行的命令，一般取值为休眠（sleep），查询（query），连接（connect）
+* `time`列，显示这个状态持续的时间，单位是秒
+* `state`列，显示使用当前连接的 sql 语句的状态，很重要的列，后续会有所有状态的描述，state 只是语句执行中的某一个状态。
+
+一个 sql 语句，以查询为例，可能需要经过以下状态等状态才可以完成：
+
+* copying to tmp table，
+* sorting result，
+* sending data
+
+### 获取用户名
+`USER()`、`CURRENT_USER()`、`CURRENT_USER`、`SYSTEM_USER()`、`SESSION_USER()`这几个函数返回当前被 MYSQL 服务器验证的用户名和主机名组合。这个值符合确定当前登录用户存取权限的 MYSQL 帐户。一般情况下，这几个函数的返回值是相同的。
+
+![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472301992037.png)
+
+### CHARSET
+`CHARSET(str)`返回字符串 str 自变量的字符集。
+
+```sql
+SELECT CHARSET('abc'), CHARSET(CONVERT('abc' USING latin1)), CHARSET(VERSION());
+```
+
+![CHARSET](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472302149302.png)
+
+### COLLATION
+返回字符串 str 的字符排列方式。
+
+```sql
+SELECT COLLATION(_latin2 'abc'), COLLATION(CONVERT('abc' USING utf8));
+```
+
+![COLLATION](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472303460697.png)
+
+### LAST_INSERT_ID
+自动返回最后一个 INSERT 或 UPDATE 为 AUTO_INCREMENT 列设置的第一个发生的值。
+
+```sql
+SELECT LAST_INSERT_ID();
+```
+
+* 一次插入一条记录时，返回该条记录的 ID；
+* 一次插入多条记录(用一个 INSERT INTO 语句)时，返回插入的第一条记录的 ID。
+
+> 之所以这样，是**因为这使依靠其他服务器复制同样的 INSERT 语句变得简单**。
+
+LAST_INSERT_ID 是与 table 无关的，如果向表 a 插入数据后，再向表 b 插入数据，LAST_INSERT_ID 返回表 b 中的 ID 值。
+
 
