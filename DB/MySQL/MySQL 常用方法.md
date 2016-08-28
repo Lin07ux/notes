@@ -462,6 +462,35 @@ SELECT ROUND(-2.34), ROUND(-4.56), ROUND(2.34), ROUND(4.56);
 
 ![GREAST](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472105323655.png)
 
+### FORMAT 四舍五入格式化
+语法：`FORMAT(x, n)`
+
+参数：`x`要被格式化的数字，`n`保留的小数点的位数。
+
+效果：将数字 x 格式化，并以四舍五入的方式保留小数点后 n 位，结果以字符串的形式返回。当 n 小于等于 0 的时候，返回不含小数点的结果。
+
+示例：
+
+```sql
+SELECT FORMAT(12332.123465, 4), FORMAT(12332.123465, -4);
+```
+
+![FORMAT](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472346919855.png)
+
+### CONV
+语法：`CONV(n, from_base, to_base)`
+
+参数：`n`要被转化的数字，`from_base`原来的进制，`to_base`转换为的进制。
+
+效果：进行不同进制数间的转换。
+
+示例：将十六进制数 a 转换成二进制数。
+
+```sql
+SELECT CONV('a', 16, 2);
+```
+
+![CONV](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472347084451.png)
 
 ## 条件判断
 ### IF
@@ -586,4 +615,69 @@ SELECT LAST_INSERT_ID();
 
 LAST_INSERT_ID 是与 table 无关的，如果向表 a 插入数据后，再向表 b 插入数据，LAST_INSERT_ID 返回表 b 中的 ID 值。
 
+
+## 加密函数
+### PASSWORD
+`PASSWORD(str)`从原文 str 计算并返回加密后的密码字符串，当参数为 NULL 时，返回 NULL。
+
+PASSWOR() 函数在 MYSQL 服务器的鉴定系统中使用；不应将他用在个人应用程序中，该函数加密是单向的（不可逆）。PASSWORD 执行密码加密与 UNIX 中密码加密方式不同。
+
+### MD5
+`MD5(str)`为字符串算出一个 MD5 128 比特校验和。该值以 32 位十六进制数字的二进制字符串形式返回，若参数为 NULL，则会返回 NULL。
+
+### ENCODE
+`ENCODE(str,pswd_str)`使用 pswd_str 作为密码，加密 str。可以使用 DECODE() 解密结果，结果是一个和 str 长度相同的二进制字符串。
+
+```sql
+SELECT ENCODE('nihao','123');
+```
+![ENCODE](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472346560109.png)
+
+### DECODE
+`DECODE(crypt_str,pswd_str)`使用 pswd_str 作为密码，解密加密字符串 crypt_str，crypt_str 是由 ENCODE() 返回的字符串。
+
+```sql
+SELECT DECODE(ENCODE('nihao','123'),'123')
+```
+
+![DECODE](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472346729913.png)
+
+ENCODE() 和 DECODE() 互为反函数。
+
+
+## 其他方法
+### IP地址与数字相互转换
+* `SELEC`给出一个作为字符串的网络地址的点地址表示，返回一个代表该地址数值的整数。地址可以是 4 或 8 比特地址。
+* `INET_NTOA(expr)`给定一个数字网络地址（4 或 8 比特），返回作为字符串的该地址的点地址表示。
+
+### 加锁和解锁
+* `GET_LOCK(str,timeout)`设法使用字符串 str 给定的名字得到一个锁，超时为 timeout 秒。
+* `RELEASE_LOCK(str)`解开被 GET_LOCK() 获取的、用字符串 str 所命名的锁。
+* `IS_FREE_LOCK(str)`检查名为 str 的锁是否可以使用
+* `IS_USED_LOCK(str)`检查名为 str 的锁是否正在被使用
+
+### 重复执行指定操作
+`BENCHMARK(count,expr)`函数重复 count 次执行表达式 expr。他可以用于计算 MYSQL 处理表达式的速度。结果值通常为 0（0 只是表示处理过程很快，并不是没有花费时间）
+
+另一个作用是他可以在MYSQL客户端内部报告语句执行的时间。
+
+BENCHMARK 报告的时间是客户端经过的时间，而不是在服务器端的 CPU 时间，每次执行后报告的时间并不一定是相同的。
+
+### CONVERT 改变字符集
+`CONVERT(str USING charset)`带有 USING 的 CONVERT() 函数被用来在不同的字符集之间转化数据。
+
+```sql
+SELECT CHARSET('string'), CHARSET(CONVERT('string' USING latin1));
+```
+
+![CONVERT](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472347465763.png)
+
+### 改变数据类型
+`CAST(x AS type)`和`CONVERT(x, type)`函数将一个类型的值转换为另一个类型的值，可转换的 type 有：`BINARY`、`CHAR(n)`、`DATE`、`TIME`、`DATETIME`、`DECIMAL`、`SIGNED`、`UNSIGNED`。
+
+```sql
+SELECT CAST(100 AS CHAR(2)), CONVERT('2013-8-9 12:12:12', TIME);
+```
+
+![CAST/CONVERT](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472347577888.png)
 
