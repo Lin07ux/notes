@@ -467,7 +467,9 @@ SELECT ROUND(-2.34), ROUND(-4.56), ROUND(2.34), ROUND(4.56);
 
 参数：`x`要被格式化的数字，`n`保留的小数点的位数。
 
-效果：将数字 x 格式化，并以四舍五入的方式保留小数点后 n 位，结果以字符串的形式返回。当 n 小于等于 0 的时候，返回不含小数点的结果。
+效果：将数字 x 格式化，并以四舍五入的方式保留小数点后 n 位，并且整数部分插入逗号千分位，结果以字符串的形式返回。当 n 小于等于 0 的时候，返回不含小数点的结果。
+
+> 注意：一旦你的数据经过千分位分隔后，就会变成字符串。能够给阅读上提供比较好的体验，但是在计算上却造成很大的困扰，所以如果只是保留小数，不建议使用这个函数。
 
 示例：
 
@@ -491,6 +493,99 @@ SELECT CONV('a', 16, 2);
 ```
 
 ![CONV](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472347084451.png)
+
+### ABS 绝对值
+语法：`ABS(n)`
+
+参数：`n`要被处理的数字。
+
+效果：返回 n 的绝对值。
+
+示例：
+
+```sql
+SELECT ABS(12.5), ABS(-23.3);
+```
+
+![ABS](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472431517321.png)
+
+### SQRT 平方根
+语法：`SQRT(n)`
+
+参数：`n`要被处理的数字。
+
+效果：返回 n 的平方根。如果 n 是负数或 NULL 则返回 NULL。（sqrt 是 sqruar(平方，矩形) ，root（根）的缩写。）
+
+示例：
+
+```sql
+SELECT SQRT(16), SQRT(-36), SQRT(8);
+```
+
+![SQRT](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472431707627.png)
+
+### POWER 幂运算
+语法：`POWER(n, p)`
+
+参数：`n`要被处理的数字。
+
+效果：返回 n 的平方根。如果 n 是负数或 NULL 则返回 NULL。（sqrt 是 sqruar(平方，矩形) ，root（根）的缩写。）
+
+示例：
+
+```sql
+SELECT POWER(3, 2), POWER(3, 3), POWER(-2, 4);
+```
+
+![POWER](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472432993912.png)
+
+### RAND 随机数
+语法：`RAND()`
+
+参数：无。
+
+效果：生成随机数。范围是 [0 ~ 1]。
+
+示例：
+
+```sql
+SELECT RAND(), RAND(), RAND();
+```
+
+![RAND](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472432674572.png)
+
+### CEIL/FLOOR 向上、向下取整
+语法：`CEIL(n)`、`FLOOR(n)`
+
+参数：`n`要被处理的数字。
+
+效果：这两个函数是镜子函数，不进行四舍五入：CEIL 会将数值小数部分去掉，如果是正数则 +1 后返回，否则直接返回；FLOOR 会将数值小数部分去掉，如果是正数则直接返回，如果是负数则 -1 后返回。
+
+示例：
+
+```sql
+SELECT CEIL(2.13), CEIL(2.53), CEIL(-2.13), CEIL(-2.53);
+SELECT FLOOR(2.13), FLOOR(2.53), FLOOR(-2.13), FLOOR(-2.53);
+```
+
+![CEIL/FLOOR](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472432466547.png)
+
+### SIGN 正负号
+语法：`SIGN(n)`
+
+参数：`n`要被处理的数字。
+
+效果：返回数值 n 的正负性。如果是负数返回 -1，如果是 0 返回 0，如果是正数，返回 1。
+
+示例：
+
+```sql
+SELECT CEIL(2.13), CEIL(2.53), CEIL(-2.13), CEIL(-2.53);
+SELECT FLOOR(2.13), FLOOR(2.53), FLOOR(-2.13), FLOOR(-2.53);
+```
+
+![SIGN](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472432867533.png)
+
 
 ## 条件判断
 ### IF
