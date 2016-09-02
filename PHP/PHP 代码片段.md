@@ -64,5 +64,18 @@ function convertUrlQuery($url)
 
 > 参考：[PHP解析URL并得到URL中的参数](http://blog.csdn.net/wide288/article/details/17712989)
 
+### 文件下载
+对于浏览器不能直接打开的文件，比如 .zip、.exe、.xsl 等，可以直接使用一个 a 元素来指向这个文件资源，点击就能直接下载。而对于 .jpg 等文件，如果直接点击链接，就是在浏览器中打开了，而不是提示我们下载保存。
 
+我们是通过 Header 请求头来发送文件下载信息，指定下载的是附件，下载后的文件名，content-length 来指定文件的大小，然后通过 readfile 函数来读取文件内容而实现文件下载：
+
+```php
+<?php 
+ 
+$filename = $_GET['filename'];
+header('content-disposition:attachment;filename='. basename($filename));
+header('content-length:'. filesize($filename));
+ 
+readfile($filename);
+```
 
