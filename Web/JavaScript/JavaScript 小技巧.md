@@ -209,3 +209,116 @@ try {
 // caught inner "bogus"
 ```
 
+### 数组去重
+**基本数组去重**
+
+```javascript
+Array.prototype.unique = function () {
+    var result = [];
+    
+    this.forEach(function (v) {
+        if (result.indexOf(v) < 0) {
+            result.push(v);
+        }
+    });
+    
+    return result;
+}
+```
+
+**利用 hash 表去重，这是一种空间换时间的方法**
+
+```javascript
+Array.prototype.unique = function () {
+    var result = [], hash = {};
+    
+    this.forEach(function (v) {
+        if (!hash[v]) {
+            hash[v] = true;
+            result.push(v);
+        }
+    });
+    
+    return result;
+}
+```
+
+上面的方法存在一个 bug，对于数组`[1, 2, '1', '2', 3]`，去重结果为`[1,2,3]`，原因在于对象对属性索引时会进行强制类型转换，`arr[‘1’]`和`arr[1]`得到的都是`arr[1]`的值，因此需做一些改变：
+
+```javascript
+Array.prototype.unique = function () {
+    var result = [], hash = {};
+    
+    this.forEach(function (v) {
+        var vType = typeof(v);
+        
+        hash[v] || hash[v] = [];
+        
+        if (hash[v].indexOf(vType) < 0) {
+            hash[v].push(vType);
+            result.push(v);
+        }
+    });
+    
+    return result;
+}
+```
+
+**先排序后去重**
+
+```javascript
+Array.prototype.unique = function () {
+    var result = [];
+    this.sort();
+    this.forEach(function (v) {
+        // 仅与 result 最后一个元素比较
+        v != result[result.length - 1] && result.push(v);
+    });
+}
+```
+
+### 快速排序算法
+**方法一(尽可能不用 js 数组方法)**
+
+```javascript
+function quickSort(arr){
+    qSort(arr,0,arr.length - 1);
+}
+function qSort(arr,low,high){
+    if(low < high){
+        var partKey = partition(arr,low,high);
+        qSort(arr,low, partKey - 1);
+        qSort(arr,partKey + 1,high);
+    }
+}
+function partition(arr,low,high){
+    var key = arr[low];  // 使用第一个元素作为分类依据
+    while(low < high){
+        while(low < high && arr[high] >= arr[key])
+            high--;
+        arr[low] = arr[high];
+        while(low < high && arr[low] <= arr[key])
+            low++;
+        arr[high] = arr[low];
+    }
+    arr[low] = key;
+    return low;
+}
+```
+
+**方法二(使用 js 数组方法)**
+
+```javascript
+function quickSort(arr){
+   if(arr.length <= 1) return arr;
+   var index = Math.floor(arr.length/2);
+   var key = arr.splice(index,1)[0];
+   var left = [],right = [];
+   arr.forEach(function(v){
+       v <= key ? left.push(v) : right.push(v);
+   });
+   return quickSort(left).concat([key],quickSort(right));
+}
+```
+
+
