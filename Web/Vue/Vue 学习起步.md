@@ -83,3 +83,9 @@ Vue.http.options.xhr = { withCredentials: true }
 > * `Vue.http.options.xhr = { withCredentials: true }` is not needed.
 > * url must begin with `http(s)://`. e.g. `localhost:8080` would fail.
 
+### 注意事项
+* 注意如果 prop 是一个对象或数组，是按引用传递。在子组件内修改它会影响父组件的状态，不管是使用哪种绑定类型
+* 针对同一个元素的后一个 watch 会覆盖前一个 watch，无论是不是 deep
+* 自定义指令内部可以通过 this.vm.someKey 来访问到组件的数据
+* 自定义指令名不要有大写，props 命名也不要有大写
+
