@@ -117,6 +117,24 @@ client.send();
 // 最终的 request header 中的 X-Test 为：one, two
 ```
 
+默认情况下，如果不设置请求头，原生 XMLHttpRequest 会使用`Content-Type`是`text/plain;charset=UTF-8`的方式发送数据。此时，服务器接收到的数据就是纯文本，而不是表单格式。当然，对于 GET 请求，由于我们可以把请求参数附加在 URL 后面，所以不设置请求头格式并没有问题，但是对于 POST 请求，一般是需要设置请求头的，一般需要设置`Content-Type`为`application/x-www-form-urlencoded`。
+
+```javascript
+var xhr = new XMLHttpRequest();
+xhr.open('POST', '/test/', true);
+// 将请求头设置为表单方式提交
+xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xhr.send('name=luozh&size=12');
+```
+
+如果服务器能接受 json 数据，我们也可以以 json 格式发送数据：
+
+```javascript
+var xhr = new XMLHttpRequest();
+xhr.open('POST', '/test/', true);
+xhr.send(JSON.stringify({name: 'luozh', size: 12}));
+```
+
 ### 如何获取 response header
 xhr 提供了2个用来获取响应头部的方法：`getAllResponseHeaders`和`getResponseHeader`。前者是获取 response 中的所有 header 字段，后者只是获取某个指定 header 字段的值。另外，`getResponseHeader(header)`的 header 参数不区分大小写。
 
