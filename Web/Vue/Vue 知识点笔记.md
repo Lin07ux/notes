@@ -704,7 +704,7 @@ new Vue({
 })
 ```
 
-有时也需要在内联语句处理器中访问原生 DOM 事件。可以用特殊变量 $event 把它传入方法：
+有时也需要在内联语句处理器中访问原生 DOM 事件。可以用特殊变量`$event`把它传入方法：
 
 ```html
 <button v-on:click="say('hello!', $event)">Submit</button>  
@@ -715,6 +715,20 @@ methods: {
     event.preventDefault()
   }
 }
+```
+
+### 绑定多个事件
+绑定多个事件的处理方法的时候，可以用多个`v-on`指令，也可以写在一个`v-on`指令中：
+
+```javascript
+// 一次绑定多个事件
+<div v-on="click: a, keyup: b">
+
+// 等同于
+<div v-on:click="a" v-on:keyup="b">
+
+// 或者用缩写
+<div @:click="a" @:keyup="b">
 ```
 
 ### 事件修饰符
