@@ -10,6 +10,12 @@
 [官网](https://caskroom.github.io/)
 [Github](https://github.com/caskroom/homebrew-cask)
 
+## Amphetamine
+防休眠
+可以使用 Alfred workflow 来完成快速设置自定义时长的操作。
+
+[iTunes](https://itunes.apple.com/app/amphetamine/id937984704?mt=12)
+[Workflow 下载地址](https://link.zhihu.com/?target=http%3A//www.packal.org/workflow/amphetamine-control)
 
 ## quick-look-plugins
 快速预览插件。是通过 Homebrew Cask 来安装的一系列的增强 Mac OSX 预览功能的插件。
