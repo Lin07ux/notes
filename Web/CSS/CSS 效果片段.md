@@ -58,3 +58,47 @@ pre {
 ![斑马纹](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472349064385.png)
 
 
+### 保持在页面最底部
+网页开发中，会遇到需要将一部分内容(比如版权信息)放在页面的最底部的需求。
+
+这里的放在页面最底部，不是指用`position: fixed;`或`position: absolute;`来定位在某个固定的地方，而是指：在正常的页面布局中，将其放在页面的最底部；如果页面内容的总高度不足一个可视窗口的高度，仍旧能将其布局在可视窗口的底部；如果页面内容的总高度大于一个可视窗口的高度，那么其会布局在整个文档流的末尾，不滚动时会被遮住。
+
+HTML 结构如下：
+
+```html
+<html>
+<body>
+  <main class="page-wrap">This is an article about CSS.</main>
+  <footer class="footer">Copyright@ Harttle Land 2016</footer>
+</body>
+</html>
+```
+
+对应的 CSS 代码如下：
+
+```css
+* { margin: 0; }
+
+/* .footer的每一级父元素都为100%高 */
+html, body { height: 100%; }
+
+.page-wrap {
+  /* 页面内容至少撑满100%的屏幕 */
+  min-height: 100%;
+  /* 负边距大小即为页脚高度 */
+  margin-bottom: -60px; 
+}
+
+/* 用来填充被页脚遮挡部分 */
+.page-wrap:after {
+  content: "";
+  display: block;
+}
+
+/* 填充块和页脚一样高 */
+.footer, .page-wrap:after {
+  height: 60px; 
+}
+```
+
+
