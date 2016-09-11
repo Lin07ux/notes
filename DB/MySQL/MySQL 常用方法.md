@@ -38,6 +38,21 @@ SELECT QUARTER('2016-8-27'); # 8 月是第三季度，所有返回 3
 
 ![QUARTER](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472291179765.png)
 
+### WEEKDAY 获取星期几
+语法：`WEEKDAY(date)`
+
+参数：`date`一个表示日期的字符串 
+
+效果：返回日期 date 是一周中的第几天。范围是 0 ~ 6。其中，周一是 0，周日是 6。
+
+示例：
+
+```sql
+SELECT WEEKDAY('2016-9-11 10:11:34'); # 2016-9-11 是周日，所以返回 6
+```
+
+![WEEKDAY](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473560249766.png)
+
 ### MINUTE 获取分钟数
 语法：`MINTUE(time)`
 
