@@ -1,18 +1,74 @@
+### 存储时间时类型的选择
+在 MySQL 中存储日期和时间，最常用的有三种类型：Datetime、Timestamp、int(存储 UNIX 时间戳)。这三种类型，各有不同的侧重点，但是 **Datetime 是大多数场景下的最佳选择**：
 
-### TIMESTAMP
-TIMESTAMP 时间戳在创建的时候可以有多重不同的特性，如：
+* 更快。
+* 无需任何转换即是人类可读的。
+* 可支持宽松模式的查询比较。
+* 不会因为时区变换产生问题。
+* 只比它的对手们多用 1 字节
+* 支持更大的日期范围（从 1000 年到 9999 年）
 
-1. 在创建新记录和修改现有记录的时候都对这个数据列刷新：
-	`TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`
-	
-2. 在创建新记录的时候把这个字段设置为当前时间，但以后修改时，不再刷新它：
-	`TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
-	
-3. 在创建新记录的时候把这个字段设置为 0，以后修改时刷新它：
-	`TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`
-	
-4. 在创建新记录的时候把这个字段设置为给定值，以后修改时刷新它：
-	`TIMESTAMP DEFAULT ‘yyyy-mm-dd hh:mm:ss' ON UPDATE CURRENT_TIMESTAMP`
+如果只是存储 Unix 时间戳（并且在它的合法日期范围内），而且不打算在它上面使用任何基于日期的查询，INT 类型是最好的选择：它执行简单数值比较查询时非常快，因为只是在处理简单的数字。
+
+如果 Datetime 相对于 Timestamp 的优势不适用于你特殊的场景，你最好使用时间戳(INT)。因为 Timestamp 类型在查询速度上并没有 INT 类型快(即便 INT 类型需要使用一些方法做类型转换)，而且他们支持的日期范围相同。
+
+> 查看原文：[MySQL 中你应该使用什么数据类型表示时间？](http://blog.jobbole.com/105618/)
 
 
+### TIMESTAMP 和 DATETIME
+#### 相同点
+1. 用于保存同时包含日期和时间两部分的值。MySQL 以`YYYY-MM-DD HH:MM:SS`形式接收和显示这两个类型的值。
+
+2. 可以在尾部包含一个毫秒部分，精确度最高到微秒（6 位数）。
+
+3. 查询时两种类型都支持“宽松格式”。宽松的语法允许任何标点符号作为分隔符。例如，”YYYY-MM-DD HH:MM:SS” 和 “YY-MM-DD HH:MM:SS” 两种形式都可以。在宽松格式情况下以下任何一种形式都能工作(除此之外，其它宽松格式也是允许的，可以在 MySQL 参考手册找到所有的格式。)：
+
+    ```
+    2012-12-31 11:30:45
+    2012^12^31 11+30+45
+    2012/12/31 11*30*45
+    2012@12@31 11^30^45
+    ```
+
+4. 都提供了自动初始化和更新到当前的日期和时间的功能，只需在列的定义中设置`DEFAULT CURRENT_TIMESTAMP`和`ON UPDATE CURRENT_TIMESTAMP`。比如：
+
+    ```sql
+    # 1. 在创建新记录和修改现有记录的时候都对这个数据列刷新：
+    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`
+    	
+    # 2. 在创建新记录的时候把这个字段设置为当前时间，但以后修改时，不再刷新它：
+    `TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
+    	
+    # 3. 在创建新记录的时候把这个字段设置为 0，以后修改时刷新它：
+    `TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`
+    	
+    # 4. 在创建新记录的时候把这个字段设置为给定值，以后修改时刷新它：
+    `TIMESTAMP DEFAULT ‘yyyy-mm-dd hh:mm:ss' ON UPDATE CURRENT_TIMESTAMP`
+    ```
+
+#### 不同点
+1. 存储空间
+    虽然 Timestamp 和 Datetime 都以二进制而非字符串形式存储，但在表示日期/时间部分时，Timestamp （4 字节） 比 Datetime （5 字节） 少使用 1 字节。当保存毫秒部分时两种都使用额外的空间 （1-3 字节）。
+    
+    Timestamp 节省的 1 字节是有代价的：你只能存储从`1970-01-01 00:00:01.000000`到 `2038-01-19 03:14:07.999999`之间的时间。而 Datetime 允许你存储从`1000-01-01 00:00:00.000000`到`9999-12-31 23:59:59.999999`之间的任何时间。
+
+2. 存取值
+    另一个重要的差别，是 MySQL 使用服务器的时区转换 Timestamp 值到它的 UTC 等价值再保存，当获取值时会再次进行时区转换。如果你一直使用同一个时区，MySQL 会获取到和你存储的同样的值。但如果你改变了时区，那么获取到的数据可能就和存入时的数据不同了。
+    
+    Datetime 类型则不会被数据库改变。无论时区怎样配置，每次都会保存和获取到同样的值。这可能是一个更可靠的选择。
+
+MySQL 文档：
+> MySQL 把 TIMESTAMP 值从当前的时区转换到 UTC 再存储，获取时再从 UTC 转回当前的时区。（其它类型如 DATETIME 不会这样，它们会“原样”保存。） 默认情况下，每个连接的当前时区都是服务器的时区。时区可以基于连接设置。只要时区设置保持一致，你就能得到和保存的相同的值。如果你保存了一个 TIMESTAMP 值，然后改变了时区再获取这个值，获取到的值和你存储的是不同的。这是因为在写入和查询的会话上没有使用同一个时区。当前时区可以通过系统变量 time_zone 的值得到。更多信息，请查看 MySQL Server Time Zone Support。
+
+#### Datetime、Timestamp、INT 三种类型存储日期时间的对比
+每种类型的弱点以红色显示。
+
+![1](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473559540643.png)
+![2](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473559740883.png)
+![3](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473559757350.png)
+
+### 其他类型
+Date、Year、Time
+
+另外，还可以使用 INT 类型来保存 UNIX 时间戳。但是 MySQL 会将其当做数字处理，而不是日期时间格式，所有如果要进行日期时间的比较则需要将其转成日期时间格式(使用`FROM_UNIXTIME`方法)，或将对比的值转成 UNIX 时间戳。
 
