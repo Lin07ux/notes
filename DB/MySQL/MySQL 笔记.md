@@ -146,6 +146,12 @@ DELETE FROM device_label WHERE origin_vendor = 'alps';
 SELECT vendor, COUNT(distinct model) AS models FROM device_label GROUP BY vendor HAVING models > 10
 ```
 
+当在查询中使用`SQL_NO_CACHE`时，服务器不使用查询缓存。它既不检查查询缓存以确认结果是不是已经在那儿了，也不会保存查询结果。一般会用于测试服务器性能，因为这样每个查询将反映真实的性能影响，就像每次查询都是第一次被调用。
+
+```sql
+SELECT SQL_NO_CACHE * FROM some_table WHERE id = 10;
+```
+
 
 ## 数据库、表、字段字符集
 ```sql
