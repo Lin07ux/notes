@@ -1,27 +1,3 @@
-### 移动端标签点击后变暗
-在移动端使用 a,button,input,optgroup,select,textarea 标签的时候，点击后会出现一个"暗色的"背景，这时候我们需要在css加入如下代码即可禁用这个效果：
-
-```css
-a,button,input,optgroup,select,textarea{
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-}
-```
-
-### webkit 表单输入框 placeholder 的颜色值改变：
-如果想要默认的颜色显示红色，代码如下：
-
-`input::-webkit-input-placeholder { color: red; }`
-
-如果想要用户点击变为蓝色，代码如下：
-
-`input:focus::-webkit-input-placeholder { color: blue; }`
-
-### 移动端 iOS 手机下清除输入框内阴影
-`input, textarea { -webkit-appearance: none; }`
-
-### 在 iOS 中 禁止长按链接与图片弹出菜单
-`a, img { -webkit-touch-callout: none; }`
-
 ### hover 浮动效果
 ```css
 li:hover {
@@ -101,4 +77,29 @@ html, body { height: 100%; }
 }
 ```
 
+### 单行、多行文本溢出显示省略号
+1. 单行文本
+    单行情况下，是最简单的，直接使用 CSS 代码解决，而且兼容性很好：
+    
+    ```css
+    .ellipsis {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    ```
+
+2. 多行文本
+    在一个段落中，文本要保留多行，此时就不能用上一种方法了。对于`-webkit`内核的浏览器，可以使用下面的代码，其中，`-webkit-line-clamp`属性是来设置显示行数的。
+    
+    ```css
+    .multi-ellipsis {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;  /* 行数 */
+    }
+    ``` 
+
+    对于非`-webkit`核心的浏览器，就没有直接的 CSS 属性来设置了，需要变通方法：设置文本行高，然后设置高度为：显示的行数 * 行高。但是这样则不好设置最后的省略号了，需要借助 js 代码来实现。
 
