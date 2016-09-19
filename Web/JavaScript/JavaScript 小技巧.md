@@ -321,4 +321,15 @@ function quickSort(arr){
 }
 ```
 
+### 替代 document.write 方法
+`document.write` 可以在当前执行的 script 标签之后插入任意的 HTML 源码。但是这个方法会造成浏览器的阻塞，或者预加载和预解析失败。而且如果写入的是一另一个 script 标签加载另一个脚本的时候，如果加载的脚本有问题，会造成整个页面都要等待其加载完成才能完成渲染和执行。
+
+如果要动态加载其他的 js 脚本，替代这个方法的方式是：**使用`document.createElement("script")`配合`appendChild/insertbefore`插入 script**。通过这种方式插入的 script 都是异步的。
+
+```javascript
+<script>
+document.head.appendChild(document.createElement('script')).src = '//w.cnzz.com/c.php?id=30086426'
+</script>
+```
+
 

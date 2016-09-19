@@ -24,12 +24,12 @@ Promise 有三种状态：
 
 这会返回一个状态为`pending`的 Promise 对象。
 
-这里传入了一个函数参数`fn`，并且有两个参数，`resolve`和`reject`，分别是 Promise 中的两个方法。
+这里传入了一个函数参数`fn`，并且有两个参数，`resolve`和`reject`，分别是 Promise 中的两个方法，由 JavaScript 引擎提供，不需要自行部署。
 
 我们一般会在 fn 中指定需要的处理逻辑：
 
-* 处理成功时，调用`resolve([data])`方法，Promise 对象状态变更为`fulfilled`；
-* 处理失败时，调用`reject([Error Obj])`，Promise 对象状态变更为`rejected`。
+* 任务处理成功时，调用`resolve([data])`方法，Promise 对象状态变更为`fulfilled`；
+* 任务处理失败时，调用`reject([Error Obj])`，Promise 对象状态变更为`rejected`。
 
 如下，我们通过 Promise 封装`setTimeout()`方法，得到了一个延时函数：
 
@@ -82,7 +82,9 @@ later(1000)
 ## .then() 方法
 Promise.then() 方法可以用来给 Promise 对象添加后续的处理回调函数。其可以接受两个参数，分别对应 Promise 成功时的处理回调和失败时的处理回调。
 
-虽然一般我们会给`.then()`方法传入函数，但是其实它也可以接收非函数值。给`.then()`传递非函数值时，实际上会被解析成`.then(null)`，从而导致上一个 Promise 对象的结果被“穿透”。所以，为了避免不必要的麻烦，建议总是给 .then() 传递函数。
+虽然一般我们会给`then()`方法传入函数，但是其实它也可以接收非函数值。给`.then()`传递非函数值时，实际上会被解析成`then(null)`，从而导致上一个 Promise 对象的结果被“穿透”。所以，为了避免不必要的麻烦，建议总是给`then()`传递函数。
+
+**`then()`方法会返回一个新的 Promise 对象，这个对象和调用`then()`方法的对象不是同一个。**
 
 ```js
 later(1000)
