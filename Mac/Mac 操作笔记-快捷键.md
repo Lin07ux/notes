@@ -8,7 +8,7 @@
 - `ctrl + a` 光标定位到当前行的最前端。
 - `ctrl + e` 光标定位到当前行的最尾端。
 - `cmd + tab` 切换应用。
-- `cmd + \`` 切换同一应用的窗口。
+- ``cmd + ` `` 切换同一应用的窗口。
 - `cmd + w` 关闭当前窗口。
 - `cmd + q` 关闭当前应用。
 - `cmd + n` 新建窗口，比如打开新的Finder窗口，配合cmd+w很实用。
@@ -25,4 +25,19 @@
 
 ### 更改文件默认打开程序
 点击文件 - 右键 - 显示简介 - 打开方式 - 选择合适的程序之后 - 全部更改。
+
+### Mac OS X 升级之后，在终端执行命令出现错误
+从 App Store 升级或更新 Mac OS X 之后，在终端中执行某些命令的时候，会出现如下的错误：
+
+```
+xcrun: error: invalid active developer path (/Library/Developer/CommandLineTools), missing xcrun at: /Library/Developer/CommandLineTools/usr/bin/xcrun
+```
+
+这时候可以在终端中执行如下的命令即可解决：
+
+```shell
+xcode-select --install
+```
+
+参考：[xcrun: error](http://tips.tutorialhorizon.com/2015/10/01/xcrun-error-invalid-active-developer-path-library-developer-commandline-tools-missing-xcrun/)
 
