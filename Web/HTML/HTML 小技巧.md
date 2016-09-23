@@ -60,3 +60,6 @@
 
 `<a href="mailto:tugenhua@126.com?body=http://www.baidu.com">内容包含链接，含http(s)://等的文本自动转化为链接</a>`
 
+## 不支持 JavaScript
+当页面不支持 js 的时候，可以使用`<noscript>内容</noscript>`标签来进行提示信息的展示。如果浏览器支持 js，那么这个标签就不会被显示在页面中。
+
