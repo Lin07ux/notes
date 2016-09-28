@@ -591,39 +591,39 @@ march();
 就好像一般的绘图软件一样，我们可以用线性或者径向的渐变来填充或描边。我们用下面的方法新建一个 canvasGradient 对象，然后将这个对象赋给图形的 fillStyle 或 strokeStyle 属性作为填充或者描边颜色，从而能够实现渐变的效果。
 
 1. 线性渐变
-使用线性渐变需要先使用`createLinearGradient()`方法创建一个 canvasGradient 对象：
+    使用线性渐变需要先使用`createLinearGradient()`方法创建一个 canvasGradient 对象：
 
-`createLinearGradient(x1, y1, x2, y2)`
+    `createLinearGradient(x1, y1, x2, y2)`
 
-该方法有四个参数：
+    该方法有四个参数：
 
-* 前两个表示渐变的起点坐标(x1, y1)
-* 后两个表示渐变的终点坐标(x2, y2)
+    * 前两个表示渐变的起点坐标(x1, y1)
+    * 后两个表示渐变的终点坐标(x2, y2)
 
 
 2. 径向渐变
 
-镜像渐变使用`createRadialGradient()`方法来创建：
+    镜像渐变使用`createRadialGradient()`方法来创建：
 
-`createRadialGradient(x1, y1, r1, x2, y2, r2)`
+    `createRadialGradient(x1, y1, r1, x2, y2, r2)`
 
-该方法有六个参数：
+    该方法有六个参数：
 
-* 前三个定义一个以 (x1,y1) 为原点，半径为 r1 的圆
-* 后三个参数则定义另一个以 (x2,y2) 为原点，半径为 r2 的圆。
+    * 前三个定义一个以 (x1,y1) 为原点，半径为 r1 的圆
+    * 后三个参数则定义另一个以 (x2,y2) 为原点，半径为 r2 的圆。
 
 3. 添加渐变色
 
-使用上述的方法创建出 canvasGradient 对象之后，就可以使用这个对象的`addColorStop()`方法来设置渐变的颜色了：
-
-`addColorStop(position, color)`
-
-这个方法接受 2 个参数：
-
-* position 参数必须是一个 0.0 与 1.0 之间的数值，表示渐变中颜色所在的相对位置。例如，0.5 表示颜色会出现在正中间。如果偏移值不在0到1之间，将抛出`INDEX_SIZE_ERR`错误。
-* color 参数必须是一个有效的 CSS 颜色值（如 #FFF，rgba(0,0,0,1)等）。如果颜色值不能被解析为有效的CSS颜色值 <color>，将抛出`SYNTAX_ERR`错误。
-
-可以根据需要，多次调用该方法，从而能够添加多种渐变色。
+    使用上述的方法创建出 canvasGradient 对象之后，就可以使用这个对象的`addColorStop()`方法来设置渐变的颜色了：
+    
+    `addColorStop(position, color)`
+    
+    这个方法接受 2 个参数：
+    
+    * position 参数必须是一个 0.0 与 1.0 之间的数值，表示渐变中颜色所在的相对位置。例如，0.5 表示颜色会出现在正中间。如果偏移值不在0到1之间，将抛出`INDEX_SIZE_ERR`错误。
+    * color 参数必须是一个有效的 CSS 颜色值（如 #FFF，rgba(0,0,0,1)等）。如果颜色值不能被解析为有效的CSS颜色值 <color>，将抛出`SYNTAX_ERR`错误。
+    
+    可以根据需要，多次调用该方法，从而能够添加多种渐变色。
 
 示例：
 
@@ -736,73 +736,5 @@ ctx.fill("evenodd");
 ```
 
 [查看效果](http://codepen.io/Lin07ux/pen/eZjLxP?editors=0010)
-
-
-## 绘制文本
-绘制文本通常有三个方法:
-
-* `fillText()` 推荐使用
-* `strokeText()`
-* `measureText()`：一个参数，即要绘制的文本 
-这两个方法都可以接收 4 个参数：要绘制的文本字符串，x 坐标，y 坐标和可选的最大像素值。而且这三个方法都以下列 3 个属性为基础：
-
-* `font`：表示文本样式，大小及字体，用 CSS 中指定字体的格式来指定。
-* `textAlign`：表示文本对其方式。可能的值有"start"、"end"、"left"、"right"和"center"。不推荐使用"left"和"right"。
-* `textBaseline`：表示文本的基线。可能的值有"top"、"hanging"、"middle"、"alphabetic"、"ideographic"和"bottom"。值为 top，y 坐标表示文本顶端；值为 bottom ，y 坐标表示文本底端；值为 hanging、alphabetic 和 ideographic，则 y 坐标分别指向字体的特定基线坐标。 
-如：
-
-```javascript
-var drawing = document.getElementById("drawing");
-
-// 确定浏览器是否支持canvas元素
-if (drawing.getContext) {
-    var context = drawing.getContext("2d");
-    // font 样式
-    context.font = "24px monospace";
-    // 对齐方式
-    context.textAlign = "start";
-    // 基线位置
-    context.textBaseline = "bottom";
-    // 填充样式
-    context.fillStyle = "red";
-    context.fillText("hello there",100,100);
-    // 描边样式
-    context.strokeStyle = "yellow";
-    context.strokeText("hello there",100,100);
-}
-```
-
-对于`measureText()`方法，会返回测量字符串相关数据的一个对象，目前只有 width 属性。
-
-```javascript
-// 返回 TextMetrics 对象，该对象目前只有 width 属性
-console.log(context.measureText("Hello world"));
-```
-
-## 变换
-* `rotate(angle)`：围绕原点旋转图像 angle 弧度。
-* `scale(scaleX, scaleY)`：缩放图像,在X方向乘以scaleX,在y方向乘以scaleY.scaleX和scaleY的默认值是1.0 
-	•	translate(x, y):将坐标原定移动到(x, y).执行这个变换之后,坐标(0,0)会变成之前由(x,y)表示的点. 
-transform(m1_1, m1_2, m2_1, m2_2, dx, dy):直接修改变换矩阵, 
-
-
-
-## 导出 canvas
-`toDataURL()`可以方法导出在 canvas 元素上绘制的图像。
-
-```javascript
-var drawing = document.getElementById("drawing");
-
-// 确定浏览器是否支持canvas元素
-if (drawing.getContext) {
-    // 取得图像数据的URL
-    var imgURL = drawing.toDataURL("image/png");
-
-    // 显示图像
-    var image = document.createElement("img");
-    image.src = imgURL;
-    document.body.appendChild(image);
-}
-```
 
 
