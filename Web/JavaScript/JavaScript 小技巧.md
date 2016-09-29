@@ -11,12 +11,62 @@ this.value = this.value.replace(/[^\d]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ");
 ```javascript
 function onGetMessage(context) 
 {
-    msg.innerHTML+=context;
+    msg.innerHTML += context;
     msg_end.scrollIntoView(); 
 } 
 ```
 
 > 还可以使用锚标记要滚动到的位置，然后通过`click`方法模拟点击滚动到锚所在位置。
+
+## Canvas 保存为图片
+绘制好的 canvas 想存储为本地图片，可以使用`canvas.toDataURL()`方法，将其转成图片内容，然后保存即可。
+
+`toDataURL()`接收一个 MIME 类型的参数，表示保存为什么图片格式，一般可以保存为`image/png`、`image/jpg`、`image/jpeg`、`image/gif`。
+
+基本 HTML 结构如下：
+
+```html
+<canvas id="canvas"></canvas>
+<button class="button-balanced" id="save">save</button>
+<br />
+<a href="" download="canvas_love.png" id="save_href">
+    <img src="" id="save_img"/>
+</a>
+```
+
+对应的 JavaScript 代码如下：
+
+```javascript
+function drawLove(canvas){
+    let ctx = canvas.getContext("2d");
+    ctx.beginPath();
+    ctx.fillStyle="#E992B9";
+    ctx.moveTo(75,40);
+    ctx.bezierCurveTo(75,37,70,25,50,25);
+    ctx.bezierCurveTo(20,25,20,62.5,20,62.5);
+    ctx.bezierCurveTo(20,80,40,102,75,120);
+    ctx.bezierCurveTo(110,102,130,80,130,62.5);
+    ctx.bezierCurveTo(130,62.5,130,25,100,25);
+    ctx.bezierCurveTo(85,25,75,37,75,40);
+    ctx.fill();
+}
+
+var canvas = document.getElementById('canvas');
+var button = document.getElementById('save');
+
+drawLove(canvas); 
+
+button.addEventListener('click', function(){
+    var img   = document.getElementById('save_img');
+    var aLink = document.getElementById('save_href');
+    var temp  = canvas.toDataURL('image/png');
+    
+    img.src = temp;
+    aLink.href = temp;
+})
+```
+
+这样点击链接就能够下载得到图片了。[demo](http://codepen.io/Lin07ux/pen/RGkoxN)
 
 ## 字符串换行
 直接在字符串行结束时添加`\`可以将一个字符串分行书写：
