@@ -97,6 +97,48 @@ later(1000)
 
 简单来说，`resolve()`就是用来将 Promise 对象从 pending 状态转成 fulfilled 状态的。而且其有一个参数，表示将要传递给后续的成功处理方法的结果。
 
+由于`resolve()`方法会返回一个新的 Promise 实例，所以它可以看做`new Promise()`的快捷方式，快速创建一个 resovled 状态的 Promise，并可以继续进行链式调用。
+
+```javascript
+Promise.resolve('Success');
+
+/*******等同于*******/
+new Promise(function (resolve) {
+    resolve('Success');
+});
+```
+
+`Promise.resolve()`的另一个作用就是将 thenable 对象（即带有`then`方法的对象）转换为 promise 实例。
+
+```javasscript
+var p1 = Promise.resolve({ 
+    then: function (resolve, reject) { 
+        resolve("this is an thenable object!");
+    }
+});
+console.log(p1 instanceof Promise);     // => true
+
+p1.then(function(value) {
+      console.log(value);     // => this is an thenable object!
+}, function(e) {
+    // not called
+});
+
+var p3 = { 
+    then: function(resolve) {
+        throw new Error("error");
+        resolve("Resolved");
+    }
+};
+
+var p4 = Promise.resolve(p3);
+p4.then(function(value) {
+    // not called
+}, function(error) {
+    console.log(error);       // => Error: error
+});
+```
+
 传递给`resolve()`方法的参数，并不一定是不可变值，也可以是一个新的 Promise 对象。 [Promise/A+](https://promisesaplus.com/) 规范中是这么说的：
 
 > `[[Resolve]](promise, x)`中：
@@ -155,13 +197,58 @@ promise2.then(
 
 另外，通过这里例子我们也可以发现。运行时间是 2 秒而不是 3 秒。也就是说 **Promise 新建后就会立即执行**。
 
-### reject
+前面提到过，Promise 状态一旦改变就会凝固，就不会再改变。因此 Promise 一旦 fulfilled 了，再抛错，也不会变为 rejected，就不会被 catch 了。
+
+```javascript
+var promise = new Promise(function(resolve, reject) {
+  resolve();
+  throw 'error';
+});
+
+promise.catch(function(e) {
+   console.log(e);      //This is never called
+});
+```
+
+### reject()
 `reject()`用来将 Promise 对象的状态置为失败(rejected)，并将异步操作错误 error 作为参数传给失败回调函数。
 
 `reject()`方法和`resolve()`方法作用类似，只是其是将 Promise 对象从 pending 状态转成 rejected 状态的。而且其参数表示要传递给后续的失败处理的结果，一般是一个异常对象，当然也可以是不可变值。
 
+`reject()`方法的作用，等同于直接抛错。而且它也能够快速创建 Promise 实例，只是其返回的实例的状态是 rejected。
+
+```javascript
+var promise = new Promise(function (resolve, reject) {
+    throw new Error('test');
+});
+/*******等同于*******/
+var promise = new Promise(function (resolve, reject) {
+    reject(new Error('test'));
+});
+
+//用catch捕获
+promise.catch(function (error) {
+    console.log(error);
+});
+
+/*
+-------output-------
+Error: test
+*/
+```
+
 ### then()
-`then()`方法是最常用的方法，可以用来给 Promise 对象添加后续的处理回调函数。其可以接受两个参数，分别对应 Promise 成功时的处理回调和失败时的处理回调。
+`then()`方法是最常用的方法，可以用来给 Promise 对象添加后续的处理回调函数。其可以接受两个参数，分别对应 Promise 成功时的处理回调和失败时的处理回调。简单来说，`then()`就是定义 `resolve`和`reject`函数的。例如，其`resolve`参数相当于：
+
+```javascript
+promise.then(function resolveFun(data) {
+    // data 为 promise 传出的值
+}, function rejectedFun(err) {
+    // err 为 promise 抛出的错误
+})
+```
+
+而新建 Promise 实例中的`resolve(data)`则相当于执行这个`resolveFun`函数，同理，`rejected(err)`则相当于执行这个`rejectedFun`函数。
 
 虽然一般我们会给`then()`方法传入函数，但是其实它也可以接收非函数值。**给`.then()`传递非函数值时，实际上会被解析成`then(null)`，从而导致上一个 Promise 对象的结果被“穿透”**。所以，为了避免不必要的麻烦，建议总是给`then()`传递函数。
 
@@ -182,6 +269,32 @@ later(1000)
     // data = later_1000
   });
 ```
+
+需要注意的是：虽然 Promise 实例一旦创建就会立即执行，但是**`then`方法中指定的回调函数，将在当前脚本所有同步任务执行完才会执行**。如下例：
+
+```javascript
+var promise = new Promise(function(resolve, reject) {
+    console.log('before resolved');
+    resolve();
+    console.log('after resolved');
+});
+
+promise.then(function() {
+    console.log('resolved');
+});
+
+console.log('outer');
+
+/*
+-------output-------
+before resolved
+after resolved
+outer
+resolved
+*/
+```
+
+由于 resolve 指定的是异步操作成功后的回调函数，它需要等所有同步代码执行后才会执行，因此最后打印'resolved'。
 
 
 #### onFulfilled 参数
@@ -349,9 +462,8 @@ later(1000)
 
 `all()`方法返回的新的 Promise 实例具有如下的特性：
 
-* 当该数组里的所有 Promise 实例都进入 Fulfilled 状态 ，这个新的的实例才会变成 Fulfilled 状态。并将原来的 Promise 实例数组的所有返回值组成一个数组，传递给新实例的回调函数。
-* 当该数组里的某个 Promise 实例都进入 Rejected 状态 ，新实例会立即变成 Rejected 状态。并将第一个 rejected 的实例返回值传递给新实例的回调函数。
-
+* 当该数组里的所有 Promise 实例都进入 Fulfilled 状态 ，这个新的的实例才会变成 Fulfilled 状态。并将原来的 Promise 实例数组的所有返回值按参数的顺序（而不是 resolved 的顺序）存入一个数组，并传递给新实例的回调函数。
+* 当该数组里的某个 Promise 实例进入 Rejected 状态，返回的新的实例会立即变成 Rejected 状态，并将第一个 rejected 的实例返回值传递给新实例的回调函数。同时，其他的 Promise 实例会继续执行，但是执行的结果并不会影响返回的实例的状态了。
 
 ```javascript
 const promises = [1000, 2000, 3000].map(function(timeout) {
@@ -359,17 +471,80 @@ const promises = [1000, 2000, 3000].map(function(timeout) {
 });
 
 Promise.all(promises)
-  .then(function(data) {
+.then(function(data) {
     // data = ['later_1000', 'later_2000', 'later_3000']
-  })
-  .catch(function(err) {
-  });
+})
+.catch(function(err) {
+});
 ```
 
 数组内 Promise 对象所表示的异步操作是同时执行的，并且最后的结果和传递给 Promise.all 的数组的顺序是一致的。所以，3 秒钟后我们取得的结果是一个值为`['later_1000', 'later_2000', 'later_3000']`的数组。
 
+```javascript
+var p1 = new Promise((resolve, reject) => { 
+    setTimeout(function(){ 
+        resolve("one");
+        console.log('one');
+    }, 1000); 
+}); 
+var p2 = new Promise((resolve, reject) => { 
+    setTimeout(function(){
+        reject("two");
+        console.log('two');
+    }, 2000); 
+});
+var p3 = new Promise((resolve, reject) => {
+    reject("three");
+    console.log('three');
+});
+
+Promise.all([p1, p2, p3]).then(function (value) {
+    console.log('resolve', value);
+}, function (error) {
+    console.log('reject', error);    // => reject three
+});
+
+/*
+-------output-------
+three
+reject three
+one
+two
+*/
+```
+
 ### race()
 `race()`方法跟`Promise.all()`方法差不多。唯一的区别在于该方法返回的 Promise 实例并不会等待所有 Proimse 都跑完，而是只要有一个 Promise 实例改变状态，它就跟着改变状态。并使用第一个改变状态实例的返回值作为返回值。
+
+在第一个 Promise 实例变为 resolve 后，并不会取消其他 Promise 实例的执行。
+
+```javascript
+var fastPromise = new Promise(function (resolve) {
+    setTimeout(function () {
+        console.log('fastPromise');
+        resolve('resolve fastPromise');
+    }, 100);
+});
+
+var slowPromise = new Promise(function (resolve) {
+    setTimeout(function () {
+        console.log('slowPromise');
+        resolve('resolve slowPromise');
+    }, 1000);
+});
+
+// 第一个 promise 变为 resolve 后程序停止
+Promise.race([fastPromise, slowPromise]).then(function (value) {
+    console.log(value);    // => resolve fastPromise
+});
+
+/*
+-------output-------
+fastPromise
+resolve fastPromise
+slowPromise     //仍会执行
+*/
+```
 
 ### catch()
 `Promise.prototype.catch`方法是`.then(null, rejection)`的别名，用于指定发生错误时的回调函数。
@@ -399,6 +574,105 @@ somePromise.then(function() {
 ```
 
 所以推荐大家都是用`catch()`来处理失败情况，而不是`then()`的第二个参数。可以在 promise 最后都加上一个 catch，以处理可能没有察觉到的错误情况。
+
+Promise 对象的错误，会一直向后传递，直到被捕获。即错误总会被下一个 catch 所捕获(或被下一个 then 方法中的 onRejectedFun 捕获)。then 方法指定的回调函数，若抛出错误，也会被下一个 catch 捕获。catch 中也能抛错，但需要更后面的 catch 来捕获。
+
+```javascript
+somePromise.then(function(data1) {
+    // do something
+}).then(function (data2) {
+    // do something
+}).catch(function (error) {
+    //处理前面三个Promise产生的错误
+});
+```
+
+如果抛出的错误没有没有被其后面的 then 或 catch 捕获，那么这个错误会导致 Promise 状态穿透，跳过其后的 then 或 catch，继续后传，直到被捕获。也就是说，抛出错误后，后面不能捕获这个错误的 then 或 catch 会被忽略，不被执行。
+
+```javascript
+/*******状态穿透*********/
+function taskA() {
+    console.log(x);  // 这里 x 未定义，会出错
+    console.log("Task A");
+}
+function taskB() {
+    console.log("Task B");
+}
+function onRejected(error) {
+    console.log("Catch Error: A or B", error);
+}
+function finalTask() {
+    console.log("Final Task");
+}
+var promise = Promise.resolve();
+promise
+    .then(taskA)
+    .then(taskB)
+    .catch(onRejected)
+    .then(finalTask);
+   
+/* 
+-------output-------
+Catch Error: A or B,ReferenceError: x is not defined
+Final Task
+*/
+```
+
+这段代码的流程图如下：
+
+<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475200270424.png" width="275"/>
+
+可以看出，A 抛错时，会按照`taskA → onRejected → finalTask`这个流程来处理。A 抛错后，若没有对它进行处理，状态就会维持 rejected ，taskB 不会执行，直到 catch 了错误。如果 A 抛错之后，其后立即捕获了这个错误，那么 taskB 就可以执行：
+
+```javascript
+function taskA() {
+    console.log(x);
+    console.log("Task A");
+}
+function taskB() {
+    console.log("Task B");
+}
+function onRejectedA(error) {
+    console.log("Catch Error: A", error);
+}
+function onRejectedB(error) {
+    console.log("Catch Error: B", error);
+}
+function finalTask() {
+    console.log("Final Task");
+}
+var promise = Promise.resolve();
+promise
+    .then(taskA)
+    .catch(onRejectedA)
+    .then(taskB)
+    .catch(onRejectedB)
+    .then(finalTask);
+  
+/*  
+-------output-------
+Catch Error: A ReferenceError: x is not defined
+Task B
+Final Task
+*/
+```
+
+如果最终没有使用 catch 方法指定处理错误的回调函数，Promise 对象抛出的错误不会传递到外层代码，即不会有任何反应（Chrome 会抛错），这也是 Promise 的一个缺点。
+
+需要注意的是：**在异步回调中抛错，不会被 catch 到**。
+
+```javascript
+// Errors thrown inside asynchronous functions will act like uncaught errors
+var promise = new Promise(function(resolve, reject) {
+  setTimeout(function() {
+    throw 'Uncaught Exception!';
+  }, 1000);
+});
+
+promise.catch(function(e) {
+  console.log(e);       //This is never called
+});
+```
 
 
 ## 最佳实践
@@ -497,4 +771,5 @@ Promise.resolve()
 1. [你可能不知道的 Promise](http://kohpoll.github.io/blog/2016/05/02/the-promise-you-may-not-know/)
 2. [JavaScript Promise迷你书（中文版）](http://liubin.org/promises-book/)
 3. [打开Promise的正确姿势](http://imweb.io/topic/57a0760393d9938132cc8da9)
+4. [初探Promise](https://segmentfault.com/a/1190000007032448)
 
