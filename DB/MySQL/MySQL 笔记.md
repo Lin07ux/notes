@@ -290,7 +290,7 @@ reference_option:
 ```
 
 查看表的主键外键信息：
-`SELECT * FROM information_schema.KEY_COLUMN_USAGE a WHERE a.TABLE_NAME='tablename'`
+`SELECT * FROM information_schema.KEY_COLUMN_USAGE a WHERE a.TABLE_NAME='table_name' AND a.CONSTRAINT_SCHEMA='database_name';`
 
 
 ## 全局设置
