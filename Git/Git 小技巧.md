@@ -81,3 +81,25 @@ git clean -fx           # 5
 * (4): 如果你只想移除已被忽略的文件，请使用选项- X。-X if you just want to remove ignored files.
 * (5): 如果你想移除已被忽略和未被忽略的文件，请使用选项 -x。 if you want to remove both ignored and non-ignored files
 
+### 美化 diff
+当你要暂存或 commit 之前，看看你修改了哪些内容是个好习惯，执行`git diff`命令，默认的输出格式比较难懂，我们可以美化一下，在`~/.gitconfig`中添加如下 alias：
+
+```conf
+[alias]
+  d = "!f() { [ -z \"$GIT_PREFIX\" ] || cd \"$GIT_PREFIX\" && git diff --color \"$@\" | diff-so-fancy  | less --tabs=4 -    RFX; }; f"
+```
+
+然后执行`git d`替代`git diff`，结果会清晰许多。
+
+### 美化 log
+查看提交日志是 git 中非常频繁的操作，但是默认的输出结果不太直观，继续添加 alias：
+
+```conf
+[alias]
+  lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset)     %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+  lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(    bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+  lg = !"git lg1"
+```
+
+这样就可以使用`git lg1`和`git lg2`两个命令了，显示结果就是第一图中的样子，清晰了许多。另外在可以使用`--name-status`参数，显示修改的文件，解决 pull 改为 rebase 方式后，看不到具体文件信息的问题。
+
