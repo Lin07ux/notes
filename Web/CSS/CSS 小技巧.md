@@ -168,4 +168,7 @@ p:before {
 
 [示例网址](http://codepen.io/Lin07ux/pen/LNrVjy?editors=1100)
 
+### inline 元素 float
+inline 元素 使用 float 之后，会“块”化，也就是按照块级元素的样式显示。
+
 
