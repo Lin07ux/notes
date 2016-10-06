@@ -14,7 +14,15 @@ DOM 事件流是先由外向内先进行捕获阶段，然后再向外冒泡，�
 
 
 ## delete 操作
-delete 操作可以删除对象的属性，不过这种删除只是断开属性和宿主对象的联系，而没有将其销毁。（销毁是由 GC 来进行的）
+delete 是一元运算符，可以用它来删除对象的属性或者数组的元素。
+
+delete 期望的操作数是一个左值，如果我们误用使得他的操作数不是左值，那么 delete 就不会进行任何操作并且返回 true。
+
+> 所谓“左值”，简单点说就是可以被赋值的表达式，在 ES 规范中是用内部类型**引用(Reference)**描述的，其作用为存放数据空间，且存放是允许的。
+
+当前，并不是所有的属性都是能够删除的：用户用 var 声明的变量、自定义的函数、函数参数、内置核心属性等是不能删除的，如果进行删除会抛出删除非法的错误。而且**delete 运算符只能删除自有属性，不能删除继承属性**。
+
+delete 这种删除只是断开属性和宿主对象的联系，而没有将其销毁。（销毁是由 GC 来进行的）。
 
 ```javascript
 var a = { b: { c: 1 } };
@@ -23,5 +31,25 @@ var d = a.b;
 delete a.b;
 
 console.log(d.c);  // 输出 1
+```
+
+当 delete 操作成功的时候，返回 ture，失败返回 false：
+
+```javascript
+var o = { a: 1 };
+
+delete o.a;     // 删除 a 属性，返回 true
+delete o.x;     // x 属性不存在，所以什么都不做，并返回 true
+delete o.toString;  // 因为 toString 是继承来的，所以什么都不做，并返回 true
+
+delete 110;     // 没有实际意义，返回 true
+
+delete Object.prototype; // 返回 false
+
+var b = 1;
+delete this.b;  // 返回 false
+
+function f() {}
+delete this.f;  // 返回 false
 ```
 
