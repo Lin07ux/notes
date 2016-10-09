@@ -1,3 +1,10 @@
+Nginx 这个轻量级、高性能的 web server 主要可以做两件事：
+
+- 直接作为 http server(代替 Apache，对 PHP 网站需要传递请求给 FastCGI 处理)；
+- 作为反向代理服务器实现负载均衡。
+
+Nginx 的优势在于处理并发请求上。虽然 Apache 的`mod_proxy`和`mod_cache`结合使用也可以实现对多台 app server 的反向代理和负载均衡，但是在并发处理方面 Apache还是没有 Nginx 擅长。
+
 
 ## 安装和运行
 ### 安装
@@ -208,90 +215,4 @@ server {
     }
 }
 ```
-
-
-## 配置示例
-### 1、分流代理
-效果：
-	将不同的访问方式分配给不同的服务。
-	输入http://192.168.0.101, http://localhost会看到不同的结果
-
-配置：
-
-```conf
-server {
-    listen       80;
-    server_name  localhost;
-
-    location / {
-        proxy_pass http://node_app;
-    }
-}
-
-# static server
-server {
-    listen       80;
-    server_name  192.168.0.101;
-
-    location / {
-        root   D:\GitHub\areu\web;
-        index  home.html;
-    }
-}
-```
-
-### 2、静态文件拦截器
-效果：
-	静态文件拦截器，将以images/js/img/css…开头的地址映射到网站目录，由ngnix直接提供服务
-
-配置：
-
-```conf
-http {
-    ...
-    server {
-        ...
-        location ~ ^/(images/|img/|javascript/|js/|css/|stylesheets/|flash/|media/|static/|robots.txt|humans.txt|favicon.ico) {
-          root /usr/local/silly_face_society/node/public;
-          access_log off;
-          expires max;
-        }
-        ...
-    }
-}
-```
-
-### 3、设置缓存
-配置：
-
-```conf
-http {
-    ...
-    proxy_cache_path  /var/cache/nginx levels=1:2 keys_zone=one:8m max_size=3000m inactive=600m;
-    proxy_temp_path   /var/tmp;
-    ...
-}
-```
-
-### 4、设置Gzip压缩
-配置：
-
-```conf
-http {
-    ...
-    gzip on;
-    gzip_comp_level 6;
-    gzip_vary on;
-    gzip_min_length  1000;
-    gzip_proxied any;
-    gzip_types text/plain text/html text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
-    gzip_buffers 16 8k;
-    ...
-}
-```
-
-### 返回 404
-如果对某个文件或者文件夹禁止访问，可以使用`deny all;`返回 403 禁止访问状态码，也可以使用`return 404;`返回 404 文件不存在状态码。
-
-> 更好的建议是，将这个文件或者文件夹放在网站目录之外。
 
