@@ -12,6 +12,28 @@ DOM 事件流是先由外向内先进行捕获阶段，然后再向外冒泡，�
 * 合成事件：当用 IME（输入法编辑器）输入字符时触发，如 compositionstart 等；
 * 变动事件：当底层 DOM 解构发生变化时触发，如 DOMsubtreeModified 等。
 
+注册 DOM 事件的回调函数有多种方式：
+
+- 直接写在 HTML 中，通过设置元素的`on + eventType`属性
+- 使用 DOM Element 上面的`on + eventType`属性 API
+- 使用 DOM Element 的`addEventListener`方法或`attachEvent`方法
+
+前两种方式只能对一种事件绑定一个回调，第三种方式则能够绑定多个回调。其实还有一种非常规方法：使用 a 元素的 href 属性，在其中写入简单的 JavaScript 语句。
+
+如果这三种方法同时出现，则第二种方式绑定的回调函数会覆盖掉第一种方法绑定的回调，第三种方法则不会有影响。
+
+```javascript
+<a href="javascript:alert(1)" onclick="alert(2)" id="link">click me</a> 
+<script> 
+    var link = document.getElementById('link'); 
+    link.onclick = function() { alert(3); } 
+ 
+    $('#link').bind('click', function() { alert(4); }); 
+    $('#link').bind('click', function() { alert(5); }); 
+</script>
+```
+
+上例弹出的顺序是：3、4、5、1。因为 2 的那个被 3 的回调给覆盖了。而 jQuery 中的 bind 方法其实就是调用的 addEventListener 方法。
 
 ## delete 操作
 delete 是一元运算符，可以用它来删除对象的属性或者数组的元素。
