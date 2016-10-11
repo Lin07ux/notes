@@ -79,3 +79,37 @@ header('content-length:'. filesize($filename));
 readfile($filename);
 ```
 
+### 截取字符串，并补全省略号
+截取字符串中指定长度的子串，如果截取长度小于字符串总长度，则添加省略号，否则不添加。而且可以从左侧或右侧截取，还能设置字符串的编码格式。
+
+> 需确保 PHP 支持`mb_substr`和`mb_strlen`函数。
+
+```php
+/**
+ * 截取字符串,并根据情况添加省略号
+ *
+ * @param string $text   要进行截取的字符串
+ * @param int    $length 截取的长度
+ * @param string $encode 字符串编码
+ * 
+ * @return string
+ */
+function subtext($text, $length, $encode = 'utf8')
+{
+    $text_len = mb_strlen($text, $encode);
+    
+    // 如果字符串长度大于截取长度,则进行截取和补全省略号
+    if ($text_len > abs($length)) {
+        // 如果$length为正数则表示从左往右截取,最后在右侧补全省略号
+        // 否则表示从右往左截取,并在左侧补全省略号
+        if ($length >= 0) {
+            return mb_substr($text, 0, $length, $encode) . '...';
+        } else {
+            return '...' . mb_substr($text, $length, $text_len, $encode);
+        }
+    }
+    
+    return $text;
+}
+```
+
