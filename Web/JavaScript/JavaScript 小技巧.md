@@ -382,4 +382,46 @@ document.head.appendChild(document.createElement('script')).src = '//w.cnzz.com/
 </script>
 ```
 
+### 捕获全局异常
+浏览器提供了全局的`onError`函数，我们可以使用它搜集页面上的错误：
+
+```javascript
+window.onerror = function(message, source, lineno, colno, error) { ... }
+```
+
+其中：
+
+* mesage 为异常基本信息
+* source 为发生异常的 Javascript 文件 url
+* lineno 为发生错误的行号
+* colno 为发生错误的列位置
+* error 是错误事件对象。我们可以通过`error.stack`获取异常的堆栈信息。
+
+下面是 chrome 中通过`window.onError`捕获的错误的例子：
+
+```javascript
+message: Uncaught ReferenceError: test is not defined
+source:  http://test.com/release/attach.js
+lineno:  16144
+colno:   6
+error:   ReferenceError: test is not defined
+            at http://test.com/release/attach.js:16144:6
+            at HTMLDocument.<anonymous> (http://test.com/release/vendor.js:654:71)
+```
+
+不过这种方法有个致命的问题：有些浏览器为了安全方面的考虑，对于不同域的 Javascript 文件，通过`window.onError`无法获取有效的错误信息。比如 Firefox 的错误消息只有`Script error`，而且无法获得确切的行号，更没有错误堆栈信息：
+
+```javascript
+message: Script error.
+source:  "http://test.com/release/attach.js
+lineno:  0
+colno:   0
+error:   null
+```
+
+为了使得浏览器针对`window.onError`的跨域保护失效，我们可以做如下操作：
+
+* 在静态资源服务器或者 CDN 的 HTTP 头中加上如下允许跨域提示：`Access-Control-Allow-Origin: *`；
+* 并在引用 Javascript 脚本时加上`crossorigin`属性：`<script crossorigin src=""></script>`
+
 
