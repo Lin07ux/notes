@@ -1,3 +1,9 @@
+## 安全
+### 避免在新标签打开的页面引用
+当从一个网上打开一个`target="_blank"`的链接时，新打开的链接可以通过 JavaScript 中的`window.opener`来访问原页面，从而做一些操作。
+
+为避免这种操作，对于打开非本站的链接的时候，将`target="_blank"`的链接都加上`rel="noopener noreferrer"`这个属性。同时，要像关注 xss 一样关注一下外链图片的问题。
+
 ## 在收藏夹中显示出图标
 `<link rel='Bookmark' href='favicon.ico'>`
 
