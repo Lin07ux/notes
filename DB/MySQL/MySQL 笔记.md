@@ -273,6 +273,8 @@ ALTER TABLE table_name DROP INDEX index_name;
 ALTER TABLE table_name DROP PRIMARY KEY;
 ```
 
+> 删除表中的某列时，如果删除的列为索引的组成部分，则该列也会从索引中删除。如果索引中的所有列都被删除，则整个索引将被删除。
+
 ## 外键
 参考：[外键](http://www.phpddt.com/db/mysql-foreign-key.html)
 
