@@ -102,4 +102,22 @@ html, body { height: 100%; }
     ``` 
 
     对于非`-webkit`核心的浏览器，就没有直接的 CSS 属性来设置了，需要变通方法：设置文本行高，然后设置高度为：显示的行数 * 行高。但是这样则不好设置最后的省略号了，需要借助 js 代码来实现。
+    
+
+### 感知子元素的个数
+要实现如下的效果：如果 .list 里面 li 元素个数大于等于4，则显示为红色。
+
+```css
+.list li:nth-last-child(n+4) ~ li,
+.list li:nth-last-child(n+4):first-child {
+  color: red
+}
+```
+
+原理是：
+
+* `:nth-last-child(n+4)` 这一个选择器的意思就是倒数第四个以及之前的元素，后面加了 `~ li`，就是表示符合前面条件的元素之后的 li 元素。
+* 如果元素总数不足 4，则不会存在符合`:nth-last-child(n+4)`的元素（一共没有四个，也就不存在倒数第四个），那么`li:nth-last-child(n+4) ~ li`就不会选择任何的元素了。
+* 但是如果只用`~ li`，是不会匹配到第一个 li 的，所以又加上了`li:nth-last-child(n+4):first-child`。
+
 
