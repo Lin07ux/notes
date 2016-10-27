@@ -33,6 +33,46 @@ Nginx 提供了几个命令来控制 Nginx 的启停：
 - kill -s QUIT 1628
 
 ## 配置
+下面是一份`nginx.conf`配置文件的骨架：
+
+```nginx
+<main>
+
+events {  
+  ....
+}
+
+http {  
+  upstream myproject_svr {
+    .....
+  }
+  
+  server  {
+    location {
+        ....
+    }
+  }
+  
+  server  {
+    location {
+        ....
+    }
+  }
+  
+  ....
+}
+```
+
+nginx 配置文件主要分为六个区域：
+
+* main (全局设置) 主要设置一些全局的属性，比如用户组、进程数、错误日志等。
+* events (nginx 工作模式) 用于指定 nginx 的工作模式和连接数上限
+* http (http 设置) 是最核心的模块。它负责 HTTP 服务器相关属性的配置，它里面的 server 和 upstream 子模块至关重要。
+* server (主机设置) 是 http 的子模块，它用来设定一个虚拟主机。里面有 location 模块。
+* location (URL 匹配) 是 nginx 中用的最多的，也是最重要的模块。用来定位 URL，解析 URL。负载均衡、反向代理、虚拟域名都与它相关。
+* upstream (负载均衡服务器设置) 通过简单的调度算法来实现客户端 IP 到后端服务器的负载均衡。
+
+
 ### 指令
 - `root` 声明根目录的路径。可以放到 http、server、location 的任一层级里。子层级重新定义的 root 会覆盖父层级的 root。
 - `index` 定义 index 文件的名称。默认是 index.html，也可以指定为其他名称，可以指定多个名字，用空格分隔，Nginx 会按定义顺序查找，返回第一个可访问的文件。可以用在 server、location 中。当一个请求以斜杠结尾，nginx 认为它想访问一个目录然后会去寻找目录中的 index 文件。
