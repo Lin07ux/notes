@@ -4,8 +4,10 @@
 > 
 > Trait 和 Class 相似，但仅仅旨在用细粒度和一致的方式来组合功能。 无法通过 trait 自身来实例化。它为传统继承增加了水平特性的组合；也就是说，应用的几个 Class 之间不需要继承。
 
+总结来说：PHP 是单继承的语言，在 PHP 5.4 Traits 出现之前，PHP 的类无法同时从两个基类继承属性或方法。PHP 的 Traits，通过在类中使用`use`关键字声明要组合的 Trait 名称，而具体某个 Trait 的声明使用`trait`关键词，Trait 不能直接实例化，但是 Trait 也能组合 Trait，Trait 中还支持抽象方法、静态属性及静态方法。
+
 ### 什么是 Trait
-其实说通俗一点，就是能把重复的方法拆分到一个文件，通过 use 引入以达到代码复用的目的。
+其实说通俗一点，就是能把重复的方法拆分到一个文件，通过 use 引入以达到代码复用的目的。如果要组合多个 Trait，可以通过逗号分隔 Trait 名称：`use Trait1, Trait2;`。
 
 > 可以认为 Trait 就是 PHP 中的可复用的小模块，和目前前端中的 JavaScript 中的模块，可以使用一定的方式引入。
 
@@ -107,6 +109,152 @@ class Gift extends Pruduct
 
 其实还有很多例子，比如可飞行的，那么把飞行这个特性所具有的属性（如：高度，距离）与方法（如：起飞，降落）放到一个 trait 就是一个合理的拆分。
 
+### 重名问题的处理
+#### Trait、基类、本类的同名
+如果 Trait、基类和本类中都存在某个同名的属性或者方法，最终会保留哪一个呢？
+
+```php
+<?php
+trait Drive {
+    public function() {
+        echo "hello drive\n";
+    }
+    
+    public function() {
+        echo "driving from drive\n";
+    }
+}
+
+class Person {
+    public function hello() {
+        echo "hello person\n";
+    }
+    
+    public function() {
+        echo "driving from person\n";
+    }
+}
+
+class Student extends Person {
+    use Drive;
+    
+    public function hello() {
+        echo "hello student\n";
+    }
+}
+
+$student = new Student();
+$student->hello();
+$student->driving();
+```
+
+输出结果如下：
+
+```php
+hello student
+driving from drive
+```
+
+因此得出结论：**当方法或属性同名时，当前类中的方法会覆盖 trait 的方法，而 trait 的方法又覆盖了基类中的方法**。
+
+#### 多个 trait 的重名
+如果多个 Trait 中包含同名方法或者属性时，会怎样呢？答案是：**当组合的多个 Trait 包含同名属性或者方法时，需要明确声明解决冲突，否则会产生一个致命错误**。
+
+```php
+<?php
+trait Trait1 {
+    public function hello() {
+        echo "Trait1::hello\n";
+    }
+    public function hi() {
+        echo "Trait1::hi\n";
+    }
+}
+trait Trait2 {
+    public function hello() {
+        echo "Trait2::hello\n";
+    }
+    public function hi() {
+        echo "Trait2::hi\n";
+    }
+}
+class Class1 {
+    use Trait1, Trait2;
+}
+```
+
+输出结果如下：
+
+```
+PHP Fatal error:  Trait method hello has not been applied, because there are collisions with other trait methods on Class1 in ~/php54/trait_3.php on line 20
+```
+
+此时可以使用`insteadof`和`as`操作符来解决冲突，`insteadof`是使用某个方法替代另一个，而`as`是给方法取一个别名，具体用法请看代码：
+
+```php
+class Class1 {
+    use Trait1, Trait2 {
+        Trait2::hello insteadof Trait1;
+        Trait1::hi insteadof Trait2;
+    }
+}
+class Class2 {
+    use Trait1, Trait2 {
+        Trait2::hello insteadof Trait1;
+        Trait1::hi insteadof Trait2;
+        Trait2::hi as hei;
+        Trait1::hello as hehe;
+    }
+}
+$Obj1 = new Class1();
+$Obj1->hello();
+$Obj1->hi();
+echo "\n";
+$Obj2 = new Class2();
+$Obj2->hello();
+$Obj2->hi();
+$Obj2->hei();
+$Obj2->hehe();
+```
+
+输出的结果如下：
+
+```
+Trait2::hello
+Trait1::hi
+
+Trait2::hello
+Trait1::hi
+Trait2::hi
+Trait1::hello
+```
+
+`as`关键词还有另外一个用途，那就是修改方法的访问控制：
+
+```php
+<?php
+    trait Hello {
+        public function hello() {
+            echo "hello,trait\n";
+        }
+    }
+    class Class1 {
+        use Hello {
+            hello as protected;
+        }
+    }
+    class Class2 {
+        use Hello {
+            Hello::hello as private hi;
+        }
+    }
+    $Obj1 = new Class1();
+    $Obj1->hello(); # 报致命错误，因为hello方法被修改成受保护的
+    $Obj2 = new Class2();
+    $Obj2->hello(); # 原来的hello方法仍然是公共的
+    $Obj2->hi();  # 报致命错误，因为别名hi方法被修改成私有的
+```
+
 ### Trait 有什么优势
 **Trait 不仅仅是可复用代码段的集合，它应该是一组描述了某个特性的的属性与方法的集合。它的优点再于随意组合，耦合性低，可读性高。**
 
@@ -147,5 +295,9 @@ class User extends AdvansedUser
 
 总之一定要记住：不要为了让两段相同的代码提到一起这样简单粗暴的方式来拆分。
 
-转摘：[我所理解的 PHP Trait](http://overtrue.me/articles/2016/04/about-php-trait.html)
+
+### 转摘
+[我所理解的 PHP Trait](http://overtrue.me/articles/2016/04/about-php-trait.html)
+[PHP中的Traits详解](https://segmentfault.com/a/1190000002970128)
+
 
