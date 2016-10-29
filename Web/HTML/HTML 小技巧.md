@@ -1,4 +1,12 @@
 ## 安全
+### 禁用选项
+在 body 标签中输入下面的一些定义即可：
+
+* 禁止复制：`oncopy="event.returnValue=false"`
+* 禁止拖拽：`ondragstart="window.event.returnValue=false"`
+* 禁止右键菜单：`oncontextmenu="window.event.returnValue=false"`
+* 禁止选择：`onselectstart="event.returnValue=false"`
+		
 ### 避免在新标签打开的页面引用
 当从一个网上打开一个`target="_blank"`的链接时，新打开的链接可以通过 JavaScript 中的`window.opener`来访问原页面，从而做一些操作。
 
