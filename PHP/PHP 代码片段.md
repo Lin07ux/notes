@@ -113,3 +113,35 @@ function subtext($text, $length, $encode = 'utf8')
 }
 ```
 
+### PHPExcel 类库的使用
+
+```php
+// 导出 Excel
+header('Content-Type: application/vnd.ms-excel');
+header(sprintf('Content-Disposition: attachment;filename="%s.xls"',$filename));
+header('Cache-Control: max-age=0');
+
+// 导入 Excel
+if (isset($_FILES["file"]) && 0 == $_FILES["file"]["error"]) {
+  $fileType = array("application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/kset","application/octet-stream");  //文件格式
+            
+  if (in_array($_FILES["file"]["type"], $fileType) && $_FILES["file"]["size"] <= 2 * 1000 * 1000) {
+    $file = $_FILES['file']['tmp_name'];
+    require_once BASEPATH . '/libraries/phpexcel/PHPExcel.php';
+    $excelReader = new PHPExcel_Reader_Excel2007();
+
+    if (!$excelReader->canRead($file)) {
+        $excelReader = new PHPExcel_Reader_Excel5();
+    }
+
+    $sheet = $excelReader->load($file)->getSheet(0); //sheet1操作
+    $excelCont = array(
+        'highestCol' => $sheet->getHighestColumn(), //列
+        'highestRow' => $sheet->getHighestRow(), //行
+        'highestColumnIndex' => PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn()) // 几列
+    );
+  }
+}
+```
+
+
