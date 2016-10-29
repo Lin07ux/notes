@@ -241,6 +241,144 @@ const moduleA = {
 }
 ```
 
+## Vuex 2.x 与 1.x 的区别
+[Vuex 2.0 设计理念](https://github.com/vuejs/vuex/issues/236)
+### 语义化
+这个语义化说的是触发`action`和`mutation`的 API 上。
+
+在使用 action 的时候，我们一般是从 vue 组件本身 dispatch 派发一个 action，这个其实只是一个命令，并没有实际改变什么；而 dispatch 一个 mutation 其实是改变了 vuex 本身的数据，所以一般从数据角度理解，这种应该属于事物提交。那么变化之后的命名就是 commit 这样更加语义化 也更好的理解职责。
+
+新的用法如下：
+
+```javascript
+// dispatch --> actions
+methods:{
+  Add () {
+    this.$store.dispatch('ADD',2).then(function(resp){
+      console.log(resp)
+    })
+  }
+}
+
+// commit --> mutations
+actions: {
+  ADD (store, payload) {
+    store.commit('ADD', payload)
+  }
+}
+```
+
+### 更灵活
+1.x 之前的版本 action 是不定义在 vuex 里的，而 2.x actions 可以直接在 store 中定义了。也就是可以在 store 实例中直接 dispatch。
+
+```javascript
+var store =  new Vuex.Store({
+    state: {
+        messages: 0
+    },
+    mutations:{
+        "ADD": function(state, msg) {
+            state.messages += msg
+        }
+    },
+    // action不用再去外面定义 可以直接写在构建参数里
+    actions:{
+        "ADD" : function(store , param){
+            store.commit('ADD', param)
+        },
+    }
+})
+store.dispatch('ADD', 2)
+```
+
+而 getter 也是如此，在 vue 中可以直接取 getters：
+
+```javascript
+computed:{
+   msg : function(){
+      return this.$store.getters.getMessage
+   }
+}
+```
+
+### Promise Action
+> 原文`Composable Action Flow`直译`可组合的 action 流`。
+
+由于现在 actions 是被放在了 vuex 中的，需要通过 dispatch 来分发，所以在一定情况下，我们不能直接如同调用方法一样来调用 actions 了，也就不能自由组合操作了。但是由于 dispatch 会返回 actions 方法的返回，所以我们可以在 actions 中返回一个 Promise 来实现异步操作的可组合行。
+
+```javascript
+// action我们定义一个返回promise的add action
+actions:{
+    "ADD" : function(store , param){
+        return new Promise(function(resolve, reject) {
+            store.commit('ADD',param)
+            resolve("ok")
+        })
+    }
+}
+
+// 这里可以在dispatch之后直接处理异步
+this.$store.dispatch('ADD',2).then(function(resp){
+   console.log(resp) // ok
+})
+```
+
+### mapState/mapMutations/mapGetters/mapActions
+新版 vuex 提供了几个封装方法`mapState`、`mapMutations`、`mapGetters`、`mapActions`。
+
+在 1.x 中，如果我们需要用到 vuex 中的某些 state、getters、mutations、actions，那么就需要将其一个个的导入进来(`import { ... } from store`)。而在 2.x 中就可以使用这些方法来引入。
+
+```javascript
+// es6写法 支持rest参数这种写法 也可以直接完全使用map套装注入
+import { mapGetters, mapActions } from 'vuex'
+export default {
+  computed: {
+    someComuted () { … },
+    ...mapGetters(['getMessage', 'getName'])
+  },
+  methods: {
+    someMethod () { … },
+    ...mapActions(['ADD','EDIT'])
+  }
+}
+```
+
+### Silent
+使用这个选项，可以设置在 commit 一个 mutation 的时候是否触发订阅的插件。
+
+默认 silent 为 false。如果 silent 设置为 true，则表示不触发注册的 subscribe，一般订阅的插件都不会触发了，包括 dev-tools。
+
+```javascript
+// 实例代码
+store.commit('ADD', param, { silent: true})
+```
+
+```javascript
+// 源码 
+if (!options || !options.silent) {
+  this._subscribers.forEach(sub => sub(mutation, this.state))
+}
+```
+
+### 其他变动
+
+```javascript
+// 这个就是换个名字
+store.middlewares -> store.plugins
+    
+// 这货貌似干掉又被还原了   
+store.watch
+   
+// 使用 subscribe 监听 vuex 的变化
+store.subscribe((mutation, state) => { ... })
+
+// 注册模块
+registerModule
+
+// 注销模块
+unregisterModule
+```
+
 
 ## 错误
 ### 使用 mapState/mapGetters/mapActions 报错
@@ -325,5 +463,5 @@ export default {
 
 ## 转摘
 [Vuex 入门](https://jothy1023.github.io/2016/10/05/index/)
-
+[vuex入门实例(3/3) - end](https://segmentfault.com/a/1190000006988584)
 
