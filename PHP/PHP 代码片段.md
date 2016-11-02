@@ -8,6 +8,19 @@ function checkDatetime($str, $format="Y-m-d H:i:s"){
 }
 ```
 
+### 互换两个变量的值
+
+```php
+$x = 10;
+$y = 11;
+
+$x = $x + $y;
+$y = $x - $y;
+$x = $x - $y;
+
+var_dump($x, $y);  // int(11) int(10)
+```
+
 ### 获取当前页面的URL
 
 ```php
@@ -110,6 +123,42 @@ function subtext($text, $length, $encode = 'utf8')
     }
     
     return $text;
+}
+```
+
+### 接收 base64 图片数据
+
+```php
+function base64save($img, array $types = []) {
+    // 图片路径地址
+    $baseDir = 'upload/base64/' . date('Ymd') . '/';
+    if (!is_dir($baseDir)) {
+        mkdir($baseDir, 077, true);
+    }
+    
+    $types  = count($types) ? types : ['jpg', 'gif', 'png', 'jpeg'];
+    $img    = str_replace(['_', '-'], ['/', '+'], $img);
+    $b64img = substr($img, 0, 100);
+    $b64reg = '/^(data:\s*image\/(\w+);base64,)/';
+    
+    if (preg_match(b64reg, $b64img, $matches)) {
+        if (!in_array($matches[2], $types)) {
+            return array(
+                'status' => 1,
+                'info'   => '图片格式不正确，只支持'.implode(', ', types).'哦！',
+                'url'    => ''
+            );
+        }
+        
+        $img  = str_replace($matches[1], '', $img);
+        $img  = base64_decode($img);
+        $path = $baseDir . md5(date('YmdHis') . rand(1000, 9999)) . '.' . $matches[2];
+        file_put_contents($path, $img);
+        
+        return ['status' => 0, 'info' => '保存图片成功', 'url' => $path];
+    }
+    
+    return ['status' => 2, 'info' => '请选择要上传的图片'];
 }
 ```
 
