@@ -42,8 +42,8 @@ CentOS 上已经预安装了 rpm 包，但由于 CentOS 上安装的源都比较
 
 ```shell
 # RHEL/CentOS 7 64 Bit
--
-rpm -ivh epel-release-7-5.noarch.rpm
+wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
+rpm -ivh epel-release-7-8.noarch.rpm
 
 # RHEL/CentOS 6 32-Bit
 wget http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
