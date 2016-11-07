@@ -109,7 +109,6 @@ php_value[session.save_path]    = /var/lib/php/session
 
 ### 安装 MySQL
 
-
 ```shell
 # 安装源
 rpm -ivh http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
@@ -126,4 +125,74 @@ systemctl start mysql.service
 # 初始化
 mysql_secure_installation
 ```
+
+### 部署项目
+* 首先建立项目目录：
+
+```sh
+mkdir /usr/share/nginx/html/web/
+```
+
+* 然后设置 Git 来拉取仓库中的源代码：
+
+
+```sh
+cd web/
+git init
+git remote add origin git@<ip-or-host>:user/project
+git pull -u origin master
+```
+
+* 再设置项目目录的访问权限：
+
+```sh
+#! /bin/sh
+
+# 执行 git pull 之后，修改网站目录的访问权限
+cd /usr/share/nginx/html/
+
+echo "修改web的访问权限"
+chmod -R 770 web/
+chmod 775 web/
+
+echo "修改web/的用户和属组"
+chown -R root:apache web/
+
+cd web/
+echo "修改Public的访问权限"
+chmod -R 775 Public/
+```
+
+> 设置项目源码目录(`web/`)和网站(`web/Public`)的根目录的访问权限为 775，源码目录中的其他文件和目录的权限设置为 770。且设置源码目录及其子目录的用户和属组为 root 和 php-fpm 的运行属组(`apache`)。
+> 
+> 这样设置是为了保证 Nginx 能访问网站根目录的内容，而不能访问其他的目录资源，避免源码外露。而保证 php-fpm 能对整个源码目录都能访问，从而能够进行源码的读取和文件的写入。
+
+* 最后，在更新代码的时候，使用 git 来拉取新的源码，并强制覆盖；覆盖之后还要修改入口文件，关闭调试状态，并删除缓存：
+
+```sh
+#!/bin/sh
+
+# 进入到项目目录中
+cd /usr/share/nginx/html/htymmedia.cn/
+
+# 下载远程仓库的最新的内容
+git fetch --all
+
+# 不做任何的合并 git reset 把HEAD指向刚刚下载的最新的版本
+git reset --hard origin/master
+
+# 删除缓存
+rm -rf ./Public/*Runtime/*
+
+# 提示修改入口文件
+echo '请进入项目根目录，并修改入口文件的 APP_STATUS 为 false'
+echo 
+echo '  cd /usr/share/nginx/html/htymmedia.cn/Public/'
+echo '  vim admin.php'
+echo '  vim index.php'
+echo '  vim wechat.php'
+echo
+echo '  (如果还有其他的入口，请都进行修改)'
+```
+
 
