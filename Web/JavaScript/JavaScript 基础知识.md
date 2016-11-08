@@ -75,3 +75,9 @@ function f() {}
 delete this.f;  // 返回 false
 ```
 
+## touch事件
+`touchstart`、`touchmove`、`touchend`。
+
+直接使用`event.clientX`是不起作用的，要使用`event.changedTouches[0].clientX`才好；如果是 jQuery 的 event 对象，使用`event.originalEvent.changedTouches[0].clientX`。
+
+
