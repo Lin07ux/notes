@@ -25,6 +25,16 @@ git commit --amend
 ```
 上面的这三条命令最终只是产生一个提交，第二个提交命令修正了第一个的提交内容。
 
+### 放弃本地修改，强制更新
+
+```git
+# 仅仅拉取远程仓库中的所有内容
+git fetch --all
+
+# 不做任何的合并 git reset 把HEAD指向刚刚下载的最新的版本
+git reset --hard origin/master
+```
+
 ### 删除文件
 如果只是简单地从工作目录中手工删除文件，运行`git status`时就会有`Changes not staged for commit`的提示。
 
