@@ -77,3 +77,12 @@
 ## 不支持 JavaScript
 当页面不支持 js 的时候，可以使用`<noscript>内容</noscript>`标签来进行提示信息的展示。如果浏览器支持 js，那么这个标签就不会被显示在页面中。
 
+## Web 页面链接到百度地图
+在 web 页面中，可以通过一个 a 链接直接链接到百度地图上，并可以指定打开地图时的显示标题和地址信息。
+
+```html
+<a class="content" href="http://api.map.baidu.com/marker?location=30.2481330000,120.0771000000&title=馒头山&content=浙江省杭州市西湖区求和路馒头山&output=html">
+```
+
+在 a 链接中需要指定一个经纬度信息。具体的经纬度可以从 [在线地图经纬度查询](http://www.gpsspg.com/maps.htm) 或 [百度坐标系统](http://api.map.baidu.com/lbsapi/getpoint/index.html) 中查询到。
+
