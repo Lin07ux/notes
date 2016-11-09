@@ -208,7 +208,7 @@ default-character-set=utf8
 ```sql
 SHOW INDEX FROM table_name;
 # 或者
-SHOW KEYS FROOM table_name;
+SHOW KEYS FROM table_name;
 ```
 
 ### 创建索引

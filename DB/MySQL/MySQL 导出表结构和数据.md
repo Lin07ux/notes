@@ -1,6 +1,8 @@
 MySQL 可以使用安装时自带的 mysqldump 工具来导出数据库、表结构、表数据到一个 sql 文件中。
 
 > 导出一部分指定的数据，可以直接使用下面的这个 sql 语句：`select * from tbl_name into outfile 'file_name';`
+> 
+> 导入数据的时候，可以登录进入 MySQL，然后执行`source /path/to/file.sql`语句来导入 sql 文件。
 
 ### 常用方式
 mysqldump 工具有如下几种使用方式：
