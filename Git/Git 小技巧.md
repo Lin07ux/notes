@@ -101,15 +101,15 @@ git clean -fx           # 5
 
 然后执行`git d`替代`git diff`，结果会清晰许多。
 
-### 美化 log
-查看提交日志是 git 中非常频繁的操作，但是默认的输出结果不太直观，继续添加 alias：
+### git pull --rebase 拉取远程更新时避免过多的 commit log
+我们分别 checkout –b 出来两个分支，独立开发互不干扰。在 develop_newfeature_authorcheck 里修改了点东西，push 到 develop。然后 checkout 到 develop_newfeature_apiwrapper，执行`git pull`，将 develop_newfeature_authorcheck 分支的修改直接拉下来与本地代码 merge，且产生一个 commit，也就是 merge commit。
 
-```conf
-[alias]
-  lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset)     %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
-  lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(    bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
-  lg = !"git lg1"
-```
+![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049400931.png)
 
-这样就可以使用`git lg1`和`git lg2`两个命令了，显示结果就是第一图中的样子，清晰了许多。另外在可以使用`--name-status`参数，显示修改的文件，解决 pull 改为 rebase 方式后，看不到具体文件信息的问题。
+此处的 F commmit 是无意义的，它只是一个 merge commit。而且个 commit message 里面的 branch 日后也不存了，这些分支都会被清除掉，所以完全没有必要生成和保留这个 merge commit。
+
+如果使用`git pull –rebase`这样的结局就完全不一样：它并不会产生一个 merge commit，而是会将你的 E commit 附加到 D commit 的结尾处。也就是说，会将你的 develop_newfeature_apiwrapper 分支的基点变成在 develop_newfeature_authorcheck 分支上的 D commit。
+
+![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049586790.png)
+
 
