@@ -112,4 +112,21 @@ git clean -fx           # 5
 
 ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049586790.png)
 
+### 删除本地中存在的、已经在远程被删除的分支
+可以通过命令`git remote show origin`来查看有关于 origin 的一些信息，包括分支是否 tracking。当我们删除一个远程的分支之后，在本地使用这个命令会显示出类似如下的信息：
+
+![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049827419.png)
+
+本删除的分支那一行上提示你可以通过`git remote prune`移除这个分支。（也就是说你可以刷新本地仓库与远程仓库的保持这些改动的同步。）
+
+
+```git
+git remote prune origin
+```
+
+执行之后，这个在远程删除的分支在你本地仓库也将被删除。再通过`git branch –a`来查看就可以看到其已经被删除了：
+
+![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049942671.png)
+
+
 
