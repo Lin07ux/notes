@@ -529,6 +529,26 @@ example1.items = example1.items.filter(function (item) {
 })
 ```
 
+如果要设置数组中某个元素的值，可以使用`$set`方法：
+
+```JavaScript
+// 与 `example1.items[0] = ...` 相同，但是能触发视图更新
+example1.items.$set(0, { childMsg: 'Changed!'})
+```
+
+删除数组中的某个元素，需要调用 Vue 处理过的数组变异方法`splice()`，但是也可以直接使用 Vue 提供的`$remove()`方法，它会在内部实现中调用了`splice()`。
+
+```JavaScript
+// 不必像下面这样使用
+var index = this.items.indexOf(item)
+if (index !== -1) {
+  this.items.splice(index, 1)
+}
+
+// 可以直接这样使用
+this.items.$remove(item);
+```
+
 可能你觉得这将导致 Vue.js 弃用已有 DOM 并重新渲染整个列表——幸运的是并非如此。 Vue.js 实现了一些启发算法，以最大化复用 DOM 元素，因而用另一个数组替换数组是一个非常高效的操作。
 
 #### track-by
@@ -563,7 +583,7 @@ example1.items = example1.items.filter(function (item) {
 #### 使用 Object.freeze()
 在遍历一个数组时，如果数组元素是对象并且对象用`Object.freeze()`冻结，你需要明确指定 `track-by`。在这种情况下如果 Vue.js 不能自动追踪对象，将给出一条警告。
 
-#### 边里对象
+#### 遍历对象
 也可以使用`v-for`遍历对象。除了`$index`之外，作用域内还可以访问另外一个特殊变量`$key`。
 
 ```html
@@ -1018,7 +1038,21 @@ Vue.filter('extract', function (value, keyToExtract) {
 </select>
 ```
 
-但是有时我们想绑定 value 到 Vue 实例的一个动态属性上，这时可以用`v-bind`实现，并且这个属性的值可以不是字符串。
+但是有时我们想绑定 value 到 Vue 实例的一个动态属性上(需要在 data 中定义用到的动态属性)，这时可以用`v-bind`实现，并且这个属性的值可以不是字符串。
+
+比如，有下面的 Vue 声明：
+
+```JavaScript
+new Vue({
+    el: '...',
+    data: {
+        a: 'this is a',
+        b: { value: 'this is b' }
+    }
+});
+```
+
+可以将 form 控件的值动态绑定到这个实例中的 a、b 属性。
 
 * checkbox
 
