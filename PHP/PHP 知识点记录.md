@@ -3,10 +3,24 @@ json_encode 后保持中文编码函数：`json_encode("试试", JSON_UNESCAPED_
 
 json_decode 默认情况下，会把 json 解码成一个对象，如果要转成关联数组，则需要设置第二个参数为 true：`json_decode($arr, true);`
 
+### PHP 对特殊字符串的处理方案
+普通的字符串截取，一般采用`substr()`或者`mb_substr()`。但这两个方法仅限于英文阿拉伯数字的处理，对中文的截取处理是很不友好的。不仅涉及到字符编码 gbk 和 utf-8 的区分，还有一些乱码情况。因此对于字符串的截取，特别是包含中文的字符串，首推正则匹配处理：
+
+`preg_match_all(regexp, string, resultArray);`
+
+`preg_replace(regexp, replaceString, string);`
+
+```php
+$chstr = "交通运输大类";
+$match = "/类|类大/";
+$chstr = preg_replace($match,"",$chstr);
+echo $chstr;	// "交通运输大"
+```
+
 ## 隐藏 PHP 信息
 一些简单的方法可以帮助隐藏 PHP，这样做可以提高攻击者发现系统弱点的难度。
 
-* 在`php.ini`文件里设置`expose_php = off`，可以减少他们能获得的有用信息。
+* 在`php.ini`文件里设置`expose_php = off`，可以去除响应头信息中的`X-Powered_By`，可以减少他们能获得的有用信息。
 * 另一个策略就是让 web 服务器用 PHP 解析不同扩展名。无论是通过`htaccess`文件还是 Apache 的配置文件，都可以设置能误导攻击者的文件扩展名。
 
 **使PHP看上去像其它的编程语言**
