@@ -109,6 +109,11 @@ $data = array(
     'last'  => 'Lin',
 );
 view('welcome', $data);
+
+// 或者
+$name = 'Lin07ux';
+$age = 26;
+view('viewName', compact('name', 'age'));
 ```
 
 2. 使用`with()`方法
