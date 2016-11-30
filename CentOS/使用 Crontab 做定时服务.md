@@ -49,16 +49,17 @@
 ### 注意事项
 1. 手动可执行任务，但无法自动执行，需要注意环境变量
 
-* 脚本中涉及文件路径时写全局路径
-* 脚本执行要用到 java 或其他环境变量时，通过 source 命令引入环境变量
+    这是由于，当我们 ssh 进服务器的时候，会自动加载`~/.bashrc`以及`/etc/profile`等环境变量配置文件。但是 crontab 任务运行的时候，不会做这个事情，而是由系统调用起一个最小的环境来做这些操作。即：**crontab不会加载环境变量配置文件**。
+    
+    * 脚本中涉及文件路径时写全局路径
+    * 脚本执行要用到 java 或其他环境变量时，通过 source 命令引入环境变量
 
-```shell
-cat start_cbp.sh
-#!/bin/sh
-source /etc/profile
-export RUN_CONF=/home/d139/conf/platform/cbp/cbp_jboss.conf
-/usr/local/jboss-4.0.5/bin/run.sh -c mev &
-```
+    ```shell
+    #!/bin/sh
+    source /etc/profile
+    export RUN_CONF=/home/d139/conf/platform/cbp/cbp_jboss.conf
+    /usr/local/jboss-4.0.5/bin/run.sh -c mev &
+    ```
 
 2. 新创建的 cron job，不会马上执行，至少要过 2 分钟才执行。如果重启 cron 则马上执行。
 
