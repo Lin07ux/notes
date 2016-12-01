@@ -121,3 +121,20 @@ html, body { height: 100%; }
 * 但是如果只用`~ li`，是不会匹配到第一个 li 的，所以又加上了`li:nth-last-child(n+4):first-child`。
 
 
+### 隐藏鼠标
+
+```css
+.hide-cursor {
+    cursor: none!important;
+}
+```
+
+### 文字模糊
+
+```css
+.text-fuzzy {
+    color: transparent;
+    text-shadow: #111 0 0 5px;
+}
+```
+
