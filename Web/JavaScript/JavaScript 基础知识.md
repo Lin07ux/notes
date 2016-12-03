@@ -1,3 +1,44 @@
+## 基本类型
+### Boolean
+布尔类型有两个值：true、false。分别称为真值和假值。
+
+在 JavaScript 中下面的这些值都是假值：
+
+* false
+* 0 (数字 0)
+* '' (空字符串)
+* null
+* undefined
+* NaN
+
+除了上述的六个值之外，剩下的都是真值，包括字符串"0"、字符串"false"、空函数、空数组、空对象。
+
+假值的六个值中，`false`、`0`、`''`三者是相等的(`==`)。
+
+```JavaScript
+var c = (false == 0);  // true
+var d = (false == ""); // true
+var e = (0 == "");     // true
+```
+
+而`null`、`undefined`则只相互相等，而和其他的假值不相等：
+
+```JavaScript
+var f = (null == false); // false
+var g = (null == null);  // true
+var h = (undefined == undefined); // true
+var i = (undefined == null);      // true
+```
+
+最后一个假值`NaN`则不和任何值相等，包括其自身：
+
+```JavaScript
+var j = (NaN == null); // false
+var k = (NaN == 0);    // false
+var l = (NaN == NaN);  // false
+```
+
+
 ## 事件
 DOM 事件流是先由外向内先进行捕获阶段，然后再向外冒泡，相应的事件回调也会按照这个顺序进行。不过，对于触发事件的元素来说则并不完全相同：触发元素是事件的目标元素，它的事件的捕获和触发是根据事件注册的先后顺序的不同来执行的，如果先注册的是捕获阶段的事件，则先进行捕获，否则先进行冒泡。
 
