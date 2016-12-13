@@ -144,6 +144,43 @@ transform 影响的是视觉渲染，而不是布局。因此，除以下情况�
 
 这个因为`overflow`生成滚动条从而影响布局的反例，也发生于`position: relative;`再进行偏移的情况。
 
+### 对 HTM 文档流的影响
+对于 transform 对 HTML 文档流的影响，[W3C spec](http://www.w3.org/TR/css3-2d-transforms/#transform-rendering) 中有如下描述：
+
+> In the HTML namespace, any value other than none for the transform results in the creation of both a stacking context and a containing block. The object acts as a containing block for fixed positioned descendants.
+
+大致意思是：
+
+> 在 HTML 内，没有其他操作比对一个即是层叠对象又是容器块的 DOM 进行 transform 变换更没有意义的了。这类对象也扮演着`positioned`(主要是`absolute/fixed`)子孙元素容器的角色。
+
+在普通 HTML 文档流中，DOM 元素的定位方式默认是`position: static;`，是从上往下、从左往右的排布。而我们可以更改`position`设置而调整其位置。但是对于`position: fixed;`的 DOM 元素，transform 操作会更改其表现。
+
+比如，对于如下的 HTML 代码：
+
+```html
+<body>
+    <header style="position: fixed; top: 0; width: 100%; background: red;">header</header>
+    <div style="height: 2000px;"></div>
+    <footer style="position: fixed; bottom: 0; width: 100%; background: blue;">footer</footer>
+</body>
+```
+
+`header`和`footer`元素是分别固定在页面顶部和底部，而不会随着页面的滚动而滚动的。但是如果给`html`或`body`元素添加上`transform: translate3d(0,0,0);`，就会发现，原本`position: fixed;`的两个元素都不听话了，会随着屏幕进行滚动。
+
+这是由于：`position: fixed;`的参考对象并不是大家所说的屏幕，而是一个`viewport`对象，一般地一个页面(`document.documentElement`)会生成一个`viewport`。`fixed`元素都是以此为容器进行定位的。 
+
+当给`body`(或`html`)加了 transform 属性以后，整个 body DOM 既会产生相应的变换，但此时的“整个”仅是指`body`下标准文档流元素，对于那些`position: absolute; / position: fixed;`元素，因为已经脱离了 body 所属的文档流，所以无法凭借 body 的变换使自己也自然的达到相应的变换效果。
+
+此时，浏览器为了让此类 DOM 得到相应的变化，会产生一个新的 viewport，这个 viewport 作为定位元素的容器存在，包含着`fixed`和`absolute`定位的元素。同时这个 viewport 会响应 body 的 transform 变换效果，从而让里面那些脱离文档流的 positioned 元素也能进行变换。
+
+另一方面，当这个 viewport 随着“本尊” DOM 同步滚动的时候，会带着`fixed`元素一块滚，此时会产生一种类似`absolute`的诡异效果。
+
+> 在一些移动端设备(或 APP)上，给`<video>`标签的播放默认开启的硬解码，此时也会产生上述现象，视频会"浮"在页面上面，不会随页面元素正常滚动。
+> 
+> 还有一些低版本移动端浏览器上，也会出现类似的情况。
+
+**其实上面的情况不只会发生在`body`上，一个任意的 DOM 添加了 transform 之后都会生产一个类似 viewport 的效果**。
+
 ### left、top 等常规属性对 3d transform 的影响
 相对于 transform 的`translate3d()`这类改变空间位置的变换函数，原来 css 里就有的定位属性`left`、`top`似乎会让情况变得很复杂。
 
@@ -155,4 +192,5 @@ transform 影响的是视觉渲染，而不是布局。因此，除以下情况�
 
 ## 参考
 1. [3d transform 坐标系统](https://segmentfault.com/a/1190000004233074)
+2. [CSS3 transform 对HTML文档流带来的影响](https://segmentfault.com/a/1190000007785250)
 
