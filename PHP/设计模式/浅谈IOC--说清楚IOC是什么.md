@@ -95,15 +95,15 @@ In my experience, IoC using the Spring container brought the following advantage
 
 
 ## 6. 参考博文
-[1] [架构师之路(39)](http://blog.csdn.net/wanghao72214/article/details/3969594)---IoC框架 ,王泽宾，CSDN, 2009.
+[1]. [架构师之路(39)](http://blog.csdn.net/wanghao72214/article/details/3969594)---IoC框架 ,王泽宾，CSDN, 2009.
 
-[2] [Inversion of Control Containers and the Dependency Injection pattern](http://www.martinfowler.com/articles/injection.html) ,Martin Fowler,2004.
+[2]. [Inversion of Control Containers and the Dependency Injection pattern](http://www.martinfowler.com/articles/injection.html) ,Martin Fowler,2004.
 
-[3] [深度理解依赖注入（Dependence Injection）](http://www.cnblogs.com/xingyukun/archive/2007/10/20/931331.html),EagleFish(邢瑜琨), 博客园, 2007.
+[3]. [深度理解依赖注入（Dependence Injection）](http://www.cnblogs.com/xingyukun/archive/2007/10/20/931331.html),EagleFish(邢瑜琨), 博客园, 2007.
 
-[4] [Inside ObjectBuilder](http://blog.csdn.net/Code6421/article/details/1282139) ,黄忠成, CSDN, 2006.
+[4]. [Inside ObjectBuilder](http://blog.csdn.net/Code6421/article/details/1282139) ,黄忠成, CSDN, 2006.
 
-[5] [[转]Object Builder Application Block](http://www.cnblogs.com/zhenyulu/articles/641728.html) ，吕震宇,博客园, 2006.
+[5]. [[转]Object Builder Application Block](http://www.cnblogs.com/zhenyulu/articles/641728.html) ，吕震宇,博客园, 2006.
 
-[6] [](http://forum.springsource.org/showthread.php?55015-I-still-don-t-get-why-IoC-is-important) link
+[6]. [](http://forum.springsource.org/showthread.php?55015-I-still-don-t-get-why-IoC-is-important) link
 
