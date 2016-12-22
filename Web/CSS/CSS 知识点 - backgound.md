@@ -44,6 +44,29 @@ background-position: left      top 15px;  /*  0px, 15px */
 background-position: left 10px top    ;   /* 10px,  0px */
 ```
 
+### background-clip 背景剪裁
+背景裁剪确定了背景画布的区域。可应用于所有元素。无继承性。
+
+可选值有：
+
+- `border-box`：背景图片或者颜色描绘区域延伸到边框边界，这是默认值
+- `padding-box`：背景图片或者颜色描绘区域只能在盒子 padding 区域
+- `content-box`：背景图片或者颜色描绘只能在内容区域起作用。
+
+### background-origin 背景图片原点
+背景图片原点原点属性严格意义上来说是针对 css 中使用图片属性`background-image`的情况下使用的，因为只有引用了背景图片之后才能发挥其原点的微妙区别。
+
+可选值：
+
+- `padding-box`：这是它的默认值，与背景裁剪属性默认值有所不同。该值确定了背景相对填充框作为原点位置，并且拉伸整个元素 padding 盒子，即从左上角到右下角拉伸，整个背景被拉伸自适应元素的宽高，这点在有`border-width`的时候特别明显；
+- `border-box`：规定了背景图片原点位置相对边框盒子
+- `content-box`：规定了背景图片原地位置相对内容区盒子
+
+**注意**：
+
+* 1. 假如背景图片使用了`background-attachment: fixed`那么这个值是不起作用的，背景区域就是初始包含块。
+* 2. 假如`background-clip: padding-box`，`background-origin: border-box`，`background-position: top left`(也就是初始位置)，并且元素有一个非 0 数值边框宽度，那么左侧和顶部边框的图片会被裁剪。
+
 
 ### 转摘
 [你真的了解background-position](http://web.jobbole.com/89957/)
