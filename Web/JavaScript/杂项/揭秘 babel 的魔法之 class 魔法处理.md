@@ -246,7 +246,187 @@ _createClass(
 
 这样，Babel 的魔法就一步一步被揭穿了。
 
+### Class 的继承
+接下来讲解 Babel 如何处理 ES6 Class 里面的继承功能，同样，这其实是一系列语法糖的实现。
+
+#### ES6 实现继承
+首先，我们定义一个父类：
+
+```JavaScript
+class Person {
+    constructor(){
+        this.type = 'person'
+    }
+}
+```
+
+然后，实现一个 Student 类，这个“学生”类继承“人”类：
+
+```JavaScript
+class Student extends Person {
+    constructor(){
+        super()
+    }
+}
+```
+
+从简出发，我们定义的 Person 类只包含了`type`为`person`的这一个属性，不含有方法。所以我们`extends + super()`之后，Student 类也继承了同样的属性。如下：
+
+```JavaScript
+var student1 = new Student();
+student1.type;  // "person"
+```
+
+我们进一步可以验证原型链上的关系：
+
+```JavaScript
+student1 instanceof Student // true
+student1 instanceof Person // true
+student1.hasOwnProperty('type') // true
+```
+
+一切看上去 cool 极了，我们实现了 ES6 里面的继承。并且用`instanceof`验证了 ES6 中一系列的实质就是“魔法糖”的本质。那么，经过 Babel 编译，我们的代码是什么样呢？
+
+#### Babel transformation
+**Step1** Person 定义：
+
+```JavaScript
+class Person {
+    constructor(){
+        this.type = 'person'
+    }
+}
+```
+
+**Step2** 观察 Student 子类：
+
+```JavaScript
+class Student extends Person {
+    constructor(){
+        super()
+    }
+}
+```
+
+编译结果为：
+
+```JavaScript
+// 实现定义 Student 构造函数，它是一个自执行函数，接受父类构造函数为参数
+var Student = (function(_Person) {
+    // 实现对父类原型链属性的继承
+    _inherits(Student, _Person);
+    
+    // 将会返回这个函数作为完整的 Student 构造函数
+    function Student() {
+        // 使用检测
+        _classCallCheck(this, Student);  
+        // _get 的返回值可以先理解为父类构造函数       
+        _get(Object.getPrototypeOf(Student.prototype), 'constructor', this).call(this);
+    }
+
+    return Student;
+})(Person);
+
+// _x 为 Student.prototype.__proto__
+// _x2 为 'constructor'
+// _x3 为 this
+var _get = function get(_x, _x2, _x3) {
+    var _again = true;
+    _function: while (_again) {
+        var object = _x,
+            property = _x2,
+            receiver = _x3;
+        _again = false;
+        // Student.prototype.__proto__ 为 null 的处理
+        if (object === null) object = Function.prototype;
+        
+        // 以下是为了完整复制父类原型链上的属性，包括属性特性的描述符
+        var desc = Object.getOwnPropertyDescriptor(object, property);
+        if (desc === undefined) {
+            var parent = Object.getPrototypeOf(object);
+            if (parent === null) {
+                return undefined;
+            } else {
+                _x = parent;
+                _x2 = property;
+                _x3 = receiver;
+                _again = true;
+                desc = parent = undefined;
+                continue _function;
+            }
+        } else if ('value' in desc) {
+            return desc.value;
+        } else {
+            var getter = desc.get;
+            if (getter === undefined) {
+                return undefined;
+            }
+            return getter.call(receiver);
+        }
+    }
+};
+
+function _inherits(subClass, superClass) {
+    // superClass 需要为函数类型，否则会报错
+    if (typeof superClass !== 'function' && superClass !== null) {
+        throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+    }
+    
+    // Object.create 第二个参数是为了修复子类的 constructor
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {
+            value: subClass,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        }
+    });
+    
+    // Object.setPrototypeOf 是否存在做了一个判断，否则使用 __proto__
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+```
+
+虽然我加上了注释，但是这一坨代码仍然看上去恶心极了！没关系，下面我们进行拆解，你很快就能明白。
+
+**Step3** 抽丝剥茧。我们首先看 Student 的编译结果：
+
+```JavaScript
+var Student = (function(_Person) {
+    _inherits(Student, _Person);
+
+    function Student() {
+        _classCallCheck(this, Student);            
+        _get(Object.getPrototypeOf(Student.prototype), 'constructor', this).call(this);
+    }
+
+    return Student;
+})(Person);
+```
+
+这是一个自执行函数，它接受一个参数 Person（就是他要继承的父类），返回一个构造函数 Student。
+
+上面`_inherits`方法的本质其实就是让 Student 子类继承 Person 父类原型链上的方法。它实现原理可以归结为一句话(ES6)：
+
+```JavaScript
+Student.prototype = Object.create(Person.prototype);
+Object.setPrototypeOf(Student, Person)
+```
+
+注意，`Object.create`接收第二个参数，这就实现了对 Student 的`constructor`修复。如果你不了解`Object.create`，那么请 [参考这里](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create)。
+
+以上通过`_inherits`实现了对父类原型链上属性的继承，那么对于父类的实例属性（就是`constructor`定义的属性）的继承，也可以归结为一句话：
+
+```JavaScript
+Person.call(this);
+```
+
+如果你还不理解使用`call`或者`apply`或者`bind`来改变 JS 中`this`的指向，那么请[参考这篇文章](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)。
+
+
 ### 转摘
 [揭秘babel的魔法之class魔法处理](https://segmentfault.com/a/1190000008114593)
+
+[揭秘babel的魔法之class继承的处理2](https://segmentfault.com/a/1190000008136903)
 
 
