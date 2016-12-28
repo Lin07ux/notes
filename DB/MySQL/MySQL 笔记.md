@@ -45,6 +45,9 @@ ALTER TABLE device_label ADD UNIQUE(`origin_model`);
 
 # 修改表引擎
 ALTER TABLE device_label engine=innodb;
+
+# 修改表名
+ALTER TABLE device_label RENAME device_label_new;
 ```
 
 ### TRUNCATE 清空
@@ -333,7 +336,7 @@ SET GLOBAL general_log_file='/var/log/mysql-query.log';
 
 > 参考：[general_log](https://dev.mysql.com/doc/refman/5.7/en/query-log.html)
 
-### ### 查看数据库文件位置
+### 查看数据库文件位置
 ```sql
 SHOW GLOBAL VARIABLES LIKE '%datadir%';
 ```

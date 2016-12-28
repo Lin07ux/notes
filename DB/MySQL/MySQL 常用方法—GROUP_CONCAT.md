@@ -22,7 +22,7 @@ GROUP_CONTACT([DISTINCT] <field> [, <field> ...] [ORDER BY ASC/DESC 排序字段
 +------+--------+
 |  1   |  10    |
 |  1   |  20    |
-|  1   |  10    |
+|  1   |  20    |
 |  2   |  20    |
 |  3   |  30    |
 |  3   |  50    |
