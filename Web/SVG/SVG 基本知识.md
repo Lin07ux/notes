@@ -1,15 +1,26 @@
-## 基础
+## 简介
+SVG（Scalable Vector Graphics）是可缩放矢量图形的缩写，基于可扩展标记语言 XML 来描述二维矢量图形的一种图形格式。
 
-`fill` 每个元素都有该属性，用于表示填充颜色。其值可以是有效的 CSS 颜色值(颜色名、十六进制色号、RGB、RGBA 等)。
+特点如下：
 
-路径动画，以操作 path 中两个属性值`stroke-dasharray`和`stroke-dashoffset`来实现
+* 和 PNG、GIF 比较起来，**文件体积更小，且可压缩性强**；
+* 由于采用 XML 描述，可以**轻易的被读取和修改**，描述性更强；
+* 在放大或改变尺寸的情况下其图形质量不会有所损失，与分辨率无关，是**可伸缩**的；
+* SVG 是面向未来 (W3C 标准)的，同时浏览器兼容性好；
+* 使用 CSS 和 JS 能很**方便的进行控制**，同时可以很轻易地描述路径动画；
 
+SVG 文件可以像图片文件一样在 HTML 和 CSS 中被引用。
 
 
 ## SVG 基本形状
 SVG 中，预定义了 6 种基本的形状：`rect`、`circle`、`ellipse`、`line`、`polyline`、`polygon`，这六种基本形状都可以通过`path`路径转换实现。
 
 ![SVG 六种基本形状](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484654797629.png)
+
+这六种形状的基本属性如下：
+
+![六种形状的基本属性](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1485783241809.png)
+
 
 ### 1. rect 矩形
 SVG 中`rect`元素用于绘制矩形、圆角矩形，含有 6 个基本属性用于控制矩形的形状以及坐标，具体如下：
@@ -322,8 +333,71 @@ function poly2path (points, isPolygon) {
 }
 ```
 
+## 其他重要元素
+* `<svg>`：SVG 的根元素，并且可以相互嵌套；
+* `<g>`：用来将 SVG 中的元素进行分组操作，分组后可以看成一个单独的形状，统一进行转换，同时 g 元素的样式可以被子元素继承，但是它没有 X, Y 属性，不过可以通过`transform`来移动它；
+* `<def>`：用于定义在 SVG 中可重用的元素，def 元素不会直接展示出来，可以通过 use 元素来引用，一般用于代码复用；
+* `<use>`：通过它来复用 def 元素，也包括 <g>、<symbol> 元素，使用`<use xlink: href="#id"/>`即可调用；
+* `<text>`：可以用它来实现 word 中的那种“艺术字”，很神奇的一个功能；
+* `<image>`：用它可以在 SVG 中嵌套对应的图片，并可以在图片上和周围做对应的处理。
+
+## 样式
+### stroke 轮廓
+stroke 用于设置绘制对象线条的颜色，有如下属性：
+
+* `stroke-width`：设置轮廓的宽度；
+* `stroke-linecap`：设置轮廓结尾处的渲染方式，可取值有`butt`(直接一刀切断)、`square`(保留一点切断)、`round`(圆弧切断)；
+* `stroke-linejoin`：用于设置两条线之间的连接方式，可取值有`miter`(尖角连接)、`round`(圆弧连接)、`bevel`(切断连接)；
+* `stroke-opacity`：用于设置描边的不透明度；
+* `stroke-dasharray` + `stroke-dashoffset`：前者用于使用虚线呈现 SVG 形状的描边，需要提供一个数值数组来描述，定义破折号和空格的长度；后者用于设置虚线模式中的开始点。
+
+常见的路径动画就是以操作 path 元素中`stroke-dasharray`和`stroke-dashoffset`来实现的。
+
+### fill 填充
+fill 用来描述 SVG 对象内部的颜色，有如下两个属性：
+
+* `fill-opacity`：用于设置填充颜色的不透明度；
+* `fill-rule`：用于设置填充的方式，可取值有`nonzero`、`evenodd`两个值：
+    - `nonzero`：从一个点往任何方向上绘制一条射线，形状中的路径每次穿过此射线时，如果路径从左到右穿过射线，则计数器加 1，如果路径从右到左穿过射线，则计数器减 1。计数器总数为 0 时候，则该点被认为在路径外。如果计数器非 0，则该点被认为在路径内。
+    - `evenodd`：从一个点往任何方向上绘制一条射线。每次路径穿过射线，计数器加 1。如果总数是偶数，则点在外部。如果总计数为奇数，点在形状内。
+
+每个元素都有该属性，用于表示填充颜色。其值可以是有效的 CSS 颜色值(颜色名、十六进制色号、RGB、RGBA 等)。
+
+### transform 变换
+此属性和 css3 中的`transform`相类似，有`translate`、`rotate`、`scale`、`skew`(`skewX`和`skewY`函数使 x 轴和 y 轴倾斜)、`matrix`(矩阵变换)。这些变换可以将它们组合进行变换。
+
+
+## 动画
+在 SVG 中动画元素主要分成如下 4 类，同时也可以自由组合。
+
+* `<set>`：用于设置延迟，譬如设置 5s 后元素位置颜色变化，但是此元素没有动画效果；
+* `<animate>`：基础动画属性，用于实现单属性的动画过度效果；
+* `<animateTransform>`：实现 transform 变换动画效果，可以类比 CSS3 中的 transform；
+* `<animateMotion>`：实现路径动画效果，让元素沿着对于 path 运动。
+
+有了元素以后还需要有对应的属性用来表示动画的特征，譬如：要动画的元素属性名称、起始值、结束值、变化值、开始时间、结束时间、重复次数、动画速度曲线函数等等。
+
+![动画参数](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1485784622866.png)
+
+
+## 优化和工具
+### svgo
+svgo 一个比较厉害的压缩优化 SVG 的工具，可以去除我们编写的 SVG 中的无用信息，同时对代码进行压缩，项目地址：[https://github.com/svg/svgo](https://github.com/svg/svgo)。
+
+### SVGOMG
+SVGOMG 是 svgo 的可视化界面工具，操作起来很方便，同时还提供了一些其他有用的功能，展示地址：[SVGOMG - SVGO's Missing GUI](https://jakearchibald.github.io/svgomg/)。
+
+### Snap.svg
+Snap.svg 一个用于操作 SVG 的 JavaScript 库，可以写出更加复杂的 SVG 效果，同时文档超级齐全，项目地址：[Snap.svg - Home](http://snapsvg.io/)。
+
+### Convert image to the SVG format
+我们可以通过这个转换平台，将普通图片转成 SVG 的格式。此处转换可能结果不是我们想要的，但是可以将其当做初成品，在此基础上在进行调整优化，最终实现 SVG 的转换。
+
+平台地址：[http://image.online-convert.com/convert-to-svg](http://image.online-convert.com/convert-to-svg)。
+
 ## 转摘
 1. [聊聊 SVG 基本形状转换那些事](https://aotu.io/notes/2017/01/16/base-shapes-to-path/)
 2. [SVG (一) 图形, 路径, 变换总结; 以及椭圆弧线, 贝塞尔曲线的详细解释](https://segmentfault.com/a/1190000004393817)
 3. [路径 - MDN](https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths)
+4. [SVG 新司机开车指南](https://zhuanlan.zhihu.com/p/25016633)
 
