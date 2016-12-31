@@ -334,12 +334,79 @@ function poly2path (points, isPolygon) {
 ```
 
 ## 其他重要元素
-* `<svg>`：SVG 的根元素，并且可以相互嵌套；
-* `<g>`：用来将 SVG 中的元素进行分组操作，分组后可以看成一个单独的形状，统一进行转换，同时 g 元素的样式可以被子元素继承，但是它没有 X, Y 属性，不过可以通过`transform`来移动它；
-* `<def>`：用于定义在 SVG 中可重用的元素，def 元素不会直接展示出来，可以通过 use 元素来引用，一般用于代码复用；
-* `<use>`：通过它来复用 def 元素，也包括 <g>、<symbol> 元素，使用`<use xlink: href="#id"/>`即可调用；
-* `<text>`：可以用它来实现 word 中的那种“艺术字”，很神奇的一个功能；
-* `<image>`：用它可以在 SVG 中嵌套对应的图片，并可以在图片上和周围做对应的处理。
+### <svg>
+SVG 的根元素，并且可以相互嵌套。
+
+```xml
+<svg width="200" height="200">
+    <rect x="10" y="10" width="100" height="80" stroke="red" fill="#ccc" />
+    <circle cx="120" cy="80" r="40" stroke="#00f" fill="none" stroke-width="8" />
+</svg>
+```
+
+### <g>
+用来将 SVG 中的元素进行分组操作，分组后可以看成一个单独的形状，统一进行转换，同时 g 元素的样式可以被子元素继承，但是它没有 X, Y 属性，不过可以通过`transform`来移动它。
+
+```xml
+<svg width="200" height="200">
+    <g transform="translate(-10, 350)" stroke-width="20" stroke-linejoin="round">
+        <path d="M0,0 Q170,-50 260, -190 Q310, -250 410,-250" fill="none" />
+    </g>
+</svg>
+```
+
+### <defs> 与 <use>
+这两者结合使用可以进行代码复用。
+
+其中，前者用于定义在 SVG 中可重用的元素，defs 元素不会直接展示出来；后者通过引用 defs 元素的 ID 来进行复用展示。
+
+```xml
+<svg width="200" height="200">
+    <defs>
+        <g id="shapeGroup">
+            <rect x="10" y="10" width="100" height="80" stroke="red" fill="#ccc" />
+            <circle cx="120" cy="80" r="40" stroke="#00f" fill="none" stroke-width="8" />
+        </g>
+    </defs>
+    <use xlink:href="#shapeGroup" transform="translate(20,0) scale(0.5)" />
+    <use xlink:href="#shapeGroup" transform="translate(50,0) scale(0.7)" />
+    <use xlink:href="#shapeGroup" transform="translate(80,0) scale(0.25)" />
+</svg>
+```
+
+### 图案和渐变
+图案 pattern 类似于 Canvas 中的背景图做法。渐变也分为线性渐变和放射性渐变，和 Canvas 类似。
+
+```xml
+<svg width="200" height="200">
+    <defs>
+        <pattern id="GravelPattern" patternUnits="userSpaceOnUse" x="0" y="0" width="100" height="67" viewBox="0 0 100 67">
+            <image x="0" y="0" width="100" height="67" xlink:href:"gravel.jpg"></image>
+        </pattern>
+        <linearGradient id="Gradient">
+            <stop offset="0%" stop-color="#000"></stop>
+            <stop offset="100%" stop-color="#f00"></stop>
+        </linearGradient>
+    </defs>
+    <rect x="10" y="10" width="100" height="80" stroke="red" fill="url(#Gradient)" />
+    <circle cx="120" cy="80" r="40" stroke="#00f" fill="url(#GravelPattern)" stroke-width="8" />
+</svg>
+```
+
+### <text>
+可以用它来实现 word 中的那种“艺术字”，很神奇的一个功能。
+
+```xml
+<svg width="200" height="200">
+    <text x="10" y="80" font-family="Droid Sans" stroke="#00f" fill="#00f" font-size="18px">hello SVG</text>
+</svg>
+```
+
+### <image>
+用它可以在 SVG 中嵌套对应的图片，并可以在图片上和周围做对应的处理。
+
+需要注意的是，image 引用的外部资源，不是通过 src 属性，而是通过`xlink:href`属性。
+
 
 ## 样式
 ### stroke 轮廓
