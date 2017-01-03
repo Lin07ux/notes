@@ -50,9 +50,7 @@ mysql> show variables like '%char%';
 ### 客户端
 使用不同的编程语言的时候，可能会对 utf8mb4 不支持，不能在连接字符串中指定的，此时可以在获取连接之后，执行`set names utf8mb4`来解决这个问题。
 
-比如，对于 ThinkPHP 框架，在配置文件中设置数据库连接字符集为 utf8mb4 之后(`'DB_CHARSET'=>'utf8mb4'`)，会出现错误，提示无法使用这个字符集。
-
-此时，由于我们已经在 mysql 的配置文件中设置了`init-connect="SET NAMES utf8mb4"`，所以直接将 ThinkPHP 配置文件中的数据库字符集设置为空(`'DB_CHARSET'=>''`)，则连接数据库之后，服务器会自动设置连接字符集为 utf8mb4，此时写入和读取 emoji 表情就能正常了。
+此时，由于我们已经在 mysql 的配置文件中设置了`init-connect="SET NAMES utf8mb4"`，所以直接将变成框架配置文件中的数据库字符集设置为空(`'DB_CHARSET'=>''`)，则连接数据库之后，服务器会自动设置连接字符集为 utf8mb4，此时写入和读取 emoji 表情就能正常了。
 
 
 ## 扩展
