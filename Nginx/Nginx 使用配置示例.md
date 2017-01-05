@@ -198,4 +198,13 @@ server {
 }
 ```
 
+### 10. 将无 www 的访问跳转到 www 子域名
+当需要将无子域名的访问都跳转到 www 子域名上时，可以在 server 块中使用如下的配置：
+
+```conf
+if ($host = 'domain.com') {
+   return 301 http://www.$host$request_uri;
+}
+```
+
 
