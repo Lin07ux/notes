@@ -4,3 +4,13 @@
 - `$document_uri` 表示请求的 URI，和`$uri`相同。
 
 
+### 关闭错误日志
+`error_log off`并不能关闭日志记录功能，而是将日志文件写入一个文件名为`off`的文件中。
+
+如果你想关闭错误日志记录功能，应使用以下配置： 
+
+```conf
+error_log /dev/null crit; 
+```
+
+
