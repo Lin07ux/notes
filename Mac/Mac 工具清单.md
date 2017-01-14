@@ -128,6 +128,11 @@ GIMP，PS该有的，它基本都有。
 
 软件主页：[Gliffy Diagrams 主页](https://www.gliffy.com/)
 
+### IINA
+为 macOS 设计的现代视频播放器，比 QuickTime 支持更多的格式。
+
+[Github](https://github.com/lhc70000/iina)
+
 
 ## 编程开发
 ### Dash 文档 API 查看
