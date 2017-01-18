@@ -1,7 +1,3 @@
-### transform 问题
-在 Chrome 和 Opera 浏览器下，使用 CSS3 的`transform: translate(0, 0)`转化位置节点，其所有使用`position:fixed`定位的子孙节点的定位功能均无效。
-
-
 ### 实现父选择器效果
 转摘：[如何在CSS中实现父选择器效果？ -- 张鑫旭](http://www.zhangxinxu.com/wordpress/2016/08/css-parent-selector/)
 

@@ -93,8 +93,37 @@ animation-fill-mode: none | forwards | backwards | both;
 
 需要注意的是：
 
-* **对于关键帧动画来说，timing function 作用于一个关键帧周期而非整个动画周期**，即从关键帧开始开始，到关键帧结束结束。
+* **对于关键帧动画来说，timing function 作用于一个关键帧周期而非整个动画周期**，即它会在每一个关键帧都会被执行，而不是应用于动画的整个部分。
 * 对于逐帧动画，则是让每帧动画都瞬间完成。
+
+#### Steps() 函数
+动画的时序函数的可选值中，`ease`、`ease-in`、`ease-out`、`ease-in-out`、`linear`都是三次贝塞尔曲线的特例，效果都是通过三次贝塞尔曲线来做的。
+
+而`step-start`、`step-end`和`steps()`则是另一种方式的动画：逐帧动画。
+
+> 该函数也可以用于 transition 缓动效果中。
+
+`steps`函数指定了一个阶跃函数，第一个参数指定了时间函数中的间隔数量（必须是正整数）；第二个参数可选，接受`start`和`end`两个值，指定在每个间隔的起点或是终点发生阶跃变化，默认为`end`。
+
+比如，对于如下的变化效果：
+
+```css
+div {
+    transition: 4s steps(4);
+}
+
+div:target {
+    left: 400px;
+}
+```
+
+当时间函数分别设置为`transition-time-function: step(4, start)``transition-time-function: step(4, end)`的时候，两者之间的差异如下图所描述：
+
+![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1487913239088.png)
+
+可以看到，`start`值，只要动画被触发，它就会立即开始，而`end`值，它开始于第一个步骤的结尾处（在这个案例中，将会在一秒钟之后被触发）。
+
+为了确保这个概述的足够全面，`steps()`函数还可以用两个预定义的关键字：`step-start`和`step-end`代替。前者相当于`steps(1, start)`，而后者是相当于`steps(1, end)`。
 
 
 ## 小技巧
@@ -240,6 +269,8 @@ $slider.on("webkitTransitionEnd", 'li', function() {
 4. 使用`perspective`属性设置镜头到元素平面的距离。
 
 
-
+## 参考
+1. [翻译 | 深入理解CSS时序函数](http://mp.weixin.qq.com/s/1L0Wmww3b9GNpMLwYIwO0g)
+2. [CSS3 timing-function: steps() 详解](http://www.tuicool.com/articles/neqMVr)
 
 
