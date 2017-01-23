@@ -77,14 +77,19 @@ MySQL 有很精细的权限控制：
 ```sql
 # 创建 hive 用户，并赋予从 localhost 上访问 db1 所有表的权限：
 CREATE USER 'hive'@'localhost' IDENTIFIED BY 'myPass';
-GRANT ALL ON db1.* TO 'hive'@'localhost';
+GRANT ALL PRIVILEGES ON db1.* TO 'hive'@'localhost';
 
 # 可简写为
-GRANT ALL ON db1.* TO 'hive'@'localhost' IDENTIFIED BY 'myPass';
+GRANT ALL PRIVILEGES ON db1.* TO 'hive'@'localhost' IDENTIFIED BY 'myPass';
 
 # 也可以只赋予某个表的 select 权限
 GRANT SELECT ON db2.invoice TO 'hive'@'localhost';
+
+# 改完之后刷新下权限
+FLUSH PRIVILEGES;
 ```
+
+> 如果需要用户能够在远程任何 IP 访问，将`localhost`改成`%`即可。
 
 ### 修改用户密码
 MySQL 的用户信息都存在 mysql 这个数据中的，所以修改用户密码的话，就直接更新这个数据库中 user 表中的相应数据即可：
