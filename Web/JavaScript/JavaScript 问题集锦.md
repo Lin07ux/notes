@@ -249,6 +249,26 @@ parseInt('3', 2);   // 二进制中只有数字 1、2，没有数字 3，所以�
 所以最终的结果是：`Uncaught TypeError`。
 
 
+### 运算符优先级
+
+```JavaScript
+var val = 'smtg';
+console.log('Value is ' + (val === 'smtg') ? 'Something' : 'Nothing');
+```
+
+**+ 的优先级高于 ?**
+
+所以上面表达式的执行顺序是：
+
+```JavaScript
+val === 'stmg'      // => true
+'Value is' + true   // => 'Value is true'
+'Value is true' ? 'Something' : 'Nothing'  // => 'Something'
+```
+
+所以结果为`'Something'`。
+
+
 
 
 
