@@ -268,7 +268,64 @@ val === 'stmg'      // => true
 
 所以结果为`'Something'`。
 
+### 最大的数值
 
+```JavaScript
+var END = Math.pow(2, 53);
+var START = END - 100;
+var count = 0;
+for (var i = START; i <= END; i++) {
+    count++;
+}
+console.log(count);
+```
+
+JS 里`Math.pow(2, 53)`是可以表示的最大值，最大值加 1 还是最大值。
+
+```javascript
+
+```
+
+所以 i 永远不可能大于 END，最终的结果是**无限循环**。
+
+
+### 稀疏数组和密集数组
+
+```JavaScript
+var ary = [0,1,2];
+ary[10] = 10;
+ary.filter(function(x) { return x === undefined;});
+```
+
+首先需要理解稀疏数组和密集数组。
+
+遍历稀疏数组时，会发现这个数组并没有元素，js 会跳过这些坑。
+
+```JavaScript
+//第一种情况
+var a = new Array(3); 
+console.log(a);   // [undefined x 3]
+
+//第二种情况
+var arr = [];
+arr[0] = 1;
+arr[100] = 100;
+
+arr.map(function (x, i) {return i}); // [0, 100]
+```
+
+而对于密集数组则可以看到对应的数组元素：
+
+```JavaScript
+var a = Array.apply(null, Array(3));
+console.log(a);   // [undefined, undefined, undefined]
+
+a.map(function (x, i) {return i}); // [0, 1, 2]
+```
+
+这道题目里的数组是一个稀疏数组，不会遍历到从索引 3 - 9 的“坑”，这些索引都不存在数组中，所以永远筛选不到等于 undefined 的值。
+
+所以结果为`[]`。
 
 
 
