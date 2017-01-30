@@ -327,5 +327,60 @@ a.map(function (x, i) {return i}); // [0, 1, 2]
 
 所以结果为`[]`。
 
+### Switch 的比较
+
+```JavaScript
+function showCase(value) {
+    switch(value) {
+    case 'A':
+        console.log('Case A');
+        break;
+    case 'B':
+        console.log('Case B');
+        break;
+    case undefined:
+        console.log('undefined');
+        break;
+    default:
+        console.log('Do not know!');
+    }
+}
+
+showCase(new String('A'));
+showCase(String('A'));
+```
+
+**switch是严格比较。**所以不仅仅要比较传入的值与 case 的值是否相等，还要他们的类型都匹配。
+
+另外，对于 JavaScript 中的基本类型的值，可以通过创建对象的方式创建，但是加`new`和不加`new`的时候，其结果并不完全一致。
+
+```JavaScript
+typeof (new String('A'));  // "object"
+typeof (String('A'));      // 'string'
+```
+
+所以第一个的函数调用的输出为`Do not know`，第二个函数的调用结果为：`Case A`。
+
+
+### 数值：奇偶与无穷大
+
+```JavaScript
+function isOdd(num) {
+    return num % 2 == 1;
+}
+function isEven(num) {
+    return num % 2 == 0;
+}
+function isSane(num) {
+    return isEven(num) || isOdd(num);
+}
+var values = [7, 4, '13', -9, Infinity];
+values.map(isSane);
+```
+
+解析：主要在于`-9 % 2 == -1`保留正负号。`Infinity % 2`得到的是`NaN`，但是注意`NaN`与所有值都不相等包括本身。
+
+所以结果为`[true, true, true, false, false]`。
+
 
 
