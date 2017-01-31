@@ -382,5 +382,25 @@ values.map(isSane);
 
 所以结果为`[true, true, true, false, false]`。
 
+### 数组 prototype
+
+```JavaScript
+Array.isArray( Array.prototype )
+```
+
+`Array.prototype`本身是一个数组，这只能牢牢记住了~。所以结果为`true`。
+
+### 数组的 bool 值
+
+```JavaScript
+var a = [0];
+if ([0]) {
+  console.log(a == true);
+} else {
+  console.log("wut");
+}
+```
+
+所有对象都是`true`，但是当执行`a == true`时会进行隐式转换。所以结果为`false`。
 
 
