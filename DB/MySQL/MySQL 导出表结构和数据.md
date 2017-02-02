@@ -1,8 +1,59 @@
 MySQL 可以使用安装时自带的 mysqldump 工具来导出数据库、表结构、表数据到一个 sql 文件中。
 
-> 导出一部分指定的数据，可以直接使用下面的这个 sql 语句：`select * from tbl_name into outfile 'file_name';`。这里到处的路径如果是相对路径，默认会是在`/var/lib/mysql/`文件夹中。如果要放在其他地方，最好指定绝对路径。
-> 
-> 导入数据的时候，可以登录进入 MySQL，然后执行`source /path/to/file.sql`语句来导入 sql 文件。
+### 基础导入导出
+#### 部分导入
+当仅需要导出一部分指定的数据，可以直接使用下面的这个 sql 语句：
+
+```sql
+SELECT * FROM tbl_name INTO OUTFILE 'file_name';
+```
+
+这里导出的路径如果是相对路径，默认会是在`/var/lib/mysql/`文件夹中。如果要放在其他地方，最好指定绝对路径。
+
+如果导出的时候，想要表头，可以借助 UNION 使用类似如下个是的命令来实现：
+
+```sql
+SELECT uid, nickname, realname, mobile, idcard
+FROM (
+  SELECT uid, nickname, realname, mobile, idcard 
+  FROM ims_mc_members 
+  UNION
+  SELECT 'uid', '昵称', '真实姓名', '手机号', '身份证号'
+) m 
+ORDER BY m.uid DESC
+INTO OUTFILE '/var/www/api/public/a/download/file_name'
+FIELDS TERMINATED BY ','
+OPTIONALLY ENCLOSED BY '\"'
+ESCAPED BY '\"'
+LINES TERMINATED BY '\r\n';
+```
+
+> 如果最外层不使用`ORDER BY`进行排序，那么可能会导致表头在导出数据的最下方。
+
+更复杂的示例如下：
+
+```SQL
+SELECT * FROM (
+  SELECT a.id, a.excel_id, a.add_company, a.district, l.name, a.add_address, a.company, a.linkman, a.tel, a.add_name, a.add_tel, (CASE a.is_sheng WHEN 1 THEN '是' ELSE '否' END), a.advise
+  FROM db_market_ap a
+  LEFT JOIN db_linkage l ON l.linkageid = a.district
+  UNION SELECT 'id', 'excel_id', '市场登记证名称', '区 ID', '区', '地址', '市场举办者（公司）', '负责人', '负责人联系方式', '填表人', '填表人联系方式', '是否省属市场', '当前市场面临的主要问题及今后发展的想法建议'
+) d
+  ORDER BY d.district desc, d.id
+  INTO OUTFILE '/var/lib/mysql-files/ap.csv';
+```
+
+> 参考：[mysql导出为CSV的同时加上表头](http://blog.turtletl.com/2016/10/17/mysql%E5%AF%BC%E5%87%BA%E4%B8%BACSV%E7%9A%84%E5%90%8C%E6%97%B6%E5%8A%A0%E4%B8%8A%E8%A1%A8%E5%A4%B4/)
+
+> UNION 用于合并两个或多个 SELECT 语句的结果集，并消去表中任何重复行。使用 UNION 时候需要注意的是：
+> 1. UNION 结果集中的列名总是等于第一个 SELECT 语句中的列名
+> 2. UNION 内部的 SELECT 语句必须拥有相同数量的列。
+> 3. 列也必须拥有相似的数据类型。
+> 4. 每条 SELECT 语句中的列的顺序必须相同。
+
+#### 执行外部 sql 文件
+导入数据的时候，可以登录进入 MySQL，然后执行`source /path/to/file.sql`语句来导入 sql 文件。
+
 
 ### 常用方式
 mysqldump 工具有如下几种使用方式：
