@@ -1,25 +1,19 @@
-该方法可以查询指定的字符在字符集合(字符串)中的位置。在用法和结果上，和`IN`类似，但是也有明显的区别。
-
-另外，`FIND_IN_SET`和`LIKE`有些相像但是也有不同：`LIKE`是广泛的模糊匹配，字符串中不需要分隔符，`FIND_IN_SET`是精确匹配，字段值以英文`,`分隔，`FIND_IN_SET`查询的结果要小于`LIKE`查询的结果。
+该方法可以查询指定的字符在字符集合(字符串)中的位置。
 
 ### 语法
 
-```
+```mysql
 FIND_IN_SET(str, strlist)
 ```
 
-### 参数
 该方法接受两个参数：
 
 * str  要查询的字符。
-* strlist  字符列表。
+* strlist  字符列表(由一些被`,`符号分开的子链组成的字符串)。
 
+如果第一个参数是一个常数字符串，而第二个是 type SET 列，则`FIND_IN_SET()`函数被优化，使用比特计算。
 
-> 一个字符串列表就是一个由一些被`,`符号分开的子链组成的字符串。
-> 
-> 如果第一个参数是一个常数字符串，而第二个是 type SET 列，则`FIND_IN_SET()`函数被优化，使用比特计算。
-> 
-> 这个函数在第一个参数包含一个逗号(`,`)时将无法正常运行。
+> 注意：这个函数在第一个参数包含一个逗号(`,`)时将无法正常运行。
 
 
 ### 返回结果
@@ -78,5 +72,43 @@ SELECT * FROM types WHERE id IN (1,2,4);
 SELECT a.id, GROUP_CONCAT(t.name) AS types FROM articles AS a LEFT JOIN types AS t ON FIND_IN_SET(t.id, a.type) GROUP BY a.id;
 ```
 
+### 与 IN 和 LIKE 的比较
+在用法和结果上，`FIND_IN_SET`和`IN`类似，但是也有明显的区别：
 
+* 首先就是语法书写的不同。`FINDE_IN_SET`是一个函数，需要使用函数的方式进行调用；`IN`是一个关键词，只需要使用正常的语法书写。
+* 最为重要的一点是：`IN`语句中，需要给定的列表是常量，而不能是变量。`FIND_IN_SET`则没有这个限制。
+
+比如，有如下的测试环境：
+
+```mysql
+CREATE TABLE `test` (   `id` int(8) NOT NULL auto_increment,   `name` varchar(255) NOT NULL,   `list` varchar(255) NOT NULL,   PRIMARY KEY  (`id`) )
+ INSERT INTO `test` VALUES (1, 'name', 'daodao,www.111cn.net,xiaoqin'); INSERT INTO `test` VALUES (2, 'name2', 'xiaohu,daodao,xiaoqin'); INSERT INTO `test` VALUES (3, 'name3', 'xiaoqin,daodao,www.111cn.net');
+```
+
+如果要使用下面的方式查询，则得不到想要的结果：
+
+```mysql
+SELECT id, list, name FROM test WHERE 'daodao' IN (list);
+```
+
+这样只有当 "daodao" 是 list 中的第一个元素时，查询才有效，否则都得不到结果，即使 "daodao" 真的在 list 中。
+
+而如果将 list 换成常量，换成下面的格式，则是可以得到正常的结果的：
+
+```mysql
+SELECT id, list, name FROM test WHERE 'daodao' IN ('libk', 'zyfon', 'daodao');
+```
+
+这就是因为`IN`语句中的列表不能是变量导致的。如果要使用变量列表，则需要使用`FIND_IN_SET`函数了：
+
+```mysql
+SELECT id, list, name FROM test WHERE FIND_IN_SET('daodao', list);
+```
+
+
+
+另外，`FIND_IN_SET`和`LIKE`有些相像但是也有不同：`LIKE`是广泛的模糊匹配，字符串中不需要分隔符，`FIND_IN_SET`是精确匹配，字段值以英文`,`分隔，`FIND_IN_SET`查询的结果要小于`LIKE`查询的结果。
+
+### 参考
+[mysql数据库中find_in_set()和in()用法区别](http://www.111cn.net/database/mysql/50190.htm)
 
