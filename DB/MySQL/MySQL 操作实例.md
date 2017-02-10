@@ -30,3 +30,13 @@ SELECT username, count(username) as count FROM test WHERE username in (SELECT us
 UPDATE tb_1 AS f LEFT JOIN tb_2 AS l ON l.user = f.id SET f.name = l.name WHERE f.age > 18;
 ```
 
+### IN 查询操作的结果按 IN 集合顺序显示
+使用`IN`来查询的时候，查询结果默认还是按照主键升序排列的。如果要按照`IN`中集合的顺序来排列结果，可以结合`FIND_IN_SET`或`SUBSTRING_INDEX`函数来实现：
+
+```mysql
+SELECT * FROM test WHERE id IN(3,1,5) ORDER BY FIND_IN_SET(id,'3,1,5'); 
+SELECT * FROM test WHERE id IN(3,1,5) ORDER BY SUBSTRING_INDEX('3,1,5',id,1);
+```
+
+参考：[MySQL查询in操作 查询结果按in集合顺序显示](http://www.jb51.net/article/25639.htm)
+
