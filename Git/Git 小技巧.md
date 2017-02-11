@@ -74,7 +74,7 @@ git reset --hard origin/master
 
 之所以可以这样，是因为 reset 命令会将文件恢复到指定版本，同时其参数`--hard | --mixed | --soft`可以用来恢复效果影响的程度。默认情况(不带参数的时候)，就是 --mixed 效果，也就是会将指定版本的文件同步到当前分支的 HEAD 和暂存区中。
 
-### 从当前 Git 分支移除未追踪的本地文件
+### 从当前分支移除未追踪的本地文件
 假设你凑巧有一些未被追踪的文件（因为不再需要它们），不想每次使用 git status 命令时让它们显示出来。下面是解决这个问题的一些方法：
 
 ```shell
@@ -117,7 +117,7 @@ git clean -fx           # 5
 
 ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049827419.png)
 
-本删除的分支那一行上提示你可以通过`git remote prune`移除这个分支。（也就是说你可以刷新本地仓库与远程仓库的保持这些改动的同步。）
+本地删除的分支那一行上提示你可以通过`git remote prune`移除这个分支。（也就是说你可以刷新本地仓库与远程仓库的保持这些改动的同步。）
 
 
 ```git
@@ -128,6 +128,42 @@ git remote prune origin
 
 ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049942671.png)
 
+### 从 Git 仓库中永久删除文件或目录
+我们常用的`git rm`仅对`Working Tree`构成影响，如果想永久的删除仓库中的文件或目录，那么就要用到`git filter-branch`命令了。`git filter-branch`会检索整个 Commit 历史，逐一改写 Commit Object，重构整个 Tree。
+
+```shell
+git filter-branch --tree-filter 'rm -rf path/folder' HEAD
+git filter-branch --tree-filter 'rm -f path/file' HEAD
+```
+
+也可以指定检索的 Commit 历史的范围：
+
+```shell
+git filter-branch --tree-filter 'rm -rf path/folder' 347ae59..HEAD
+```
+
+最后，不要忘了向仓库强制推送所有的变化：
+
+```shell
+git push origin master --force
+```
+
+执行`git filter-branch`命令后，已经标记为删除的 Object 在本地仓库中要到过期后才会解除关联和进行垃圾回收。如果想立即解除关联，执行垃圾回收，可以这么做：
+
+```shell
+# 先检查哪些 tags 和 branch 引用了这些 Object，并根据结果更新引用
+git for-each-ref --format='delete %(refname)' refs/original | git update-ref --stdin
+# 然后使这些引用立即过期，并立即执行垃圾回收
+git reflog expire --expire=now --all
+git gc --prune=now
+# 之后就可以推送到远程仓库了
+git push origin --force --all
+git push origin --force --tags
+```
+
+> 不到迫不得已，不要轻易使用`git filter-branch`，因为它重构了整个 Tree，所以每个开发人员都需要重新克隆仓库到本地，对于有很多开发者参与的大型项目来说，这么做会给很多人带来麻烦，与其事后对仓库内容进行修正，不如伊始就对每个 Commit 慎之又慎。
+
+转摘：[从 Git 仓库中永久删除文件或目录](http://www.jmlog.com/permanently-remove-files-and-folders-from-git-repository/)
 
 ### 给 Git 仓库瘦身
 由于 Git 自身的原理特性，每一次提交的改变都会以新文件的形式存储在本地项目根目录下的`.git`中，会在`.git/objects`下面形成一个 Blob（一段二进制数据）文件记录。这意味着，即使你只改动了某个文件的一行内容，Git 也会生成一个全新的对象来存储新的文件内容。所以 Git 仓库随着时间变化会自增长，我们往往忽视了这种潜在的危险。
