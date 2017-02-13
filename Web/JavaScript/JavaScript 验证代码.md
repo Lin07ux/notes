@@ -163,17 +163,3 @@ function checkImgSize (ths, limitSize) {
 }
 ```
 
-### forget 这是我做商城网站的时候验证手机的代码
-
-```javascript
-
-```
-
-```javascript
-
-```
-
-```javascript
-
-```
-

@@ -165,6 +165,46 @@ Array 是一种特殊类型的对象，表示数组。不过 Array 中主要的�
 
 > 逻辑与和逻辑或会发生短路。也就是说：对于逻辑与，如果前面的条件判断为假，则后面的条件就不会进行判断了；对于逻辑或，如果前面的条件判断为真，则后面的条件就不会进行判断了。
 
+### delete 操作
+delete 是一元运算符，可以用它来删除对象的属性或者数组的元素。
+
+delete 期望的操作数是一个左值，如果我们误用使得他的操作数不是左值，那么 delete 就不会进行任何操作并且返回 true。
+
+> 所谓“左值”，简单点说就是可以被赋值的表达式，在 ES 规范中是用内部类型**引用(Reference)**描述的，其作用为存放数据空间，且存放是允许的。
+
+当前，并不是所有的属性都是能够删除的：用户用 var 声明的变量、自定义的函数、函数参数、内置核心属性等是不能删除的，如果进行删除会抛出删除非法的错误。而且**delete 运算符只能删除自有属性，不能删除继承属性**。
+
+delete 这种删除只是断开属性和宿主对象的联系，而没有将其销毁。（销毁是由 GC 来进行的）。
+
+```javascript
+var a = { b: { c: 1 } };
+var d = a.b;
+
+delete a.b;
+
+console.log(d.c);  // 输出 1
+```
+
+当 delete 操作成功的时候，返回 ture，失败返回 false：
+
+```javascript
+var o = { a: 1 };
+
+delete o.a;     // 删除 a 属性，返回 true
+delete o.x;     // x 属性不存在，所以什么都不做，并返回 true
+delete o.toString;  // 因为 toString 是继承来的，所以什么都不做，并返回 true
+
+delete 110;     // 没有实际意义，返回 true
+
+delete Object.prototype; // 返回 false
+
+var b = 1;
+delete this.b;  // 返回 false
+
+function f() {}
+delete this.f;  // 返回 false
+```
+
 
 ## 条件语句
 
@@ -238,7 +278,7 @@ function ([args]) {
 
 ### 变量的作用域
 
-由于函数的存在，所以需要对变量的作用范围进行区别，以免出现混乱和干扰。这就是变脸的作用域。
+由于函数的存在，所以需要对变量的作用范围进行区别，以免出现混乱和干扰。这就是变量的作用域。
 
 变量的作用域分为两种：*全局作用域*、*局部作用域*。其中，全局作用域的变量能够在代码中的任意位置被调用，而局部作用域的变量则只能在其作用域中被调用。
 
@@ -280,47 +320,8 @@ DOM 事件流是先由外向内先进行捕获阶段，然后再向外冒泡，�
 
 上例弹出的顺序是：3、4、5、1。因为 2 的那个被 3 的回调给覆盖了。而 jQuery 中的 bind 方法其实就是调用的 addEventListener 方法。
 
-## delete 操作
-delete 是一元运算符，可以用它来删除对象的属性或者数组的元素。
 
-delete 期望的操作数是一个左值，如果我们误用使得他的操作数不是左值，那么 delete 就不会进行任何操作并且返回 true。
-
-> 所谓“左值”，简单点说就是可以被赋值的表达式，在 ES 规范中是用内部类型**引用(Reference)**描述的，其作用为存放数据空间，且存放是允许的。
-
-当前，并不是所有的属性都是能够删除的：用户用 var 声明的变量、自定义的函数、函数参数、内置核心属性等是不能删除的，如果进行删除会抛出删除非法的错误。而且**delete 运算符只能删除自有属性，不能删除继承属性**。
-
-delete 这种删除只是断开属性和宿主对象的联系，而没有将其销毁。（销毁是由 GC 来进行的）。
-
-```javascript
-var a = { b: { c: 1 } };
-var d = a.b;
-
-delete a.b;
-
-console.log(d.c);  // 输出 1
-```
-
-当 delete 操作成功的时候，返回 ture，失败返回 false：
-
-```javascript
-var o = { a: 1 };
-
-delete o.a;     // 删除 a 属性，返回 true
-delete o.x;     // x 属性不存在，所以什么都不做，并返回 true
-delete o.toString;  // 因为 toString 是继承来的，所以什么都不做，并返回 true
-
-delete 110;     // 没有实际意义，返回 true
-
-delete Object.prototype; // 返回 false
-
-var b = 1;
-delete this.b;  // 返回 false
-
-function f() {}
-delete this.f;  // 返回 false
-```
-
-## touch事件
+### touch事件
 `touchstart`、`touchmove`、`touchend`。
 
 直接使用`event.clientX`是不起作用的，要使用`event.changedTouches[0].clientX`才好；如果是 jQuery 的 event 对象，使用`event.originalEvent.changedTouches[0].clientX`。

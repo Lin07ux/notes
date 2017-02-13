@@ -14,7 +14,7 @@ Mustache 标签会被相应数据对象的 msg 属性的值替换。每当这个
 你也可以只处理单次插值，今后的数据变化就不会再引起插值更新了：
 
 ```html
-<span>This will never change: {{* msg }}</span>
+<span v-once>This will never change: {{ msg }}</span>
 ```
 
 * 原始 HTML

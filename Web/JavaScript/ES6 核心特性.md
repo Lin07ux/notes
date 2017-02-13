@@ -1,4 +1,5 @@
 ### 1. 从 var 到 let/const
+
 ES5 中申明使用`var`，这些变量都是函数级作用域的，它们的作用域是包含它们的最内层的函数。使用`var`声明的变量会出现命名提升的问题，从而会引起一些让人容易混淆的问题
 
 在 ES6 中还可以使用`let`和`const`来申明变量。这类变量是块级作用域的，它们的作用域是包含它们最近的块。`let`可以理解为块级作用域中的`var`。`const`与`let`类似，只是用`const`申明的变量其值是不可修改的。虽然`let`和`const`没有命名提升的问题，但是会出现 TDZ(暂时性死区)问题。
@@ -12,6 +13,7 @@ ES5 中申明使用`var`，这些变量都是函数级作用域的，它们的�
 * 避免使用`var`。
 
 ### 2. 从 IIFE 到块
+
 ES5 中如果你想限制变量 tmp 的作用范围仅在某一块代码中有效，你不得不使用一个叫 IIFE(Immediately-Invoked Function Expression，立即执行函数表达式) 的模式：
 
 ```javascript
@@ -35,6 +37,7 @@ console.log(tmp); // ReferenceError
 ```
 
 ### 3. 从字符串拼接，到模板字面量
+
 **String 插值**
 
 ES5 中你想把在字符串中引用一些值，你需要将那些值和一些零碎的字符串连接起来。ES6 中你可以在模板字面量中使用字符串插值：
@@ -89,6 +92,7 @@ const HTML5_SKELETON = `
 ```
 
 ### 4. 从函数表达式到箭头函数
+
 当前 ES5 代码中，在使用了函数表达式的时候，你必须小心处理`this`。一般需要将当前代码域中的`this`赋值给一个变量，然后才能在回调函数中使用当前的`this`。
 
 而在 ES6 中，使用箭头函数将不用担心`this`有问题：
@@ -120,6 +124,7 @@ var squares = arr.map(x => x * x);
 ```
 
 ### 5. 处理多个返回值
+
 有一些函数或者方便会通过数组或对象返回多个值。在 ES5 中，你需要创建一个临时变量来访问那些值。但在 ES6 中你可以使用解构。
 
 **通过数组返回多个值**
@@ -172,6 +177,7 @@ console.log(writable, configurable); // true true
 > ```
 
 ### 6. 从 for 到 forEach() 再到 for-of
+
 在 ES5 之前，可以使用`for`来遍历数组，在 ES5 中可以使用`forEach()`方法来遍历数组。`for`循环的优势在于可以中止，`forEach()`则更简洁。
 
 ES6 带来的`for-of`循环综合了两者的优点：
@@ -192,6 +198,7 @@ for (const [index, elem] of arr.entries()) {
 ```
 
 ### 7. 默认参数值
+
 在 ES5 中指定参数的默认值需要这样：
 
 ```JavaScript
@@ -213,6 +220,7 @@ function foo (x = 0, y = 0) {
 ES6 默认参数语法的好处在于，只有`undefined`会被替换成默认值，而在前面的 ES5 代码中，所有判`false`的值都会被替换成默认值。
 
 ### 8. 命名参数
+
 JavaScript 中处理命名参数的常用方法是使用对象字面量(所谓的**选项对象模式**)：
 
 ```JavaScript
@@ -261,6 +269,7 @@ function selectEntries({ start=0, end=-1, step=1 } = {}) {
 ```
 
 ### 9. 从 arguments 到剩余参数
+
 如果你想在 ES5 中让函数(或方法)接受任意数量的参数，必须使用特殊变量`arguments`：
 
 ```JavaScript
@@ -297,6 +306,7 @@ function format(pattern) {
 ```
 
 ### 10. 从 apply() 到扩展运算符 (...)
+
 ES5 中可以用`apply()`把数组作为参数使用。ES6 使用扩展运算符解决这个问题。
 
 ```JavaScript
@@ -315,6 +325,7 @@ arr1.push(...arr2);
 ```
 
 ### 11. 从 concat() 到扩展运算符 (...)
+
 扩展运算符也能将其内容转换为数组元素。也就是说，它可以代替数组方法`concat()`。
 
 ```JavaScript
@@ -330,6 +341,7 @@ console.log([...arr1, ...arr2, ...arr3]);
 ```
 
 ### 12. 从对象字符量的函数表达式到方法定义
+
 JavaScript 的方法是值为函数的属性。
 
 ES5 对象字面量中，添加方法和添加其它属性一样，其属性值是函数表达式。
@@ -359,6 +371,7 @@ const obj = {
 ```
 
 ### 13. 从构造器到类
+
 ES6 引入的类语法比原来的构建函数更为方便。
 
 **基类**
@@ -420,6 +433,7 @@ class Employee extends Person {
 ```
 
 ### 14. 从自定义错误构造函数到 Error 的子类
+
 ES5 不能实现内置异常构造器 Error 的子类。下面的代码展示了如何让`MyError`实现一些重要的功能，比如栈跟踪：
 
 ```JavaScript
@@ -449,6 +463,7 @@ class MyError extends Error {
 ```
 
 ### 15. 从对象到 Map
+
 为了处理字符串向其它类型值映射(一种数据结构)，将对象当作映射表一直都是 JavaScript 中的临时解决办法。最安全的方法是创建一个原型是 null 的对象。然后你还得确保永远不会有一个键是 `__proto__`，因为那个属性名称在很多 JavaScript 引擎中有着特殊的意义。
 
 下面的 ES5 代码含有函数`countWords`，它把名为`dict`的对象作为映射表：
@@ -487,6 +502,7 @@ Map 带来的另一个好处是你可以使用任意类型的值，而不一定�
 
 
 ### 16. 新的字符串方法
+
 #### 从 indexOf 到 startsWith
 
 ```JavaScript
@@ -497,6 +513,7 @@ if (str.startsWith('x')) {}
 ```
 
 #### 从 indexOf 到 endsWith
+
 ```JavaScript
 // ES5
 function endsWith (str, suffix) {
@@ -510,6 +527,7 @@ str.endsWith(suffix);
 ```
 
 #### 从 indexOf 到 includes
+
 ```JavaScript
 // ES5
 if (str.indexOf('x') >= 0) {}
@@ -518,6 +536,7 @@ if (str.includes('x')) {}
 ```
 
 #### 从 join 到 repeat (ES5 中重复字符串的方法更需要技巧)
+
 ```JavaScript
 // ES5
 new Array(3+1).join('#')
@@ -526,7 +545,9 @@ new Array(3+1).join('#')
 ```
 
 ### 17. 新的数组方法
+
 #### 从 indexOf 到 findIndex
+
 后者可用于查找 `NaN`，这是前者无法做到的：
 
 ```JavaScript
@@ -546,6 +567,7 @@ arr.findIndex(x => Number.isNaN(x)); // 1
 > ```
 
 #### 从 slice() 到 from() 或者扩展运算符
+
 ES5 中使用`Array.prototype.slice()`把伪数组转换为数组。ES6 中可以使用`Array.from()`来做这个事情：
 
 ```JavaScript
@@ -564,6 +586,7 @@ const arr2 = [...new Set().add('a').add('b')];
 ```
 
 #### 从 apply() 到 fill()
+
 ES5 中可以通过一定的技巧使用`apply() 来创建任意长度的数组，其所有元素都是`undefined`：
 
 ```JavaScript
@@ -595,9 +618,11 @@ const arr4 = new Array(2).fill('x');
 `fill()`会把所有数组元素替换为给定的值。
 
 ### 18. 从 CommonJS 模块到 ES6 模块
+
 ES6 内置了对模块的支持，可惜目前还没有哪个 JavaScript 引擎原生支持这个特性。但像 browserify、webpack 和 jspm 这样的工具可以让你使用 ES6 语法来创建模块，让你的代码提前用上新语法。
 
 #### 多项导出
+
 **CommonJS 中的多项导出**
 CommonJS 中像下面这样导出多个实例：
 
@@ -662,6 +687,7 @@ console.log(lib.diag(4, 3)); // 5
 ```
 
 #### 单项导出
+
 **CommonJS 的单项导出**
 Node.js 扩展了 CommonJS 让你可以通过`module.exports`导出单个值：
 

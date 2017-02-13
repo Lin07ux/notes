@@ -3,9 +3,11 @@ window 就是指当前的浏览器窗口。JavaScript 的所有对象都存在�
 ## window 对象的属性
 
 ### document
+
 `window.document`是一个指向 [document](https://developer.mozilla.org/en/DOM/document) 对象的引用。
 
 ### fullScreen
+
 是一个布尔值：
 
 * true   窗口处于全屏模式下
@@ -14,20 +16,25 @@ window 就是指当前的浏览器窗口。JavaScript 的所有对象都存在�
 > 注：在常规窗口与全屏窗口之间切换会在相应的窗口中触发`resize`事件。
 
 ### screenX 和 screenY
+
 返回浏览器窗口左上角相对于当前屏幕左上角`(0, 0)`的水平距离和垂直距离，单位为像素。
 
 ### innerWidth 和 innerHeight
+
 返回网页在当前窗口中可见部分的宽度和高度，即“视口”（viewport），单位为像素。浏览器的视口，**不包括工具栏和滚动条**。
 
 > 对于 Internet Explorer 8、7、6、5 需要使用：`document.documentElement.clientHeight`、`document.documentElement.clientWidth`或者`document.body.clientHeight`、`document.body.clientWidth`。
 
 ### outerWidth 和 outerHeight
+
 返回浏览器窗口的宽度和高度，**包括浏览器菜单和边框**，单位为像素。
 
 ### scrollX 和 scrollY
+
 前者返回文档/页面水平方向滚动的像素值，后者返回文档/页面垂直方向滚动的像素值。
 
 ### name
+
 name 属性用于获取或设置当前浏览器窗口的名字。
 
 ```javascript
@@ -38,6 +45,7 @@ window.name = string;
 ```
 
 ### closed
+
 返回一个布尔值，是一个只读属性，表示窗口是否被关闭。
 
 * true：窗口已经被关闭；
@@ -53,26 +61,53 @@ if (window.opener && !window.opener.closed) {
 ```
 
 ### opener
-opener 属性返回一个引用打开窗口的父窗口，从另一个窗口打开窗口时(使用`Window.open()`打开)，它维护一个参考`window.opener`作为第一个窗口。如果当前窗口没有父窗口,该方法返回 NULL。
+
+opener 属性返回一个引用打开窗口的父窗口，从另一个窗口打开窗口时(使用`Window.open()`打开)，它维护一个参考`window.opener`作为第一个窗口。如果当前窗口没有父窗口，该方法返回 NULL。
 
 通过`opener`属性，可以获得父窗口的的全局变量和方法，比如`windowOp.window.propertyName`和`windowOp.window.functionName()`。 该属性只适用于两个窗口属于同源的情况，且其中一个窗口由另一个打开。
 
 ### location
+
 返回一个只读的位置对象与文档当前的位置信息，用于获取窗口当前的 URL 信息，等同于`document.location`。
 
+#### 属性
+
+其属性如下：
+
+> 以`http://localhost:80/dir/index.html?q1=abc&q2=efg&q3=h#anchor`为例。
+
+|   属性    |   定义          |   示例                    |
+|----------|--------------------------------------|-----------------------|
+| hash     | URL 中的 hash，没有则为空，包含 #        | #anchor               |
+| host     | 服务器地址，即：主机名（域名）＋ 端口号    | localhost:80          |
+| hostname | 服务器域名                             | localhost             |
+| href     | 当前页面的完整 url                      | http://localhost:80/dir/index.html?q1=abc&q2=efg&q3=h#anchor |
+| origin   | 服务器域，包含协议、域名和端口             | http://localhost:80   |
+| pathname | URL 中的目录和文件名                    | /dir/index.html       |
+| port     | 端口号（如果没有指定则为空字符串）          | 80                   |
+| protocol | 协议                                   | http                 |
+| search   | 查询字符串。这个字符以问号开头，没有则为空   | ?q1=abc&q2=efg&q3=h   |
+
+location 的这 9 个属性都是可读写的。其中，改变`location.href`会跳转到新的 URL 页面，而修改`location.hash`会跳到当前页面中锚点位置。每次修改`window.location`的属性（hash 除外），页面都会以新的 URL 重新加载，并在浏览器的历史纪录中生成一条新纪录。
+
+#### 方法
+
+* `assign(url)` 打开新的 URL，并在浏览器的历史纪录中生成一条记录。
+* `replace(url)` 打开新的 URL，但是不会在浏览器的历史纪录中生成新纪录。
+* `reload(force)` 刷新当前页面。force 为 true 时从服务器端重新加载；为 false 时从浏览器缓存中重新加载。默认值 false。
+
+其中，`location.assign(url)`的效果跟下列两行代码的效果完全一样：
+
 ```javascript
-// 导航到一个新页面
-location.assign("http://www.mozilla.org"); // or
-location = "http://www.mozilla.org";
-
-// 强制刷新当前页面
-location.reload(true);
-
-// 替换当前页面，并替换历史记录
-location.replace('https://github.com');
+window.location = url;
+location.href = url;
 ```
 
+位于`location.reload()`调用之后的代码可能会也可能不会执行，这取决于网络延迟或系统资源等因素。因此，最好将`location.reload()`放在代码的最后一行。
+
+
 ### history
+
 只读的，返回一个引用对象。但是它提供了一个接口，可以来操纵浏览器会话历史(页面访问当前页面的选项卡或框架加载)。
 
 ```javascript
