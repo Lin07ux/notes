@@ -283,6 +283,66 @@ function ([args]) {
 变量的作用域分为两种：*全局作用域*、*局部作用域*。其中，全局作用域的变量能够在代码中的任意位置被调用，而局部作用域的变量则只能在其作用域中被调用。
 
 
+## DOM
+
+浏览器将网页解析成一个树状的结构，这个结构对 JavaScript 开放的接口就是 DOM：Document Object Model，文档对象模型。通过这个模型接口，我们能够访问、遍历文档中的节点，获取和设置节点的值、属性等。
+
+> DOM 不仅仅是用于 HTML 文档中，它是一种适用于多种环境和多种程序设计语言的通用型 API。
+
+### 节点
+
+在 DOM 中有很多不同类型的节点，最常用的有三种：元素节点、文本节点、属性节点。
+
+```HTML
+<p title="a gentle reminder">Don't forget to buy this stuff</p>
+```
+
+上述代码中，包含一个元素节点`p`、一个属性节点`title`，以及一个文本节点`Don't forget to buy this stuff`。
+
+### 获取元素
+
+有三种方法能够获取文档中的元素：
+
+* `getElementById(eleID)` 返回一个与那个有着给定 id 属性值的原始节点对应的对象。
+* `getElementsByTagName(tagName)` 返回一个数组，数组中的每个对象分别对应着文档里有着给定标签名的一个元素对象。返回的可能为空数组。
+* `getElementsByClassName(class)` 返回一个数组，数组中的每个对象分别对应着文档里有着给定 class 属性中的类名的元素对象。返回的可能为空数组。另外，这个是 HTML5 中新增的方法，在较旧的浏览器中可能不被支持。
+
+这几个方法都在`document`对象中，所以调用的时候都是要通过`document.getElementById(eleID)`、`document.getElementsByTagName(tagName)`、`document.getElementsByClassName(class)`的方式进行访问。
+
+`getElementsByClassName`方法虽然只支持一个参数，但是如果想要通过类名来进行限定的时候，可以将多个类名通过空格连接成一个字符串传入。此时，传入的类名顺序和数量与元素中的 class 属性的值中的类名属性和数量并不需要完全匹配。例如：`getElemetsByClassName('sale importmant')`是可以获取到`<p class="importmant success sale">iPhone</p>`这个元素的。
+
+### 获取和设置属性
+
+通过前面的三种方法获得相应的元素对象之后，我们就可以获取和设置它的各个属性了。
+
+* `getAttribute(attribute)` 获取元素对象的属性的值。如果未设置，则返回 null。
+* `setAttribute(attribute, value)` 设置元素对象的属性的值。如果元素中未设置过该属性，则会先创建该属性，再设置值；如果已经设置过，则会覆盖之前设置的值。
+
+这两个方法不属于`document`对象，需要在获取到的元素节点对象上进行调用。示例如下：
+
+```HTML
+<h4 id="tips">Tips</h4>
+<p title="a gentle reminder">Don't forget to buy this stuff</p>
+<p>All stuff is affordable</p>
+```
+
+```JavaScript
+var paras = document.getElementsByTagName('p');
+var length = paras.length;
+for (var i = 0; i < length; i++) {
+    var title = paras[i].getAttribute('title');
+    // 当 title 不为 null 的时候就弹窗
+    // 将会弹一次窗，内容为“a gentle reminder”
+    if (title) alert(title);
+}
+
+var tips = document.getElementById('tips');
+alert(tips.getAttribute('title'));  // 内容为空，或 null
+tips.setAttribute('title', 'tips of buy');
+alert(tips.getAttribute('title'));  // 内容为“tips of buy”
+```
+
+
 ## 事件
 DOM 事件流是先由外向内先进行捕获阶段，然后再向外冒泡，相应的事件回调也会按照这个顺序进行。不过，对于触发事件的元素来说则并不完全相同：触发元素是事件的目标元素，它的事件的捕获和触发是根据事件注册的先后顺序的不同来执行的，如果先注册的是捕获阶段的事件，则先进行捕获，否则先进行冒泡。
 
@@ -303,7 +363,9 @@ DOM 事件流是先由外向内先进行捕获阶段，然后再向外冒泡，�
 - 使用 DOM Element 上面的`on + eventType`属性 API
 - 使用 DOM Element 的`addEventListener`方法或`attachEvent`方法
 
-前两种方式只能对一种事件绑定一个回调，第三种方式则能够绑定多个回调。其实还有一种非常规方法：使用 a 元素的 href 属性，在其中写入简单的 JavaScript 语句。
+前两种方式只能对一种事件绑定一个回调，第三种方式则能够绑定多个回调。其实还有一种非常规方法：使用`a`元素的`href`属性，在其中写入简单的 JavaScript 语句。
+
+> 使用第一种方法的时候，可以给事件的回调函数传入参数`this`，表示当前触发事件的元素，并且，如果该回调返回 false 将会阻止该事件的默认行为(如阻止`a`链接跳转)。使用后两种方式注册事件回调时，默认会将当前事件传入到回调函数中。
 
 如果这三种方法同时出现，则第二种方式绑定的回调函数会覆盖掉第一种方法绑定的回调，第三种方法则不会有影响。
 
