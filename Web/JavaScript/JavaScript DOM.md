@@ -163,6 +163,58 @@ DOM 是由一个个的节点构成的。DOM 针对节点提供了大量的方法
 
 > 该方法除了 IE9 以下浏览器，都支持。
 
+### 元素节点的滚动
+
+DOM 规范中并没有规定各浏览器需要实现怎样的滚动页面区域，各浏览器实现了相应的方法，可以使用不同的方式控制页面区域的滚动。这些方法作为 HTMLElement 类型的扩展存在，所以它能在【所有元素】上使用。
+
+1. `scrollIntoView(alignWithTop)`
+
+    滚动浏览器窗口或容器元素，以便在当前视窗的可见范围看见当前元素。
+    
+    如果`alignWithTop`为 true，或者省略它，窗口会尽可能滚动到自身顶部与元素顶部平齐。
+    
+    目前各浏览器均支持。
+
+2. `scrollIntoViewIfNeeded(alignCenter)`
+
+    只在当前元素在视窗的可见范围内不可见的情况下，才滚动浏览器窗口或容器元素，最终让当前元素可见。如果当前元素在视窗中可见，这个方法不做任何处理。
+
+    如果将可选参数`alignCenter`设置为 true，则表示尽量将元素显示在视窗中部（垂直方向）。
+
+    Safari、Chrome 实现了这个方法。
+
+3. `scrollByLines(lineCount)`
+
+    将元素的内容滚动指定的行数的高度，`lineCount`的值可以为正值或是负值。
+
+    Safari、Chrome 实现了这个方法。
+
+4. `scrollByPages(pageCount)`
+
+    将元素的内容滚动指定的页面的高度，具体高度由元素的高度决定。
+
+    Safari、Chrome 实现了这个方法。
+
+`scrollIntoView()`和`scrollIntoViewIfNeeded()`作用的是元素的窗口，而`scrollByLines()`、`scrollByPages()`影响元素自身。
+
+由于只有`scrollIntoView()`被各浏览器均支持，所以这个方法最为常用。
+
+示例如下：
+
+```JavaScript
+// 将页面主体滚动 5 行
+document.body.scrollByLines(5);
+
+// 确保当前元素可见
+document.getElementById(“test”).scrollIntoView();
+
+// 确保只在当前元素不可见的情况下才使其可见
+document.getElementById(“test”).scrollIntoViewIfNeeded();
+
+// 将页面主体往回滚 1 页
+document.body.scrollByPages(-1);
+```
+
 ### 特殊内容
 
 除了上述的一些相对普遍适用的方法和属性，DOM 中针对不同的元素节点还存在一些特别的方法和属性。
