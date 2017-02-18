@@ -42,33 +42,35 @@ DOM 是由一个个的节点构成的。DOM 针对节点提供了大量的方法
 
 ### 节点属性
 
-* `childNodes` 返回当前节点所有子节点的数组(返回值类型为 NodeList，包含元素节点和文本节点)
-
-* `firstChild` 返回当前节点的第一个下级子节点
-
-* `lastChild`  返回当前节点的最后一个子节点
-
-* `nextSibling` 返回紧跟在当前节点后面的节点
-
 * `nodeName` 节点的名称(元素节点返回元素标签名称的大写字符串，文本节点返回'#text'，属性节点返回属性名称，文档节点返回'#document')
 
 * `nodeValue` 节点的值(元素节点总是为 null 且只读，文本节点返回文本值且可读写，属性节点返回属性的值且可读写)
 
 * `nodeType`  节点的类型(12 种节点类型中的一种)
 
-* `parentNode` 返回节点的父节点 
+* `parentNode` 返回节点的父节点。该属性返回的永远是一个元素节点。因为只有元素节点才可能有子节点，唯一例外的是`document`节点，它没有父节点。即`document.parentNode`属性将返回 null。
 
-* `previousSibling` 返回紧邻当前节点的前面的节点
+* `childNodes` 返回当前节点所有子节点的数组(返回值类型为 NodeList，包含元素节点和文本节点)。只读属性。
+
+* `firstChild` 返回当前节点的第一个下级子节点。如果某个节点没有任何子节点，该属性将返回 null。只读属性。
+
+* `lastChild`  返回当前节点的最后一个子节点。如果某个节点没有任何子节点，该属性将返回 null。只读属性。
+
+* `nextSibling` 返回紧跟在当前节点后面的一个节点。如果给定节点的后面没有属于一个父节点的节点，该属性将返回 null。只读属性。
+
+* `previousSibling` 返回紧邻当前节点的前面的一个节点。如果给定节点的前面没有同属一个父节点的节点，该属性将返回 null。只读属性。
 
 还有一些其他的属性，这些属性和节点的类型有关，比如，文本节点具有`textContent`、`wholeText`属性，元素节点则没有；而元素节点具有很多的事件属性和位置属性等，文本元素就没有。
 
 下面是一些 *元素节点* 中比较常用的属性：
 
+* `tagName` 返回的是对当前元素的标记名称，均为大写字母。
+
 * `innerHTML` 返回该节点中全部子节点的 HTML 代码。可读写，可用来改变该节点元素内的代码
 
 * `innerText` 返回全部子节点中的文本内容。可读写，赋值后，该元素内部的 HTML 代码奖杯清除，并用新的文本内容填充。赋值的文本内容中即便有 HTML 也会被转义，从而保证能显示成文本。
 
-* `attributes` 返回元素节点的全部属性组成的 NamedNodeMap 对象。可按照数组方式进行访问，每个子元素均为属性节点对象，其中也会包含节点的共有属性。
+* `attributes` 返回元素节点的全部属性节点组成的 NamedNodeMap 对象。可按照数组方式进行访问，每个子元素均为属性节点对象，其中也会包含节点的共有属性。
 
 
 ### 节点方法
@@ -110,39 +112,40 @@ DOM 是由一个个的节点构成的。DOM 针对节点提供了大量的方法
 
 同样，通过给对象属性赋值的方式，也可以给元素设置属性值，效果和`setAttribute()`方法的效果相同。
 
+> 通过对象属性方式访问和设置元素属性的方式是非 DOM Core 中的 API，仅针对的是 HTML 文档。
+> 
 > IE 在`setAttribute()`上有很大的问题，最好尽可能使用属性赋值方式。
 
 ### 动态更改节点
 
-* `document.createElement(tagName)`  创建由 tagName 指定的元素
+* `document.createElement(tagName)`  创建由 tagName 指定的新的元素节点，返回值是一个指向新建元素节点的引用指针。
 
 * `document.createDocumentFragment()` 创建文档碎片节点，不需要参数
 
 * `document.createTextNode(text)`  创建一个包含静态文本的节点
 
-* `<element>.appendChild(childNode)`  将指定的节点增加到当前元素的子节点列表的最末处(作为一个新的子节点)
+* `<elelemtn>.cloneNode(deep)` 为给定节点创建一个副本。返回值是一个指向新建克隆节点的引用指针。
 
-* `<element>.insertBefore(newNode, targetNode)`  将节点 newNode 作为当前元素的子节点插到 targetNode 元素前面
+* `<element>.appendChild(childNode)`  将指定的节点增加到当前元素的子节点列表的最末处(作为一个新的子节点)。返回一个指向新增子节点的引用指针。
 
-* `<element>.removeChild(childNode)`  从元素中删除子元素 childNode
+* `<element>.insertBefore(newNode, targetNode)`  将节点 newNode 作为当前元素的子节点插到 targetNode 元素前面。返回一个指向新增子节点的引用指针。
 
-* `<element>.replaceChild(newNode, oldNode)`  将节点 oldNode 替换为节点 newNode
+* `<element>.removeChild(childNode)`  从元素中删除子元素 childNode。返回一个指向被删除元素的指针。当某个元素节点被该方法删除时，其所有的子节点都被从原位置删除。
+
+* `<element>.replaceChild(newNode, oldNode)`  将节点 oldNode 替换为节点 newNode。被替换的节点必须属于给定的父节点。返回一个已被替换的那个节点的引用指针。
+
+新创建和复制的节点不会自动加入到文档中，没有`nodeParent`属性。如要要添加入文档，需要用`appendChild()`或`insertBefore()`或`replaceChild()`方法。
+
+`cloneNode()`复制节点的时候，其参数是一个布尔类型的参数，如果这个参数是 ture，复制得到的新节点将包含着与被复制节点完全一样的子节点；如果这个参数是 false，新节点将不包含任何子节点 ―― 如果被复制节点是一个元素节点，这意味着包含在被复制节点里的所有子节点将不会被复制(文本也是一个子节点)，但属性节点将被复制。
 
 一旦把节点添加到`document.body`(或者它的后代节点)中，页面就会更新并反映出这个变化。对于少量的更新，这是很好的。然而，当要向`document`添加大量数据时，如果逐个添加这些变动，这个过程有可能会十分缓慢。为解决这个问题，可以创建一个文档碎片，把所有的新节点附加其上，然后把文档碎片的内容一次性添加到`document`中。这就是`document.createDocumentFragment()`方法的作用。
 
-### 获取元素样式
+`appendChild()`方法和`insertBefore()`方法用于将已存在于文档中的节点插入到另一个元素中时，将会先将该节点从原位置删除，然后再把它重新插入到新的位置中去。而不必先用`removeChild()`方法删除再调用这方法。
 
-#### getComputedStyle
+`removeChild()`删除节点的时候，并没有将该节点销毁，只是从原位置去除掉了。之后还可以将该节点加入到文档中，和调用`document.createDocumentFragment()`方法创建一个文档片段类似。
 
-该方法用来获取应用到元素后的样式，也即是元素最终渲染的样式。比如，假设某个元素并未设置高度而是通过其内容将其高度撑开，这时候要获取它的高度就要用到该方法。
 
-语法：`window.getComputedStyle(element[, pseudoElt])`
-
-参数：`element`是要获取样式的元素节点，`pseudoElt`指定一个伪元素进行匹配，也即是获取元素节点的伪元素的样式。
-
-返回值：返回一个 CSSStyleDeclaration 对象。通过该对象可以访问到元素计算后的样式。
-
-#### getBoundingClientRect
+### getBoundingClientRect 元素节点位置
 
 该方法用来返回元素的大小以及相对于浏览器可视窗口的位置。
 
