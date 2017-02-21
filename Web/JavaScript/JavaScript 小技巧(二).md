@@ -92,3 +92,14 @@ var q1 = qs["q1"]; // abc
 
 转摘：[JavaScript：获取url的querystring参数](http://www.dengzhr.com/frontend/1065)
 
+
+### iOS 点击两次
+
+在 iOS 上，点击链接的时候，如果链接设置了`hover`一类的效果的时候，会先出现`hover`效果，然后又开始进行链接的跳转效果，类似于两次点击效果。这是由于移动端对触摸和点击的判断条件不同导致的。可以使用如下的方式进行规避：
+
+```JavaScript
+$('a').on('touchend', function (e) {
+    $(this).click();
+})
+```
+
