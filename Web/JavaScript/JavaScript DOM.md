@@ -144,6 +144,21 @@ DOM 是由一个个的节点构成的。DOM 针对节点提供了大量的方法
 
 `removeChild()`删除节点的时候，并没有将该节点销毁，只是从原位置去除掉了。之后还可以将该节点加入到文档中，和调用`document.createDocumentFragment()`方法创建一个文档片段类似。
 
+#### insertAfter()
+
+DOM 中并不存在`insertAfter()`方法，但是我们可以通过 DOM 提供的其他的 API 来自己实现这个方法。
+
+```JavaScript
+function insertAfter (newElement, targetElement) {
+    var parent = targetElement.parentNode;
+    
+    if (parent.lastChild == targetElement) {
+        parent.appendChild(newElement);
+    } else {
+        parent.insertBefore(newElement, targetElement.nextSibling);
+    }
+}
+```
 
 ### getBoundingClientRect 元素节点位置
 

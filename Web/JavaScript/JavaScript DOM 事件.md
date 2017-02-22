@@ -84,6 +84,12 @@ oBox.onclick = function(e) {
 
 ## 事件回调
 
+> 获取元素某一事件上绑定的所有事件回调函数：
+> 
+> ```JavaScript
+> getEventListeners(document.querySelector('.someclass'));
+> ```
+
 ### 事件传播机制
 
 在给事件设置回调方法的时候，需要先了解下事件在浏览器中的传播机制。
