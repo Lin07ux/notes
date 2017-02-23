@@ -46,4 +46,12 @@ Vue.set(data, 'c', 3)
 // `vm.c` 和 `data.c` 现在是响应的
 ```
 
+### JavaScript 更改 input 值不引起响应
+
+使用其他的插件来丰富 input 的表现的时候，可能会导致 Vue 的`v-model`在 input 等元素上不起作用的情况。这可能是由于引入的其他插件是使用 JavaScript 来更改表单元素的值导致的。比如`bootstrap-datetimepicker`插件，就会导致这个问题。
+
+此时可以考虑不使用`v-model`来实现动态绑定，而是使用在`mounted`的时候将值赋值给表单元素，然后在提交或者其他必要的时候，再同步表单元素的值到 Vue 的 data 属性中。
+
+> 可以借助`ref`指令和`$refs`属性来完成。
+
 
