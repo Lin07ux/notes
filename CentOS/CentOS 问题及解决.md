@@ -28,7 +28,34 @@ SELINUX=disabled
 find / -name *~ -exec rm -rf {} \; 
 ```
 
+### minerd 挖矿处理
+在服务器中，由于服务很卡，使用 top 命令看到里面有一个进程 minerd 占用了 90% 多的 CPU。查询资料，这个是一个挖矿程序，很占用 CPU，找到对应的程序，删掉之后之后会自动恢复。也就是无法彻底删干净。
 
+为了能够停止该进程的运行，可以考虑将该进程删除之后，修改程序的权限，去掉执行权限。
+
+1. 关闭访问挖矿服务器的访问
+
+    ```shell
+    iptables -A INPUT -s xmr.crypto-pool.fr -j DROP and iptables -A OUTPUT -d xmr.crypto-pool.fr -j DROP
+    ```
+    
+2. 取消掉执行权限
+
+    ```shell
+    chmod -x minerd
+    ```
+    
+3. 杀掉进程
+
+    ```shell
+    pkill minerd
+    ```
+
+4. 删除计划任务
+
+    ```shell
+    service stop crond # crontab -r
+    ```
 
 
 
