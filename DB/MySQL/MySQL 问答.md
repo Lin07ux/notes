@@ -49,4 +49,24 @@
 有时候用`localhost`可以，但用`127.0.0.1`就不可以的情况就是在于此。猜想`localhost`访问时，系统带的本机当前用户的权限去访问，而用 IP 的时候，等于本机是通过网络再去访问本机，可能涉及到网络用户的权限。
 
 
+### 将选择的结果导出到文件中时提示 --secure-file-priv
+
+当用`SELECT ... INTO OUTFILE`把查询结果写入到文件的时候提示以下信息：
+
+```
+The MySQL server is running with the --secure-file-priv option so it cannot execute this statement
+```
+
+出现这个问题的原因是因为启动 MySQL 的时候使用了`--secure-file-priv`这个参数，这个参数的主要目的就是限制`LOAD DATA INFILE`或者`SELECT INTO OUTFILE`之类文件的目录位置，我们可以使用：
+
+```sql
+SELECT @@global.secure_file_priv;
+```
+ 查询到你当前设置的路径，默认应该是`/var/lib/mysql-files`。
+
+如果要解决这个问题，我们可以通过下面 2 种方式：
+
+1.	将你要导入或导出的文件位置指定到你设置的路径里(绝对路径)
+2.	由于不能动态修改，我们可以修改`my.cnf`里关于这个选项的配置，然后重启即可。 
+> 转摘：[MySQL查询出错提示 --secure-file-priv解决方法](http://www.cnblogs.com/zhuangliu/p/6211688.html)
 
