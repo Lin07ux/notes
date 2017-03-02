@@ -76,11 +76,34 @@ find <folder-to-search> -iname <file-name>
 `tar -tvf` 查看对应压缩文件
 `tar -xvf` 提取对应压缩文件
 
-### gzip
-创建和提取 gzip 压缩文件，还可以用`gzip -d`来提取压缩文件。
+### gzip/gunzip
+前者用于创建和提取 gzip 压缩文件，还可以用`gzip -d`来提取压缩文件。后者用于解压 gzip 压缩文件。
 
-### unzip
-对 gzip 文档进行解压。在解压之前，可以使用`unzip -l`命令查看文件内容。
+压缩和解压缩后，默认情况下，原文件都没有了，只有压缩后的文件或解压后的文件。可以通过加上`-c`选项，并利用 Liinux 的重定向来保留原文件。
+ 
+```shell
+# 将文件压缩为文件 test.txt.gz，原来的文件则没有了
+gzip test.txt
+# 加上 -c 选项并利用 linux 的重定向可以保留源文件
+gzip -c test.txt > /root/test.gz
+
+gunzip test.txt.gz
+gunzip -c /root/test.gz > ./test.txt  
+```
+
+### zip/unzip
+前者将文件或目录打包成 zip 文档，后者将 zip 文件解压出来。
+
+```shell
+# 将 test.txt 文件压缩为 test.zip，也可以指定压缩包的目录，例如 /root/test.zip 
+zip test.zip test.txt
+
+# 默认将文件解压到当前目录
+unzip test.zip
+# 如果要解压到指定目录，可以加上 -d 选项 
+unzip test.zip -d /root/ 
+```
+对 zip 文档进行解压。在解压之前，可以使用`unzip -l`命令查看文件内容。
 
 ### help
 `--help`会在终端列出所有可用的命令，可以使用任何命令的`-h`或`--help`选项来查看该命令的具体用法。
