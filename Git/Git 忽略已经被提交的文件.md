@@ -13,9 +13,27 @@ git update-index --assume-unchanged filename [filename....]
 git update-index --no-assume-unchanged filename [filename....]
 ```
 
-这个办法可以在你本地中不在显示这些文件的变化，但是如果其他开发人员改动了这些文件，而且推送到了远程仓库，并且你从远程仓库通过了，那么就会失效。
+这个办法可以在你本地中不在显示这些文件的变化，但是如果其他开发人员改动了这些文件，而且推送到了远程仓库，并且你从远程仓库拉取更新了，那么就会失效。
 
 这只是一种告诉 Git 假装看不到本地这些文件的变化的方法。
+
+`git update-index`的定义是：
+
+> Register file contents in the working tree to the index（把工作区下的文件内容注册到索引区）
+
+这句话暗含的意思是：`update-index`针对的是 Git 数据库里被记录的文件，而不是那些需要忽略的文件。
+
+应用了该标识之后，Git 停止查看工作区文件可能发生的改变，所以你必须 手动 重置该标识以便 Git 知道你想要恢复对文件改变的追踪。当你工作在一个大型项目中，这在文件系统的`lstat`系统调用非常迟钝的时候会很有用。
+
+`git update-index --assume-unchanged`的真正用法是这样的：
+
+1. 你正在修改一个巨大的文件，你先对其`git update-index --assume-unchanged`，这样 Git 暂时不会理睬你对文件做的修改；
+
+2. 当你的工作告一段落决定可以提交的时候，重置改标识：`git update-index --no-assume-unchanged`，于是 Git 只需要做一次更新，这是完全可以接受的了；
+
+3. 提交＋推送。
+
+> 参考：[git忽略已经被提交的文件](https://segmentfault.com/q/1010000000430426)
 
 ### 补充
 当使用了`git add`或者`commit`一个文件/目录之后，再将这个文件/目录写入到`.gitignore`文件中，并不会阻止 Git 追踪这个文件/文件夹的变化。
