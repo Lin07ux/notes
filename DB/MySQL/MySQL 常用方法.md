@@ -349,6 +349,20 @@ SELECT LOCATE('ball','football'), POSITION('ball' IN 'football'), INSTR('footbal
 
 ![LOCATE/POSITION/INSTR](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472284645441.png)
 
+### LOWER/UPPER 转换字符串大小写
+语法：`LOWER(str)`、`UPPER(str)`
+
+参数：`str`表示要进行大小写转换的字符串。
+
+效果：前者将字符串转成小写，后者将字符串转成大写。
+
+示例：
+
+```sql
+SELECT LOWER(name), UPPER(title) FROM table;
+```
+
+
 ### ELT 返回指定位置的字符串
 语法：`ELT(N, str1, str2, str3,…,)`
 
