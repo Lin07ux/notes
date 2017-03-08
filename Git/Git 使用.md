@@ -332,10 +332,17 @@ git fetch -p
 
 当切换分支时，HEAD 就会移动到切换的分支上去。之后在本地对文件的修改，都是 commit 到这个分支上了，而不会影响其他分支。在某个分支上修改文件并 commit 了之后，切换回另外的分支上，这个修改并不会显示了。
 
-### 查看所有分支
+### 查看分支
 可以使用 git branch 来查看本地仓库中所有的分支，而且当前分支的名称前面会有一个星号 * 作为标记：
 
 `git branch`
+
+还可以筛选分支：
+
+```shell
+git branch --merged     # 显示所有合并到当前分支的分支
+git branch --no-merged  # 显示所有未合并到当前分支的分支
+```
 
 ### 创建分支
 创建分支使用 branch 命令：
@@ -353,6 +360,15 @@ git fetch -p
 `git checkout -b <branch-name>`
 
 这个命令会创建一个分支，并切换到这个新建的分支上去(即 HEAD 指向这个新建的分支)。新建的分支的名称由 <branch-name> 指定。
+
+还可以使用远程分支来创建本地分支：
+
+```shell
+git checkout -b <branch-name> <remote>/<branch>
+
+# 或者不指定分支名，直接使用远程分支同名
+git checkout --track <remote>/<branch>
+```
 
 ### 删除分支
 删除分支也是使用 branch 命令，不过要加一个 -d 选项：
@@ -386,7 +402,7 @@ git fetch -p
 由于这样的合并需要创建一个新的 commit，所有加入 -m 参数，把 commit 描述写进去。
 
 ### 合并冲突
-当我们在不同的分支中，对同一个文件的同一行中进行了修改，如果修改后的内容不同，那么在合并这两个分支的时候，就会出现冲突，此时在这个发生冲突的文件中，Git 会用 <<<<<<<、=======、>>>>>>> 三种符号标记出不同分支的内容。
+当我们在不同的分支中，对同一个文件的同一行中进行了修改，如果修改后的内容不同，那么在合并这两个分支的时候，就会出现冲突，此时在这个发生冲突的文件中，Git 会用`<<<<<<<`、`=======`、`>>>>>>>`三种符号标记出不同分支的内容。
 
 此时，我们需要修改这部分内容，然后在在当前分支上重新 add 和 commit 这个文件。
 
@@ -398,18 +414,26 @@ git fetch -p
 这和推送主分支的命令是一样的，只是 branch-name 需要换成你要推送到远程服务器的分支的名称。
 
 当在另一个电脑上 clone 这个远程仓库，clone 完成之后，是看不到除 master 分支之外的其他分支的。
+
 如果需要使用远程仓库上的其他分支，需要在本地创建分支，并和远程的相应分支关联起来：
 
-`git checkout -b <branch-name> <origin/branch-name>`
+`git checkout -b <branch-name> <remote>/<branch>`
 
 或：
 
-`git branch <branch-name> <origin/branch-name>`
+`git branch <branch-name> <remote>/<branch>`
 
-这里，branch-name 是在新电脑上本地仓库中创建的分支的名称，origin/branch-name 是远程仓库 origin 中的分支的名称。然后在本地对 dev 分支上的修改就可以 push 到远程仓库中的 dev 分支上了。
-如，在本地创建一个 dev 分支，关联远程仓库 origin 的 dev 分支：
+这里，branch-name 是在新电脑上本地仓库中创建的分支的名称，origin/branch-name 是远程仓库 origin 中的分支的名称。然后在本地对 dev 分支上的修改就可以 push 到远程仓库中的 dev 分支上了。如，在本地创建一个 dev 分支，关联远程仓库 origin 的 dev 分支：
 
 `git checkout -b dev origin/dev`
+
+### 修改跟踪关系
+
+当我们克隆一个远端仓库时，会默认创建一个跟踪分支 master，其上游分支就是`<remote>/master`。
+
+对应的，当我们使用`git checkout -b <branch-name> <remote>/<branch>`创建新的分支的时候，也会默认的将本地分支和远程对应的分支对应起来。
+
+如果要修改跟踪关系，则可以使用下面的命令：`git branch -u <remote>/<branch>`。这样就会将本地分支和指定的远程分支建立起跟踪关系。
 
 ## 保存和恢复现场
 如果在开发的时候，临时有个紧急任务需要完成，但是当前分支上的任务由于没有完成，没有办法 commit 到分支中，没有办法直接新建并切换分支去解决紧急任务。
