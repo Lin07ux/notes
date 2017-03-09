@@ -55,8 +55,6 @@ systemctl start nginx
 
 ```shell
 # 添加源
-rpm -Uvh https://mirror.webtatic.com/yum/el7/epel-release.rpm
-# 或
 rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
 
 # 安装 PHP 5.6 及相关依赖和插件
