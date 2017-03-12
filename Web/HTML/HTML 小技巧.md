@@ -86,3 +86,23 @@
 
 在 a 链接中需要指定一个经纬度信息。具体的经纬度可以从 [在线地图经纬度查询](http://www.gpsspg.com/maps.htm) 或 [百度坐标系统](http://api.map.baidu.com/lbsapi/getpoint/index.html) 中查询到。
 
+### 设置元素可编辑
+
+给元素添加`contenteditable`属性即可。如：
+
+```html
+<p contenteditable="true">可编辑</p>
+```
+
+也可以通过 js 来设置整个页面可编辑：
+
+```js
+document.contentEditable = 1;
+```
+
+### 移动端非全屏播放视频
+
+```html
+<video src="test.mp4" webkit-playsinline playsinline></video>
+```
+
