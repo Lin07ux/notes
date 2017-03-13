@@ -1,3 +1,11 @@
+### 清除移动端 tap 事件后元素周边出现的一个高亮
+
+```css
+*{
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+```
+
 ### hover 浮动效果
 ```css
 li:hover {
@@ -129,12 +137,37 @@ html, body { height: 100%; }
 }
 ```
 
+### 禁止用户选中文本
+
+```css
+div {
+    user-select: none;
+}
+```
+
 ### 文字模糊
 
 ```css
 .text-fuzzy {
     color: transparent;
     text-shadow: #111 0 0 5px;
+}
+```
+
+### 更改 input placeholder 文字的样式
+
+```css
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: pink;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: pink;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: pink;
+}
+:-moz-placeholder { /* Firefox 18- */
+  color: pink;
 }
 ```
 

@@ -19,7 +19,7 @@
 
 > A percentage for the horizontal offset is relative to (width of background positioning area – width of background image). A percentage for the vertical offset is relative to (height of background positioning area – height of background image), where the size of the image is the size given by 'background-size'.
 
-也就是说：当背景图片尺寸(`background-size`)不做任何的重置时，水平百分比的值等于容器宽度百分比值减去背景图片宽度百分比值。垂直百分比的值等于容器高度百分比值减去背景图片高度百分比值。
+也就是说：当背景图片尺寸(`background-size`)不做任何的重置时，水平百分比的值等于容器宽度减去背景图片宽度得到的差值的百分比值。垂直百分比的值等于容器高度减去背景图片高度得到的差值的百分比值。
 
 比如前面的示例，如果取值`background-position: 75% 50%;`，背景图片的起始位置：
 
@@ -43,6 +43,8 @@ background-position:      10px top    ;   /* 10px,  0px */
 background-position: left      top 15px;  /*  0px, 15px */
 background-position: left 10px top    ;   /* 10px,  0px */
 ```
+
+> 转摘：[你真的了解background-position](http://www.w3cplus.com/css/background-position-with-percent.html)
 
 ### background-clip 背景剪裁
 背景裁剪确定了背景画布的区域。可应用于所有元素。无继承性。
