@@ -171,3 +171,18 @@ div {
 }
 ```
 
+### 页面变灰
+
+在南京大屠杀纪念日的时候，不少相关站点都将网站全部变为灰色，以表示哀悼。这种效果是可以用纯 CSS 来实现的。主要代码如下(也可以选择性的针对不同的元素变灰)：
+
+```css
+* {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+```
+
+
