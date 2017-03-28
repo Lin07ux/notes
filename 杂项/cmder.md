@@ -2,6 +2,7 @@
 Cmder 是一个 Windows 下的命令行工具，能够很大程度上的改善 Windows 系统上的 cmd.exe 的功能。而且提供了一些 Linux 系统上的指令。
 
 官网：[Cmder](http://cmder.net/)
+介绍：[Win下必备神器之Cmder](http://www.jeffjade.com/2016/01/13/2016-01-13-windows-software-cmder/)
 
 
 ## 配置
