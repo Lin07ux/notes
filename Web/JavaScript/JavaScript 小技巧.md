@@ -5,6 +5,24 @@
 this.value = this.value.replace(/[^\d]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ");
 ```
 
+## ~~ 的作用
+
+`~~`会将其后面的表达式的值转换为整数。如下：
+
+```JavaScript
+~~true == 1
+~~false == 0
+~~"" == 0
+~~[] == 0
+
+~~undefined ==0
+~~!undefined == 1
+~~null == 0
+~~!null == 1
+
+~~("1nd") == 0
+```
+
 ## 滚动到最底部
 对于一个不时更新的容器内，如果在每次更新的时候，都要滚动到最底部，以显示最新内容，那么可以使用`scrollIntoView()`方法。这是 HTML5 新增的一个 DOM 方法。
 
