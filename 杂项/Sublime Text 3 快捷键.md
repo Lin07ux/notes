@@ -1,32 +1,54 @@
 - `ctrl+shift+p`	   打开命令面板
-- `ctrl+p`      	   搜索项目中的文件
-- `ctrl+r`	           前往Method
-- `ctrl+g`	           跳转到第几行
+- `ctrl+p`      	   打开文件/@去文件中的方法位置/#去某个变量位置
+- `ctrl+r`	         去某个方法位置
+- `ctrl+g`	         跳转到指定行
 - `ctrl+k & ctrl+b`	   切换侧边栏显示状态
-- `ctrl+shift+(backspace|del)`	(左侧|右侧)全部删除
-- `ctrl+y`	           重做或重复
-- `shift+方向键`	       移动并选择
+- `ctrl+shift+(backspace|del)`  (左侧|右侧)全部删除
+- `ctrl+y`	          重做或重复
+- `shift+方向键`	    移动并选择
 - `ctrl+([|])`	       缩进|取消缩进
-- `ctrl+shift+([|])`   (折叠|展开)代码
-- `ctrl+l`	           选择行，重复可依次增加选择下一行
-- `ctrl+m`	           跳转到对应括号
-- `ctrl+shift+m`	   选中括号间的内容
-- `alt+.`	           close tag
-- `ctrl+/`	           当前行注释状态切换
-- `ctrl+h`	           替换
-- `ctrl+[shift]+f`	   [全局]查找
+- `ctrl+shift+([|])` (折叠|展开)代码
+- `ctrl+l`	          选择行，重复可依次增加选择下一行
+- `ctrl+m`	          跳转到对应括号
+- `ctrl+n`	          新建
+- `ctrl+w`	          关闭标签
+- `ctrl+shift+m`	    选中括号间的内容
+- `alt+.`	          close tag
+- `ctrl+/`	          当前行注释状态切换
+- `ctrl+shift+/`     块注释(注释已选择内容)
+- `ctrl+h`	          替换
+- `ctrl+[shift]+f`	 [全局]查找
 - `ctrl+[shift]+tab`, `ctrl+pageup`, `alt+num`	切换tab面板
-- `ctrl+shift+y`	   将光标处的表达式计算，对于数学不好的很有用
-- `ctrl+[shift]+v`	   [缩进]粘贴
-- `ctrl+d`	           选择一个选中项的下一个匹配项
-- `alt+f3`	           选择文件中的所有匹配项项
-- `ctrl+shift+’`	   选择所有选中项的标签
-- `ctrl+shift+a`	   选择当前选中项的父容器，可连续使用
-- `ctrl+shift+(↑|↓)`   (上|下)移动一行
-- `ctrl+shift+d`	   复制行或选中项
-- `alt+shift+w`	       用标签包裹行或选中项
+- `ctrl+shift+y`	    将光标处的表达式计算，对于数学不好的很有用
+- `ctrl+[shift]+v`	 [无格式]粘贴
+- `ctrl+d`	          选择一个选中项的下一个匹配项
+- `alt+f3`	          选择文件中的所有匹配项项
+- `ctrl+shift+’`	    选择所有选中项的标签
+- `ctrl+shift+a`	    选择当前选中项的父容器，可连续使用
+- `ctrl+shift+(↑|↓)` (上|下)移动一行
+- `ctrl+shift+d`	    复制行或选中项
+- `alt+shift+w`	    用标签包裹行或选中项
 - `ctrl+(↑|↓)`, `alt+(↑|↓)`, `alt+shift+(↑|↓)`	(加|减)1, (加|减)10, (加|减)0.1
-- `ctrl+shift+;`	   移除未闭合的容器元素
-- `ctrl+j`	           合并选中的行（多行边一行）
-- `ctrl+kk`	           从光标处删除至行尾
-- `ctrl+shift+k`	   删除整行
+- `ctrl+shift+;`	    移除未闭合的容器元素
+- `ctrl+j`	          合并选中的行（多行边一行）
+- `ctrl+kk`	          从光标处删除至行尾
+- `ctrl+shift+k`	    删除整行
+- `ctrl+kk`          从光标处删除至行尾
+- `ctrl+k+backspace` 从光标处删除至行首
+- `ctrl+ku`          改为大写
+- `ctrl+kl`          改为小写
+- ``Ctrl+` ``        打开 python 控制台
+- `tab`              缩进
+- `shift+tab`        去除缩进
+- `ctrl+enter`       光标所在行后插入行
+- `ctrl+shift+enter` 光标所在行前插入行
+- `alt+.`            闭合当前标签
+- `ctrl+shift+a`     选择光标位置父标签对儿
+- `alt+shift+1`      标签显示在一个单列
+- `alt+shift+2`      标签显示在一个双列
+- `alt+shift+5`      网格 (4组)
+- `ctrl+[1,2,3,4]`   焦点移动至相应组
+- `alt+[1,2,3…]`     选择相应标签页(Mac 上为`command+[1,2,3…]`)
+- `ctrl+Shift+[1,2,3,4]` 将当前文件移动至相应组
+
+
