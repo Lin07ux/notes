@@ -53,6 +53,8 @@ composer selfupdate
 composer self-update
 ```
 
+> 如果通过自身的命令更新失败，那么可以尝试重新执行安装过程。比如，在 Mac 中，可以从官网上下载最新版本，然后移动下载的文件为`/usr/local/bin/composer`即可。
+
 
 ## 使用
 作为一个包管理工具，composer 和其他语言中的包管理工具的用法基本相同，只是部分命令区别。
@@ -209,21 +211,22 @@ composer show monolog/monolog
 [packagist.org](https://packagist.org/) 是Composer的仓库，很多著名的 PHP 库都能在其中找到。你也可以提交你自己的作品。
 
 ### 镜像配置
-由于官方的镜像被墙了，所以需要使用科学上网，或者使用国内的镜像 [phpcomposer](https://packagist.phpcomposer.com)。
+由于官方的镜像被墙了，所以需要使用科学上网，或者使用国内的镜像 [Laravel China 镜像](https://packagist.laravel-china.org)。
 
-> 不过目前国内的镜像好像也已经被墙了，也需要翻墙。
+> 详情查看：[Composer 中文镜像](https://laravel-china.org/composer)
 
 可以通过如下的配置来改用国内的镜像(全局修改)：
 
 ```shell
-composer config -g repo.packagist composer https://packagist.phpcomposer.com
+composer config -g repo.packagist composer https://packagist.laravel-china.org
 ```
 
 或者，也可以修改当前项目的`composer.json`配置文件，来在当前项目中启用国内的镜像：
 
 ```shell
-composer config repo.packagist composer https://packagist.phpcomposer.com
+composer config repo.packagist composer https://packagist.laravel-china.org
 ```
+
 这个命令将会在当前项目中的`composer.json`文件的末尾自动添加镜像的配置信息（你也可以自己手工添加）：
 
 ```json
