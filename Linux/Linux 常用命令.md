@@ -1,3 +1,22 @@
+### chown
+
+`chown`用于改变文件或文件夹的所属用户和所属组。
+
+```shell
+chown [-R] user:group dir
+```
+
+其中选项`-R`表示将该文件夹和文件夹内的所有的文件和文件夹都改成同样的用户和属组。
+
+### du
+
+`du`可以用于查看文件或文件夹的大小。
+
+* `du -h` 查看文件夹中每一个文件的大小，会列出来每一个文件的大小。使用该命令时，需要进入文件夹中，或者在后面加上文件夹的名称。
+* `du -s -h 文件夹名` 查看该文件夹的大小。
+* `du -ks [文件夹名]` 查看当前所在文件夹或指定文件夹的大小。
+* `df -lh` 查看磁盘空间
+
 ### ls (List)
 `ls`会列举出当前工作目录的内容（文件或文件夹），就跟你在 GUI 中打开一个文件夹去看里面的内容一样。
 
@@ -112,7 +131,8 @@ unzip test.zip -d /root/ 
 `whatis`会用单行来描述给定的命令。
 
 ### man (Manual)
-`man`会为给定的命令显示一个手册页面。
+
+`man <command>`会为给定的命令显示一个手册页面。可以通过`q`退出手册页面。
 
 ### exit
 `exit`用于结束当前的终端会话。
@@ -178,6 +198,26 @@ c   1
 ```
 
 如果想以第二列数值大小降序输出，则需要使用`-t`和`-k`参数了：`sort -nr -t\t -k2 test.bat -o test.bat`。
+
+### mount/unmount
+
+前者用于将设备挂载到指定的路径中，后者则是取消挂载。
+
+`mount /what /where` 其中，`what`是设备的名称，例如 U 盘。`where`是挂载点，通常是`/mnt`。
+
+`mount --bind /where1 /where2` mount 命令不能直接挂载文件夹，需要使用`--bind`参数才行。
+
+如果要保证开机自动挂载，可以修改`/etc/fstab`文件：
+
+```vim
+/dev/xvdb1       /mnt/ftpdate        ext3    defaults      0 0
+
+# 如
+/mnt/ftpdate/公司公共资料 /mnt/ftpdate/林胜利/公司公共资料 none bind 0 0
+```
+	
+`umount /where` 卸载挂载在`where`的设备或者文件夹。
+
 
 ## 参考
 [29个你必须知道的Linux命令](https://github.com/dwqs/blog/issues/24)
