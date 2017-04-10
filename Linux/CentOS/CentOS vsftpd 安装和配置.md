@@ -106,6 +106,11 @@ chown -R ftpuser /home/wwwroot/magneto
 ```
 
 > 关于 ftp 用户的创建，如果对于 web 服务器来说，由于开发者需要不时的上传文件到 web 目录，所以建议将 ftp 用户的 uid 改成和 web 目录的所有者的 uid 相同，这样能避免权限问题。或者，也可以开启 vsftpd 的虚拟用户访问权限，这样就能不必为每个开发者创建一个账号了，具体看下面的“问题及解决”。
+> 
+> 一般情况下，ftp 是不让 root 用户远程登陆，但只要你修改一个文件就可以登陆了：
+> 
+> * 去掉或注释掉`/etc/vsftpd/ftpusers`中的 root；
+> * 去掉或注释掉`/etc/vsftpd/user_list`中的 root。
 
 ### 问题及解决
 #### 登录报错：500 Oops

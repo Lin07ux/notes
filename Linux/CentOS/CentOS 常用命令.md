@@ -1,9 +1,13 @@
 ### 查看系统
-- `cat  /etc/redhat-release`  系统版本
-- `uname  -r`  内核版本
-- `uname -a`   显示所有系统信息
+- `cat  /etc/redhat-release` 声明 Red Hat 的名称和版本号。由`rc.local`使用。
+- `uname -r` Linux 内核版本。
+- `uname -a` 显示所有系统和 Linux 内核的信息。
+- `rpm -q centos-release` 通过 rpm 包版本查看系统版本。
+- `lsb_release -a` 适用于 CentOS、RedHat、Ubuntu 等。
 
 > `cat /etc/issue` 好像在 CentOS 7.0 之后就不能正常显示内核版本了。
+> 
+> LSB 是 Linux Standard Base 的缩写，`lsb_release`命令用来显示 LSB 和特定版本的相关信息。`-a, –all`就是显示所有信息，显示包括版本信息、发行版的 ID、发行版的描述信息、具体版本号、发行版代号的信息。
 
 ![系统信息](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472016795049.png)
 
@@ -120,7 +124,6 @@ cat /proc/cpuinfo| grep "processor"| wc -l
 * h   显示帮助
 * n   设置在进程列表所显示进程的数量
 * q   退出 top
-* s   改变画面更新周期
 
 3. 底部：以 PID 区分的进程列表将根据所设定的画面更新时间定期的更新。
 
@@ -158,146 +161,204 @@ Linux 里一般使用`free`命令查看内存的使用情况，加参数`-m`表�
 ### 查看文件
 查看文件有多种方式，各有其特点。
 
-**cat**  将文件或标准输入组合完全输出到标准输出中。适合内容较少的文件。
-	用法：cat [option] [file] ...
-	如果[file]缺省或者为 - ，则读取标准输入。
-	选项：可用选项有如下几个
-		-A,  --show-all        等价于 -vET
-		-b,  --number-nonblacnk   对非空输出行编号
-		-e                        等价于 -vE
-		-E,  --show-ends          在每行结尾处显示 $
-		-n,  --number             对输出的所有行编号
-		-s,  --sequeeze-blank     不输出多行空行
-		-t                        等价于 -vT
-		-u                        (被忽略)
-		-v,  --show-nonprinting   使用 ^ 和 M- 引用。除了 LFD 和 TAB 之外
-		-- help                   显示帮助信息并退出
-		--version                 显示版本信息并退出
+**cat**
 
-**more**  显示文件的一屏内容。其从前向后读取文件，因此在启动时就加载整个文件。
-	除了可以显示文件内容，还能通过管道对其他输出进行分屏显示，如，`ls -l . | more`
-	用法：more [option] [file]
-	选项：
-	    +n     从第 n 行开始显示
-	    -n     定义屏幕大小为 n 行
-	    +/pattern 在每个档案显示前搜寻该字符串，然后从该字符串前两行之后开始显示
-	    -c        从顶部清屏，然后显示
-	    -d        给出操作提示
-	    -l        忽略 Ctrl + l (换页)字符
-	    -p        通过清除仓库而不是滚屏来对文件进行换页，与 -c 类似
-	    -s        把连续的多个空行显示为一行
-	    -u        把文件内容中的下划线去掉
-	常用操作指令：
-		Enter    向下 n 行，默认为 1 行，可以定义。
-		Ctrl + F 向下滚动一屏
-		Space    向下滚动一屏
-		Ctrl + B 返回上一屏
-		=        输出当前的行号
-		:f       输出文件名和当前的行号
-		V        调用 vi 编辑器
-		![命令]  调用 Shell 命令并执行
-		+[n]     先按 + 号，然后输数字，再按 Enter 之后就能向下翻指定行。
-		q        退出 more
+将文件或标准输入组合完全输出到标准输出中。适合内容较少的文件。
+	
+用法：`cat [option] [file] ...`。如果[file]缺省或者为 - ，则读取标准输入。
 
-**less**  和 more 类似，分屏查看文件。但是在查看时，不会加载整个文件。
-	用法：less [option] [file]
-	选项：
-		-b      <缓冲区大小> 设置缓冲区的大小
-		-e  当文件显示结束后，自动离开
-		-f  强迫打开特殊文件，例如外围设备代号、目录和二进制文件
-		-g  只标志最后搜索的关键词
-		-i  忽略搜索时的大小写
-		-m  显示类似more命令的百分比
-		-N  显示每行的行号
-		-o <文件名> 将less 输出的内容在指定文件中保存起来
-		-Q          不使用警告音
-		-s          显示连续空行为一行
-		-S          行过长时间将超出部分舍弃
-		-x <数字>   将“tab”键显示为规定数量的空格
-	常用操作：
-		/字符串     向下搜索“字符串”的功能
-		?字符串     向上搜索“字符串”的功能
-		n           重复前一个搜索（与 / 或 ? 有关）
-		N           反向重复前一个搜索（与 / 或 ? 有关）
-		b           向后翻一页
-		d           向后翻半页
-		h           显示帮助界面
-		Q           退出less 命令
-		u           向前滚动半页
-		y           向前滚动一行
-		Space       滚动一行
-		Enter       滚动一页
-	    pagedown    向下翻动一页
-		pageup      向上翻动一页
+选项：可用选项有如下几个
 
-**tail**  显示文件的最后 10 行。还能用来跟踪日志。
-	用法：tail [option] [file]
-	选项：
-		-f 跟踪日志，将文件里最尾部的内容显示在屏幕上，并且不断刷新。
+* `-A, --show-all`           等价于 -vET
+* `-b, --number-nonblacnk`   对非空输出行编号
+* `-e`                       等价于 -vE
+* `-E, --show-ends`          在每行结尾处显示 $
+* `-n, --number`             对输出的所有行编号
+* `-s, --sequeeze-blank`     不输出多行空行
+* `-t`                       等价于 -vT
+* `-u`                       (被忽略)
+* `-v, --show-nonprinting`   使用 ^ 和 M- 引用。除了 LFD 和 TAB 之外
+* `--help`                   显示帮助信息并退出
+* `--version`                显示版本信息并退出
+
+**more**
+
+显示文件的一屏内容。其从前向后读取文件，因此在启动时就加载整个文件。
+
+除了可以显示文件内容，还能通过管道对其他输出进行分屏显示，如，`ls -l . | more`
+
+用法：`more [option] [file]`
+
+选项：
+
+* `+n`        从第 n 行开始显示
+* `-n`        定义屏幕大小为 n 行
+* `+/pattern` 在每个档案显示前搜寻该字符串，然后从该字符串前两行之后开始显示
+* `-c`        从顶部清屏，然后显示
+* `-d`        给出操作提示
+* `-l`        忽略 Ctrl + l (换页)字符
+* `-p`        通过清除仓库而不是滚屏来对文件进行换页，与 -c 类似
+* `-s`        把连续的多个空行显示为一行
+* `-u`        把文件内容中的下划线去掉
+
+常用操作指令：
+
+* `Enter`    向下 n 行，默认为 1 行，可以定义。
+* `Ctrl + F` 向下滚动一屏
+* `Space`    向下滚动一屏
+* `Ctrl + B` 返回上一屏
+* `=`        输出当前的行号
+* `:f`       输出文件名和当前的行号
+* `V`        调用 vi 编辑器
+* `![命令]`  调用 Shell 命令并执行
+* `+[n]`     先按 + 号，然后输数字，再按 Enter 之后就能向下翻指定行。
+* `q`        退出 more
+
+**less**
+
+和 more 类似，分屏查看文件。但是在查看时，不会加载整个文件。
+
+用法：`less [option] [file]`
+
+选项：
+
+* `-b`      <缓冲区大小> 设置缓冲区的大小
+* `-e`  当文件显示结束后，自动离开
+* `-f`  强迫打开特殊文件，例如外围设备代号、目录和二进制文件
+* `-g`  只标志最后搜索的关键词
+* `-i`  忽略搜索时的大小写
+* `-m`  显示类似more命令的百分比
+* `-N`  显示每行的行号
+* `-Q`  不使用警告音
+* `-s`  显示连续空行为一行
+* `-S`  行过长时间将超出部分舍弃
+* `-x <数字>`   将“tab”键显示为规定数量的空格
+* `-o <文件名>` 将less 输出的内容在指定文件中保存起来
+
+常用操作：
+
+* `/字符串`      向下搜索“字符串”的功能
+* `?字符串`      向上搜索“字符串”的功能
+* `n`           重复前一个搜索（与 / 或 ? 有关）
+* `N`           反向重复前一个搜索（与 / 或 ? 有关）
+* `b`           向后翻一页
+* `d`           向后翻半页
+* `h`           显示帮助界面
+* `Q`           退出less 命令
+* `u`           向前滚动半页
+* `y`           向前滚动一行
+* `Space`       滚动一行
+* `Enter`       滚动一页
+* `pagedown`    向下翻动一页
+* `pageup`      向上翻动一页
+
+**tail**
+
+显示文件的最后 10 行。还能用来跟踪日志。
+
+用法：`tail [option] [file]`
+
+选项：
+
+* `-f` 跟踪日志，将文件里最尾部的内容显示在屏幕上，并且不断刷新。
+* `-n <数字>` 显示文件最后指定行数的内容。
 
 
 ### 创建交换分区
-查看交换分区的信息
-	swapon -s
-	这里就会显示系统上的交换分区的信息。
 
-	[root@iZ28xvb5f81Z ~]# swapon -s
-	Filename                                Type            Size    Used    Priority
-	/swapfile                               file            2097148 0       -1
+**查看交换分区的信息**
+
+使用`swapon -s`命令就会显示系统上的交换分区的信息。类似如下：
+
+```
+[root@iZ28xvb5f81Z ~]# swapon -s
+Filename                 Type           Size      Used    Priority
+/swapfile                file           2097148   0       -1
+```
 	
-添加交换文件
-	# if 指定挂载的位置
-	# of 指定交换文件的名称
-	# bs
-	# count 指定交换分区的大小，单位是 kb，可以写成 2048000 或者 2048k
-	dd if=/dev/zero of=/swapfile bs=1024 count=2048k
+**添加交换文件**
 
-	# 输出如下
-	[root@iZ28xvb5f81Z ~]# dd if=/dev/zero of=/swapfile bs=1024 count=2048k
-	2048000+0 records in
-	2048000+0 records out
-	2097152000 bytes (2.1 GB) copied, 3.09593 s, 347 MB/s
+添加交换文件需要使用`dd`命令，该命令有如下的一些选项:
+
+* `if` 指定挂载的位置
+* `of` 指定交换文件的名称
+* `bs` 分区单位大小
+* `count` 指定交换分区的大小，单位是 kb，可以写成 2048000 或者 2048k
+	
+完整使用如下：
+
+```shell
+dd if=/dev/zero of=/swapfile bs=1024 count=2048k
+```
+
+输出类似如下：
+
+```
+[root@iZ28xvb5f81Z ~]# dd if=/dev/zero of=/swapfile bs=1024 count=2048k
+2048000+0 records in
+2048000+0 records out
+2097152000 bytes (2.1 GB) copied, 3.09593 s, 347 MB/s
+```
 
 > 交换分区一般设置为内存的 1-2 倍即可，太大也无用。
 
-创建交换分区
-	# /swapfile 就是上一步添加交换文件时指定的文件名
-	mkswap /swapfile
+**创建交换分区**
 
-	# 输出如下
-	mkswap: /swapfile: warning: don’t erase bootbits sectors
-	on whole disk. Use -f to force.
-	Setting up swapspace version 1, size = 2097147 KiB
-	no label, UUID=9722999f-ae6c-4caa-ac3a-a74369740a17
+添加交换文件之后，还需要把该文件创建成交换分区才可被系统使用。
 
-开启交换分区
-	# /swapfile 就是上面创建的交换文件名称
-	swapon /swapfile
+创建交换分区使用`mkswap`命令。如下：
 
-设置开机自启动
-	echo "/swapfile swap swap defaults 0 0" >>/etc/fstab
+```shell
+# /swapfile 就是上一步添加交换文件时指定的文件名
+mkswap /swapfile
+```
 
-检查是否生效
-	# 使用 free -m 命令看
-	# 查看结果中是否有相应的交换分区空间
-	free -m
+输出类似如下：
 
-	# 输出如下
-	[root@iZ28xvb5f81Z ~]# free -m
-	             total       used       free     shared    buffers     cached
-	Mem:           994        927         67         78         45         96
-	-/+ buffers/cache:        786        208
-	Swap:         2047         33       2014
+```
+mkswap: /swapfile: warning: don’t erase bootbits sectors
+on whole disk. Use -f to force.
+Setting up swapspace version 1, size = 2097147 KiB
+no label, UUID=9722999f-ae6c-4caa-ac3a-a74369740a17
+```
+
+**开启交换分区**
+
+交换分区创建完成之后，还需要开启才能发挥作用。一般希望将其设置为开机自启动，否则每次重启这个交换分区并不能起作用。
+
+```shell
+# /swapfile 就是上面创建的交换文件名称
+swapon /swapfile
+
+# 设置开机自启动
+echo "/swapfile swap swap defaults 0 0" >>/etc/fstab
+```
+
+**检查是否生效**
+
+一切完成之后，可以通过查看内存的使用情况来确定交换分区是否起作用了。输出类似如下：
+
+```
+[root@iZ28xvb5f81Z ~]# free -m
+             total       used       free     shared    buffers     cached
+Mem:           994        927         67         78         45         96
+-/+ buffers/cache:        786        208
+Swap:         2047         33       2014
+```
 
 
 ### 查看系统日志
-系统日志位于 /var/log/messages 文件中。
-可以用 egrep 命令过滤其中的内容。
-	# 显示系统日志中关于 oom、kill 以及 mysql 的信息
-	egrep -i "oom|kill|mysql" /var/log/messages
 
+系统日志位于`/var/log/messages`文件中。可以用`egrep`命令过滤其中的内容。
+
+如下，显示系统日志中关于`oom`、`kill`以及`mysql`的信息：
+
+```shell
+egrep -i "oom|kill|mysql" /var/log/messages
+```
 
 ### 查看防火墙设置
+
 防火墙配置文件一般位于：`etc/sysconfig/iptables`
 
 修改之后，需要重启一下 iptabels 服务：`service iptables restart`
@@ -332,4 +393,53 @@ Linux 里一般使用`free`命令查看内存的使用情况，加参数`-m`表�
 * -c 每隔一个固定时间，执行该netstat命令。
 
 提示：LISTEN和LISTENING的状态只有用-a或者-l才能看到
+
+### 赋予普通用户 root 权限
+
+> 注1：就算赋予了 root 权限，也和 root 用户还是有区别的，因为只能执行 root 规定好的一些操作命令。
+> 
+> 注2：建议使用方法二，不要轻易使用方法三。
+
+以下命令假设有一个普通用户 linux7。
+
+**方法一**：
+
+修改`/etc/sudoers`文件，找到`%wheel`一行，把前面的`#`去掉
+
+```
+## Allows people in group wheel to run all commands
+%wheel    ALL=(ALL)    ALL
+```
+
+然后修改用户，使其属于 root 组（wheel），命令如下：
+
+```shell
+usermod -g root linux7
+```
+
+修改完毕，现在可以用 linux7 帐号登录，然后用命令`sudo su -`，即可获得 root 权限进行操作。
+	
+**方法二**：
+
+修改`/etc/sudoers`文件，找到 root 一行，在 root 下面添加一行，如下所示：
+
+```
+## Allow root to run any commands anywhere
+root     ALL=(ALL)    ALL
+linux7   ALL=(ALL)    ALL
+```
+
+修改完毕，现在可以用 linux7 帐号登录，然后用命令`sudo su -`，即可获得 root 权限进行操作。
+	
+**方法三**：
+
+修改`/etc/passwd`文件，找到如下行，把用户 ID 修改为 0 ，如下所示：
+
+```vi
+linux7:x:500:500:linux7:/home/linux7:/bin/bash
+# 修改成如下
+linux7:x:0:500:linux7:/home/linux7:/bin/bash
+```
+
+保存后，用 linux7 账户登录后，直接获取的就是 root 帐号的权限。
 
