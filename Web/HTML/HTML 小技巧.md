@@ -74,10 +74,14 @@
 
 `<a href="mailto:tugenhua@126.com?body=http://www.baidu.com">内容包含链接，含http(s)://等的文本自动转化为链接</a>`
 
-## 不支持 JavaScript
+## 其他
+
+### 不支持 JavaScript
+
 当页面不支持 js 的时候，可以使用`<noscript>内容</noscript>`标签来进行提示信息的展示。如果浏览器支持 js，那么这个标签就不会被显示在页面中。
 
-## Web 页面链接到百度地图
+### Web 页面链接到百度地图
+
 在 web 页面中，可以通过一个 a 链接直接链接到百度地图上，并可以指定打开地图时的显示标题和地址信息。
 
 ```html
@@ -105,4 +109,17 @@ document.contentEditable = 1;
 ```html
 <video src="test.mp4" webkit-playsinline playsinline></video>
 ```
+
+### a 链接
+
+a 链接的`href`属性可以有如下几种值：
+
+- 空：如果该属性没有值，那么点击该 a 元素后会刷新页面。
+- url：如果设置成一个 url 那么点击该 a 标签将会跳转到指定的 url。
+- 锚点(`#`)：如果设置成锚点，那么点击之后会跳转到当前页面的某个元素(该元素的 ID 和锚点中的值相同)。
+- JavaScript 代码：点击后会执行该代码，不过一般通过设置`href="javascript:(void)0;"`
+
+> 需要注意的是如果锚点值仅为`#`那么点击后就会跳转到页面顶部。
+
+
 
