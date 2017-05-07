@@ -133,6 +133,11 @@ GIMP，PS该有的，它基本都有。
 
 [Github](https://github.com/lhc70000/iina)
 
+### Sequel Pro
+MySQL 数据库管理软件，可以连接本地和远程的数据库，并能进行相关的修改、设计、查询等。
+
+[官网](http://www.sequelpro.com/)
+
 
 ## 编程开发
 ### Dash 文档 API 查看
