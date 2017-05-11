@@ -7,7 +7,7 @@
 ## Viewport
 经常在移动端会写成下面的方式，以禁止用户缩放，和设置页面的宽度为设备宽度：
 
-`<mate name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">`
+`<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">`
 
 其中，content 的参数的含义如下：
 
