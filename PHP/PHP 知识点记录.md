@@ -1,9 +1,11 @@
 ## json_encode()、json_decode()
-json_encode 后保持中文编码函数：`json_encode("试试", JSON_UNESCAPED_UNICODE);`
 
-json_decode 默认情况下，会把 json 解码成一个对象，如果要转成关联数组，则需要设置第二个参数为 true：`json_decode($arr, true);`
+`json_encode`后保持中文编码函数：`json_encode("试试", JSON_UNESCAPED_UNICODE);`
 
-### PHP 对特殊字符串的处理方案
+`json_decode`默认情况下，会把 json 解码成一个对象，如果要转成关联数组，则需要设置第二个参数为 true：`json_decode($arr, true);`
+
+## PHP 对特殊字符串的处理方案
+
 普通的字符串截取，一般采用`substr()`或者`mb_substr()`。但这两个方法仅限于英文阿拉伯数字的处理，对中文的截取处理是很不友好的。不仅涉及到字符编码 gbk 和 utf-8 的区分，还有一些乱码情况。因此对于字符串的截取，特别是包含中文的字符串，首推正则匹配处理：
 
 `preg_match_all(regexp, string, resultArray);`
@@ -17,7 +19,18 @@ $chstr = preg_replace($match,"",$chstr);
 echo $chstr;	// "交通运输大"
 ```
 
+## PHP 字符集相关函数
+
+* 如果不清楚字符串的编码格式，可以用`mb_detect_encoding`函数来进行检查。
+
+* 如果要转换编码，使用函数`iconv()`，如将 GB2312  转 UTF-8：`iconv("GB2312","UTF-8",$text);`
+
+* 当遇到无法确定原编码是何种编码，或者`iconv()`转化后无法正常显示时可用`mb_convert_encoding()`函数：`$str = mb_convert_encoding($str, "UTF-8");`
+
+> 其实在 php.ini 中有个选项设置 `default_charset = "UTF-8"; `，很多字符串处理函数如`htmlentities()`会使用这个默认字符集。
+
 ## 隐藏 PHP 信息
+
 一些简单的方法可以帮助隐藏 PHP，这样做可以提高攻击者发现系统弱点的难度。
 
 * 在`php.ini`文件里设置`expose_php = off`，可以去除响应头信息中的`X-Powered_By`，可以减少他们能获得的有用信息。
@@ -40,6 +53,7 @@ echo $chstr;	// "交通运输大"
 > 参考：[隐藏 PHP](http://php.net/manual/zh/security.hiding.php)
 
 ## include/include_once/require/require_once
+
 * include 和 include_once 加载的文件不存在，或者文件内代码执行出错的时候，会继续执行 include/include_once 语句之后的代码；require/require_once 则会直接报错并停止执行后续代码。
 * include 和 require 可以加载同一个文件多次；include_once 和 require_once 会保证同一个文件只被加载一次，如果之前该文件已经通过任何方式被引用，则不会再次加载该文件了。
 * include 和 include_once 一般是放在流程控制的处理部分中使用，将文件内容引入；而 require 和 require_once 不受条件流程的控制，只要代码中出现了 require 和 require_once，则其所加载的文件都会被载入。
@@ -97,6 +111,7 @@ require 'a.php';
 
 
 ## 系统常量
+
 * `__FILE__` 当前 PHP 文件的相对路径
 * `__LINE__` 当前 PHP 文件中所在的行号
 * `__FUNCTION__` 当前函数名，只对函数内调用起作用
@@ -117,6 +132,7 @@ require 'a.php';
 * `$_SESSION` session 会话变量
 
 ## 大小写
+
 PHP 中可以忽略大小写的东西有：
 
 * 用户定义类
@@ -127,8 +143,11 @@ PHP 中可以忽略大小写的东西有：
 剩下的基本都是大小写敏感的，当然，一定要记住 **变量是区分大小写的**！
 
 ## PHP 标签
+
 ### 标签类型
+
 #### 1. XML 型标签
+
 这个标签中的 php 的声明不是大小写敏感的，你可以`<?PhP ... ?>`也是完全可行的。
 
 ```php
@@ -136,6 +155,7 @@ PHP 中可以忽略大小写的东西有：
 ```
 
 #### 2. 短标签（SGML 型标签）
+
 短标签有两种，一种是需要在 php.ini 配置文件中配置的，另一种是不需要配置的。
 
 **`<? ?>`**
@@ -160,6 +180,7 @@ PHP 中可以忽略大小写的东西有：
 ```
 
 #### 3. ASP 风格标签
+
 如果想要使用这种风格的标签，需要确保`asp_tags`打开。并且一定要注意的是，这个和短标签的区别是：当短标签配置是关闭的时候，短标签（包括短标签内部）的东西是不会让用户看到的！然而如果`asp_tags`关闭时，你使用这种标签就会造成他的内容被用户看到，包括 ASP 风格标签和标签内部的内容。 
 
 ```php
@@ -167,6 +188,7 @@ PHP 中可以忽略大小写的东西有：
 ```
 
 #### 4. Script 风格标签
+
 这个标签类型大家可能之前也还是见过的：
 
 ```php
@@ -176,6 +198,7 @@ PHP 中可以忽略大小写的东西有：
 这个用法中`script`、`language`、`php`的大小写可以随意转换。
 
 ### 标签的 Trick
+
 根据上面的介绍，可以写出如下的代码：
 
 ```php
