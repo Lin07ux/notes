@@ -1,3 +1,15 @@
+### 同步时间
+
+CentOS 中，查看日期和时间的命令是`date`，设置命令是`date -set 'yyyy-mm-dd H:i:s'`。
+
+如果经常遇到时间不准确的问题，可以尝试安装网络时间同步工具，如下：
+
+```shell
+# 安装服务
+sudo yum -y install ntp ntpdate
+# 同步时间
+ntpdate cn.pool.ntp.org
+```
 
 ### Nginx 有权限但是无法访问文件
 Nginx 配置的 root 目录有对应的权限，但是无法访问，提示 404 错误。
