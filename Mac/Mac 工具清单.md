@@ -138,7 +138,6 @@ MySQL 数据库管理软件，可以连接本地和远程的数据库，并能�
 
 [官网](http://www.sequelpro.com/)
 
-
 ## 编程开发
 ### Dash 文档 API 查看
 写代码的时候是不是有些API记不住，比如画椭圆该用哪个类？计算开平方用什么函数？怎么连接远程的mysql服务器检索数据？这个时候一般怎么办？问度娘？问谷歌？直接查看在线编程文档？
@@ -162,5 +161,15 @@ HTTPie 是一个更加人性化的 HTTP 命令行客户端。提供了一些简�
 [HTTPie - Github](https://github.com/jkbrzt/httpie)
 
 Mac OSX 安装：`brew install httpie`
+
+## 杂项工具
+
+### GIPHY Capture 录屏 GIF
+
+这个应用可以方便的录制屏幕指定区域，并制作成 GIF 图片，而且做出的 GIF 图片质量还可以，体积比较小，算是比较合适的应用。
+
+该应用可以直接从 App Store 中免费下载获取。
+
+[官网](https://giphy.com/apps/giphycapture)
 
 
