@@ -121,7 +121,7 @@ IS '获得表信息';
 CREATE OR REPLACE FUNCTION "crawl"."table_msg" (a_table_name varchar) RETURNS SETOF "crawl"."tablestruct" AS
 $body$
 DECLARE
-    v_ret ctawl.tablestruct;
+    v_ret crawl.tablestruct;
 BEGIN
     FOR v_ret IN SELECT * FROM table_msg('crawl',a_table_name) LOOP
         RETURN NEXT v_ret;
