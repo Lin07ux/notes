@@ -1,4 +1,5 @@
-# 基本流程
+## 基本流程
+
 Laravel 也是单入口文件的一个系统，所有的请求都会导向`public/index.php`入口文件(所以也需要在 Apache 或者 Nginx 中做相应的配置)。
 
 从这个入口文件开始，依次进行： 
@@ -14,19 +15,21 @@ Laravel 也是单入口文件的一个系统，所有的请求都会导向`publi
 
 在第四步中，我们需要提供的是： _路由_ 、 _控制器_ 、 _视图_ 。不过，控制器和视图并不一定是必须的。路由可以直接返回响应，也可以直接返回一个视图，或者可以调用指定的控制器来动态生成视图。可以说，在 Laravel 中，路由代替了传统的按照文件目录来定义的网站结构。
 
-> 路由位置：`app/Http/routes.php`
+> 路由位置：`routes/web.php`
 > 控制器位置：`app/Http/controllers`
 > 视图位置：`resources/view/`。另外，Laravel 的视图使用的是 blade 模板引擎，文件名以`.blade.php`结尾。
 
 
-# 路由
-路由是 laravel 的特色，更是一个重中之重。路由文件位于：`app/Http/routes.php`。
+## 路由
+
+路由是 Laravel 的特色，更是一个重中之重。路由文件位于`routes/`目录中。
 
 > 在这里，路由是指分析来自客户端请求的统一资源标识符(URI)，根据设定的规则将请求分发至期待的处理逻辑，这一规则就是路由规则，这一过程就是路由。
 
-Laravel 的控制器为什么不类似于 TP 之流的框架呢？因为 laravel 的控制器是为了组织一类行为的，或针对某一资源建立一个标准的资源控制器。而 TP、CI 之流控制器的意义变得更为重要，是整个框架中实现逻辑的主要成分。Laravel 实现主要逻辑的可以是一系列类库，简单的逻辑甚至直接可以在路由实现，而控制器仅仅是一种实现方式之一。Laravel 这种设计在复杂项目中更为科学，使得分层系统得以十分容易的实现。
+Laravel 的控制器为什么不类似于 TP 之流的框架呢？因为 Laravel 的控制器是为了组织一类行为的，或针对某一资源建立一个标准的资源控制器。而 TP、CI 之流控制器的意义变得更为重要，是整个框架中实现逻辑的主要成分。Laravel 实现主要逻辑的可以是一系列类库，简单的逻辑甚至直接可以在路由实现，而控制器仅仅是一种实现方式之一。Laravel 这种设计在复杂项目中更为科学，使得分层系统得以十分容易的实现。
 
-## 示例
+### 示例
+
 参考：[laravel 学习笔记——路由（基础）](https://www.insp.top/article/learn-laravel-route-basic)
 
 最简单的一个例子：
@@ -40,10 +43,12 @@ Route::get('/about', function () {
 
 这样，在访问`http://domain/about`的时候，就会显示“It's me!”这些字符了。这就是 Laravel 中的一个路由了。
 
-## RESTful
+### RESTful
+
 Laravel 中的路由是与 RESTful 的规范相符的，所以，可以借助不同的 HTTP 请求方法(GET/POST/PUT/DELETE 等)来对应不同的路由规则，从而完成不同的业务。
 
-## 中间件
+### 中间件
+
 参考：[laravel 学习笔记——路由（中间件与路由组）](https://www.insp.top/article/learn-laravel-middleware-routegroup)
 
 中间件是在请求到处理逻辑之间的一个中间过程，一般用作前置和后置的判断、验证。比如，验证用户权限，是否登录等。经过中间件处理之后的请求，如果没有被中间件直接返回，就会继续进入到正常的逻辑处理中。
@@ -66,7 +71,8 @@ Route::get('admin/profile', ['middleware' => 'auth', function () {
 
 这样，当我们在访问`http://domain/admin/profile`的时候，就会先经过`auth`这个中间件做一定的处理。
 
-## 路由群组
+### 路由群组
+
 路由组群往往适用于给某一类路由分组，给这个路由组分配的中间件、过滤器等，都会被运用到该组内的所有路由。
 
 简单的说，路由组就是简化一部分路由定义过程的。比如，后台的我都想通过地址`http://domain/admin/***`访问，假如我有 用户（user）、文章（article） 两个模块，他们的访问都要经过一个验证权限的中间件，我需要这样定义路由：
@@ -113,8 +119,10 @@ Route::group(['domain' => '{username}.domain.com'], function () {
 });
 ```
 
-# 控制器
-## 路由和控制器
+## 控制器
+
+### 路由和控制器
+
 参考：[laravel 学习笔记——路由（路由与控制器）](https://www.insp.top/article/learn-laravel-route-router-controller)
 
 对于简单的业务逻辑，我们可以使用匿名函数直接处理并返回响应，或者是返回一个视图。但是当业务逻辑逐渐复杂起来之后，使用控制器就能更清晰了。
@@ -153,7 +161,8 @@ Route::get('/', 'HomeController@index');
 但是这种定义方法会带来一种问题：每条地址规则都要定义路由，岂不是很累？这确实是个问题，不过，laravel 给了我们一个折中的方案——**控制器路由**。
 
 
-## 控制器路由
+### 控制器路由
+
 因为大型的应用业务复杂，控制器相当的多，我们不可能每一个控制器的方法都要定义一个路由。Laravel 的控制器路由可以完美解决问题：
 
 ```php
@@ -194,7 +203,8 @@ class HomeController extends Controller {
 
 依照上述例子，如果我们访问地址`http://domain/`就会显示`HomeController`的`getIndex`方法产生的内容，访问`http://domain/about`，就会显示`getAbout`方法产生的内容。除了使用如`get{Method}`这种格式，还可以有`post{Method}`、`delete{Method}`等。这里的 get、post、delete 对应的就是请求的方式。
 
-## 资源控制器
+### 资源控制器
+
 RESTful 是一种设计思想、一种普遍接受的规范。Laravel 资源控制器，和 RESTful 有着莫大的联系，要理解资源控制器，必须先了解 RESTful。
 
 > 阮一峰关于 RESTful 的文章：[理解 RESTful 架构](http://www.ruanyifeng.com/blog/2011/09/restful.html)
@@ -231,7 +241,8 @@ Route::resource('article', 'ArticleController');
 通过资源控制器，我们就能很容易实现一个符合 RESTful 架构的接口，这种很适合作为 APP 后端开发时使用。这种规范下，不但访问策略清晰易理解，更容易维护。也使你的架构更为合理和现代化。
 
 
-# 视图
+## 视图
+
 参考：[laravel 学习笔记——视图](https://www.insp.top/article/learn-laravel-view)
 
 视图，就是人们所看见的内容。需要注意的是，视图并不等同于视图模块。我们称用于实际负责输出（可视）数据的就叫做视图。
@@ -264,15 +275,19 @@ View::make('article')->withTitle('Hello, world')->withAuthor('chongyi');
 ```
 
 
-# 杂项
-## 请求与响应
+## 杂项
+
+### 请求与响应
+
 参考：[laravel 学习笔记——请求与响应](https://www.insp.top/article/learn-laravel-request-and-response)
 
 在控制器、路由闭包中，使用 echo 输出内容和使用 return 输出内容有什么区别？
 
 控制器和路由闭包中返回的数据，最终会交由 laravel 的 HTTP 组件的 Response（响应）类处理，而直接输出是由 php 引擎处理，php 会以默认的文件格式、响应头输出，除非使用`header()`函数改变。因此与其自己去调取`header()`调整响应头还是其他，都不如 laravel 的 Response 来的简洁实惠。
 
-## 依赖注入
+### 依赖注入
+
 参考：[laravel 学习笔记 —— 神奇的服务容器](https://www.insp.top/article/learn-laravel-container)
+
 只要不是由内部生产（比如初始化、构造函数`__construct`中通过工厂方法、自行手动`new`的），而是由外部以参数或其他形式注入的，都属于**依赖注入（DI）**。
 
