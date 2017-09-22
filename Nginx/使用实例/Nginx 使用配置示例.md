@@ -198,6 +198,8 @@ server {
 }
 ```
 
+参考：[CORS on Nginx](https://enable-cors.org/server_nginx.html)
+
 ### 10. 将无 www 的访问跳转到 www 子域名
 当需要将无子域名的访问都跳转到 www 子域名上时，可以在 server 块中使用如下的配置：
 
