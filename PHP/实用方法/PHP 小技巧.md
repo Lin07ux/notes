@@ -1,4 +1,5 @@
 ### 返回当前 php 文件的上级目录
+
 可以先使用`dirname`获取当前文件的路径，然后拼接上级目录的路径`/../`，最后使用`realpath`来获取真实的上级目录路径。
 
 ```php
@@ -47,5 +48,31 @@ if (!function_exists("fastcgi_finish_request")) {
 ```
 
 > 转摘：[PHP fastcgi_finish_request 方法](https://zhuanlan.zhihu.com/p/26117965)
+
+### PHP 下载文件避免文件名乱码
+
+PHP 中，如果要下载的文件名称为中文，在低版本的 IE 或 FireFox 浏览器中就会会出现文件标题乱码。此时就需要对标题进行编码，也就是说先进行`urlencode`，再放入`header`，问题就可以解决了。
+
+```php
+$ua = _SERVER["HTTP_USER_AGENT"];  
+
+$filename = "中文 文件名.txt";
+$encoded_filename = str_replace("+", "%20", urlencode($filename));  
+
+header('Content-Type: application/octet-stream');  
+
+if (preg_match("/MSIE/", $ua)) {
+    header('Content-Disposition: attachment; filename="' . $encoded_filename . '"');
+} elseif (preg_match("/Firefox/", $ua)) {
+    header('Content-Disposition: attachment; filename*="utf8\'\'' . $filename . '"');
+} else {
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+}
+```
+
+由于`urlencode()`编码后，会将空格替换成`+`，而 url 中的`+`可能会引起歧义，所以需要将其转成空格的 Unicode 编码`%20`。
+
+> 注意：这个替换必须要在`urlencode()`之后进行，否则`urlencode()`会将`%20`编码成`%2520`。
+
 
 
