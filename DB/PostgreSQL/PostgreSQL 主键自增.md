@@ -1,5 +1,6 @@
 
 ### 主键介绍
+
 在 PostgreSQL 中，主键约束只是唯一约束和非空约束的组合。所以，下面两个表定义是等价的：
 
 ```sql
@@ -41,9 +42,8 @@ alter table <tbl_name> drop constraint <tbl_name>_pkey;
 ```
 
 ### 主键自增
-在 PostgreSQL 中，主键并不是自增的，而是有一个专门的类型，叫做`serial`，表示自动增加。
 
-在 PostgreSQL 里，为每一行生成一个”序列号（serial number）“，通常是用类似下面这样的方法生成的：
+在 PostgreSQL 中，主键并不是自增的，而是有一个专门的类型，叫做`serial`，表示自动增加。在 PostgreSQL 里，为每一行生成一个”序列号（serial number）“，通常是用类似下面这样的方法生成的：
 
 ```sql
 CREATE TABLE products (
@@ -52,7 +52,7 @@ CREATE TABLE products (
 );
 ```
 
-里的 nextval() 从一个序列对象(sequence object)提供后继的数值。这种做法非常普遍，以至于我们有一个专门的缩写用于此目的：
+这里的`nextval()`从一个序列对象(sequence object)提供后继的数值。这种做法非常普遍，以至于我们有一个专门的缩写用于此目的：
 
 ```sql
 CREATE TABLE products (
@@ -61,32 +61,34 @@ CREATE TABLE products (
 );
 ```
 
-其实，*自动增加字段*是*default字段*的一种特殊情况。也就是为需要自动增加的字段设置一个默认值即可实现自增。
+其实，*自动增加字段*是*default 字段*的一种特殊情况。也就是为需要自动增加的字段设置一个默认值即可实现自增。
 
 
 ### 实现字段自增的方法
+
 1. 我们也可以在创建表之后，再创建`sequence`，然后设置需要自增的字段的默认值为这个`sequence`的下一个值，从而实现字段自增：
 
-```sql
-# 创建自增队列
-CREATE SEQUENCE event_id_seq
-START WITH 1
-INCREMENT BY 1
-NO MINVALUE
-NO MAXVALUE
-CACHE 1;
-
-# 为自增字段设置默认值
-alter table event alter column id set default nextval('event_id_seq');
-```
+    ```sql
+    # 创建自增队列
+    CREATE SEQUENCE event_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+    
+    # 为自增字段设置默认值
+    alter table event alter column id set default nextval('event_id_seq');
+    ```
 
 2. 或者，可以修改字段类型为`serial`：
 
-```sql
-ALTER TABLE event ALTER COLUMN id TYPE serial;
-```
+    ```sql
+    ALTER TABLE event ALTER COLUMN id TYPE serial;
+    ```
 
 ## 转载
+
 [Postgresql主键自增](http://zhiwei.li/text/2012/02/15/postgresql%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E/)
 
 

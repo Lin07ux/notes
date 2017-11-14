@@ -27,4 +27,14 @@
 
 比如，ElementUI 中的`el-select`元素，如果绑定了`@change="handleChange($event)"`事件处理函数，则其中的`$event`就表示的是该元素选中的值了。
 
+### 上传组件手动上传
+
+上传组件设置`auto-upload`为 false，就可以阻止其自动上传。此时，如果需要上传，可以使用该组件的引用来调用`submit()`方法。
+
+比如，组件的引用为`ref="upload"`，那么可以使用如下的方法：
+
+```JavaScript
+this.$refs.upload.submit();
+```
+
 
