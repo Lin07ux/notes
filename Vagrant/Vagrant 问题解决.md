@@ -1,6 +1,20 @@
 
 Vagrant 的安装见文件《使用 Vagrant 打造跨平台开发环境.pdf》
 
+### 在 host 文件中设置的域名无法通过浏览器访问到虚拟机
+
+**问题**
+
+虚拟机正常启动后，发现在 host 文件中设置的自定义域名无法访问了，通过 IP 可以正常访问，而且在命令行中使用 curl 也能访问。
+
+**原因**
+
+在 host 中设置的自定义域名的顶级域名没有被注册，所以浏览器不会发送请求到该域名。此时，只要修改为正确的顶级域名，再配置虚拟机中的网站即可。
+
+比如，原先设置的域名`lin07ux.dev`无法在浏览器中访问，而改成`lin07ux.io`就可以正常了。
+
+> 该问题之前未出现过，在我将系统升级到 Mac 10.13.2 之后就出现了，但由于也同时升级了 Chrome 浏览器，所以不知道是不是因为系统版本的问题，还是浏览器版本的问题。暂时这样是可以解决的。
+
 ### box 存放位置
 
 add 一个新的 box 之后，Vagrant 会将 box 默认存放在`~/.vagrant.d/boxes`中。
@@ -120,5 +134,25 @@ name, and try again.
 **解决方法**
 
 可以将 Virtualbox 的相关服务都在 MacType 的进程管理中添加例外，不允许其干涉 Virtualbox 虚拟机。如果这个方法不行，需要将 MacType 服务彻底退出。最好也将安全软件退出。
+
+
+### The guest additions on this VM do not match the installed version of VirtualBox!
+
+
+**问题**
+
+启动的时候，会检查宿主机器和虚拟机中的 guest additions 的版本信息。两者的版本不匹配可能不会引起问题，但是如果遇到文件夹同步等方面的问题时，可以考虑先更新 guest additions 版本。
+
+**解决方法**
+
+在宿主机中，执行如下的命令：
+
+```shell
+sudo vagrant plugin install vagrant-vbguest
+```
+
+该命令会安装一个插件，在启动虚拟机的时候，该插件会自动更新 guest additions，使宿主机和虚拟机中的版本一致。
+
+> 参考：[Virtualbox doesn't match with guest additions version](https://askubuntu.com/questions/649734/virtualbox-doesnt-match-with-guest-additions-version)
 
 
