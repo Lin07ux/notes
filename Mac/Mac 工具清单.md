@@ -113,6 +113,13 @@ suspicious-package
 
 
 ## 实用软件
+
+### 视频转 GIF
+
+Drop to GIF 可以将视频转换成 GIF 图片，并且可以设置监听目录自动转换。
+
+软件主页：[Drop to GIF](https://github.com/mortenjust/droptogif)
+
 ### GIMP 图片编辑器
 GIMP，PS该有的，它基本都有。
 
