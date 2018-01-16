@@ -87,6 +87,18 @@ CREATE TABLE products (
     ALTER TABLE event ALTER COLUMN id TYPE serial;
     ```
 
+### 修改序列的起始值
+
+迁移老数据到新的表中时，一般都需要把 ID 也迁移过来，这时新表的自增序列值并不会自动更新，而是依旧从 1 开始，这就需要手动更新序列的值。
+
+修改序列的起始值使用如下的命令即可：
+
+```sql
+ALTER SEQUENCE <sequence_name> RESTART WITH <max_id>;
+```
+
+其中，`<sequence_name>`表示需要修改的序列的名称，`<max_id>`表示序列的起始值，一般需设置为当前最大 ID 的值加 1。
+
 ## 转载
 
 [Postgresql主键自增](http://zhiwei.li/text/2012/02/15/postgresql%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E/)
