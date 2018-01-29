@@ -356,6 +356,8 @@ share homestead.app
 
 ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505832122347.png)
 
+> 在终端中通过`vagrant ssh`登录虚拟机之后，执行`share`命令的时候，可能会有错误出现。此时可以尝试在 VirtualBox 中打开该虚拟机，登录后执行`share`命令来分享站点。
+
 ### 网络接口
 
 `Homestead.yaml`的`networks`属性用于配置 Homestead 的网络接口，可以想配多少就配多少：
