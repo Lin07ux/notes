@@ -74,5 +74,20 @@ if (preg_match("/MSIE/", $ua)) {
 
 > 注意：这个替换必须要在`urlencode()`之后进行，否则`urlencode()`会将`%20`编码成`%2520`。
 
+### 判断是否是合法域名
 
+```php
+/**
+ * 验证是否是合法域名
+ *
+ * @param string $domain 域名
+ *
+ * @return bool
+ */
+function isDomain ($domain)
+{
+    return !empty($domain) && strpos($domain, '--') === false &&
+        preg_match('/^([a-z0-9]+\.)?[a-z0-9]+([a-z0-9-]*(?:[a-z0-9]+))?\.(us|tv|org\.cn|org|net\.cn|net|mobi|me|la|info|hk|gov\.cn|edu|com\.cn|com|co\.jp|co|cn|cc|biz)$/i', $domain);
+}
+```
 
