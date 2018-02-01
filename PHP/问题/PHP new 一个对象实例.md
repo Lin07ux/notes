@@ -1,4 +1,5 @@
 ### 问题起因
+
 下面的这段代码是能够正常的运行的：
 
 ```php
@@ -14,6 +15,7 @@ var_dump($a, $b);
 所以问题就是：为什么空对象还可以跟在`new`后面，`stdClass`有什么特殊的地方吗？
 
 ### 实际表现
+
 其实这和`stdClass`并没有什么关系，完全是`new`的行为决定的，比如在 [psysh](http://psysh.org/) 上做一下简单的测试：
 
 ```shell
@@ -47,6 +49,7 @@ var_dump($a, $b);
 结合上述的表现，可以得到这样的结论：**通过一个类的对象`new`出一个新对象等同于`new`原对象的类**。
 
 ### 原因
+
 那么 PHP 是什么样的实现造成了这种表现呢？还是从源码入手来解析这个问题。
 
 从源码中，我们可以直奔`zend_vm_def.h`中找到答案，在关于`ZEND_FETCH_CLASS`这个 opcode 的解释中，我们可以看到以下内容：
@@ -54,13 +57,13 @@ var_dump($a, $b);
 ```c
 ZEND_VM_HANDLER(109, ZEND_FETCH_CLASS, ANY, CONST|TMPVAR|UNUSED|CV)
 {
-        ...
-        if (OP2_TYPE == IS_CONST) {
-            ...
-        } else if (Z_TYPE_P(class_name) == IS_OBJECT) {
-            Z_CE_P(EX_VAR(opline->result.var)) = Z_OBJCE_P(class_name);
-        } ...
-        ...
+   ...
+   if (OP2_TYPE == IS_CONST) {
+       ...
+   } else if (Z_TYPE_P(class_name) == IS_OBJECT) {
+       Z_CE_P(EX_VAR(opline->result.var)) = Z_OBJCE_P(class_name);
+   } ...
+   ...
 }
 ```
 
