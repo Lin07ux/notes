@@ -3,6 +3,7 @@
 `git checkout`一般是用来创建/切换分支、重置文件版本等作用。之所以可以做到这样，和 Git 中的 HEAD 有关。
 
 ### HEAD 的指向
+
 当我们在 master 分支上的时候，可以查看下 HEAD 的指向内容：
 
 ```shell
@@ -16,10 +17,11 @@ cat .git/HEAD
 当我们使用`git checkout`切换了分支之后，HEAD 就指向了对应的分支。但是，使用 checkout 命令的时候，并不是每次都会改变 HEAD 指针的指向。
 
 ### HEAD 动不动，看你怎么用
+
 checkout 的命令如下：
 
 1. `git checkout [-q] [<commit>] [--] <paths> ...`
-2. `git checkout [<branch>]`
+2. `git checkout <branch>`
 3. `git checkout [-m] [ [-b | -- orphan ] <new_branch>] [start_point]`
 
 用法 2 比用法 1 的区别在于，用法 1 包含了路径。为了避免路径和引用（或提交 ID）同名而发生冲突，可以在`<paths>`前用两个连续的连字符作为分隔。
@@ -31,7 +33,8 @@ checkout 的命令如下：
 对于第 2 种用法，不是检出某个具体文件的的时候，即不指定`<paths>`的时候，单纯的检出某个 commit 或分支，是会改变 HEAD 头指针的。而且只有当 HEAD 切换到某个分支的时候才可以对提交进行跟踪，否则就会进入“分离头指针”的状态。如果省略用法 2 后面的`<branch>`，则默认对工作区进行状态检查。
 
 ### checkout 更多用法
-1. `git checkout -b <new_branch> <start point>`
+
+1. `git checkout -b <new_branch> [<start point>]`
     基于当前分支的 start_point 提交历史创建一个新的分支。
     
 2. `git checkout --datch <branch>` 

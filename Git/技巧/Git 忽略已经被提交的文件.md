@@ -1,8 +1,10 @@
 
 ### 问题
+
 一个文件已经提交到仓库和远程仓库中，现在不想在继续追踪这个文件的变动，而且并不想从仓库中删除这个文件。
 
 ### 解决方法
+
 如果某些文件已经被跟踪了，再放入到`.gitinore`可能并不会取消对该文件的追踪，可以用以下命令来临时忽略：
  ```shell
 git update-index --assume-unchanged filename [filename....]
@@ -36,6 +38,7 @@ git update-index --no-assume-unchanged filename [filename....]
 > 参考：[git忽略已经被提交的文件](https://segmentfault.com/q/1010000000430426)
 
 ### 补充
+
 当使用了`git add`或者`commit`一个文件/目录之后，再将这个文件/目录写入到`.gitignore`文件中，并不会阻止 Git 追踪这个文件/文件夹的变化。
 
 此时，可以使用下面三步来解决问题：
