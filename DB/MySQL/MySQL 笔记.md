@@ -167,10 +167,10 @@ SELECT SQL_NO_CACHE * FROM some_table WHERE id = 10;
 SHOW CHARACTER SET;
 
 # 当前 MYSQL 服务器字符集设置
-SHOW VARIABLES LIKE `character_set_%`;
+SHOW VARIABLES LIKE 'character_set_%';
 
 # 当前 MYSQL 服务器字符集校验设置
-SHOW VARIABLES LIKE `collation_%`;
+SHOW VARIABLES LIKE 'collation_%';
 
 # 显示某数据库字符集设置(database_name 是已存在的数据库)
 SHOW CREATE DATABASE database_name;
