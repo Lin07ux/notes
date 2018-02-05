@@ -204,6 +204,20 @@ composer show monolog/*
 composer show monolog/monolog
 ```
 
+### outdated 查看需要升级的依赖
+
+```shell
+# 查看需要升级的依赖，会列出全部的依赖(包括依赖中的依赖)
+composer outdated
+
+# 查看 composer.json 指定的需要升级的依赖 （--direct）
+composer outdated -D
+
+# 只看有次版本升级的依赖
+composer outdated -m
+```
+
+
 
 ## 其他
 
@@ -250,6 +264,88 @@ Composer 就是我们安装在自己系统上的`composer`工具。所有 packag
 从图上我们可以看到，不管是`Packagist.org`还是`Github.com`出现故障或者被墙，我们都无法正常安装 package，即便能安装的时候，也是龟速。
 
 ### 小技巧
-PHP 开发者该知道的 5 个 Composer 小技巧
+
+#### 1. 按名称对 require 和 require-dev 中的包排序
+
+按名称对`require`及`require-dev`中的包排序是非常好的实践。这在衍合一个分支时可以避免不必要的合并冲突。假如你把一个包添加到两个分支文件中的列表末尾，那每次合并都可能遇到冲突。在`composer.json`中设置如下配置即可自动排序：
+
+```json
+{
+    "config": {
+        "sort-packages": true
+    }
+}
+```
+
+以后再要`require`一个新的包，它会自动添加到一个正确位置（不会跑到尾部）。
+
+#### 2. 在 composer.json 中指明生产环境的PHP版本号
+
+在`composer.json`中可以使用定义应用程序和库所支持的 PHP 版本：
+
+```json
+{
+    "require": {
+        "ext-mbstring": "*",
+        "ext-pdo_mysql": "*",
+    }
+}
+```
+
+如果开发环境和生产环境的 PHP 版本不同，那么可以使用如下的方式来指明生产环境的 PHP 版本，这将会使依赖的升级版本要和指定的平台（生产）版本保持兼容：
+
+```json
+{
+    "require": {
+        "php": "7.1.* || 7.2.*"
+    },
+    "config": {
+        "platform": {
+            "php": "7.1"
+        }
+    }
+}
+```
+
+### 3. 使用自有托管 Gitlab 上的私有包
+
+对于有私有的 vcs 仓库中的包，可以在`composer.json`中进行设置，从而使得 Composer 从指定的私有仓库中下载对应的包。（可能需要相关的身份认证设置。）
+
+```json
+{
+    "repositories": [
+        {
+            "type": "git",
+            "url": "git@gitlab.mycompany.cz:package-namespace/package-name.git"
+        }
+    ],
+    "require": {
+        "package-namespace/package-name": "1.0.0"
+    }
+}
+```
+
+####  4. 临时使用 fork 下 bug 修复分支的方法
+
+如果在某个公共的库中找到一个 bug，并且在Github上自己的 fork 中修复了它， 这就需要从自己的版本库里安装这个库，而不是官方版本库（要到修复合并且修复的版本释出才行）。使用内嵌别名可轻松搞定：
+
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/you/monolog"
+        }
+    ],
+    "require": {
+        "symfony/monolog-bundle": "2.0",
+        "monolog/monolog": "dev-bugfix as 1.0.x-dev"
+    }
+}
+```
+
+## 转摘
+
+1. [你必须知道的 17 个 Composer 最佳实践（已更新至 22 个）](https://www.tuicool.com/articles/Y7JFfq6)
 
 
