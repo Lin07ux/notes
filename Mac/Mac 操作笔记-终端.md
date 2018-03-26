@@ -1,27 +1,40 @@
 ## 终端命令
 ### 命令行快捷键
+
 - `Command + L` 清除上一部分内容
 - `Command + K` 清除当前终端所有的内容
 - `clear`  清屏     
 - `Ctrl + R`  在命令行中搜索已经使用过的命令，如果没有找到，可以再按一次到下一个匹配的命令。
 
 ### 粘贴板
-命令行中粘贴板可以使用`pbcopy`来调用，比如将文件内容拷贝到粘贴板中：
-`pbcopy > ~/.ssh/id_rsa.pub`
 
-### 切换终端
-使用 chsh 命令可以更改默认的终端，比如切换到 zsh 终端：
-`chsh -s /bin/zsh`
+命令行中粘贴板可以使用`pbcopy`来调用，比如将文件内容拷贝到粘贴板中：`pbcopy > ~/.ssh/id_rsa.pub`
+
+### 切换终端 shell
+
+使用 chsh 命令可以更改默认的终端，比如切换到 zsh 终端：`chsh -s /bin/zsh`
+
+### 查看当前使用的是哪种 shell
+
+使用`ps -p $$`或者`ps $$`即可看到。
 
 ### 命令行打开应用
+
 * `open /path/to/some.app`   打开指定路径中的指定应用
 * `open "path/to/file.ext"`  使用默认的应用打开指定的文件
 * `open /path/`              在 Finder 中打开指定路径
 * `open -a /path/to/some.app "/path/to/file.ext"`   使用指定应用打开指定文件
 * `open -e "/path/to/file.ext"`  使用 TextEdit 打开指定文件
 * `open http://www.apple.com/`   使用默认浏览器打开网址
-* 
+
+在命令行下打开 Sublime Text 可以如下的设置：
+
+* 如果是在默认的 Shell 下，可以创建软连接到系统环境路径中：`sudo ln -s "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl" /usr/bin/st`
+
+* 如果是使用的 zsh 则可以在`~/.zshrc`文件中添加如下的命令即可：`alias st="'/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'"`
+
 ### pushd
+
 `pushd <path>`
 
 pushd 命令可以在 cd 进入到一个路径的同时，将路径保存起来。
@@ -30,27 +43,31 @@ pushd 命令可以在 cd 进入到一个路径的同时，将路径保存起来�
 在切换的时候，可以使用`pushd +<编号>`的方式来快速进入。(+号是不可少的，比如：`pushd +1`就是返回上一个路径。)
 
 ### cd
+
 `cd <path>`可以进入一个路径，而`cd -`可以返回上一个路径。
 
 ### 查看进程数
-`ps aux | grep -c php-fpm`
-这样可以查看 php-fpm 的进程数。
 
+`ps aux | grep -c php-fpm`  这样可以查看 php-fpm 的进程数。
 
 
 ## 终端设置
 ### 设置 host
-Mac 系统的 host 文件位于：`/etc/hosts`。
+
+、Mac 系统的 host 文件位于：`/etc/hosts`。
 
 ### 修改 hostname($HOST)
+
 在终端中，一般会显示当前电脑的电脑名或者 $HOST。
 
 修改 $HOST 的方法为：`sudo scutil --set hostname [ newname | newname.local ]`。
 
 > 如果出现使用 newname 方式重命名之后，不能访问网络，可以设置为 newname.local 方式试试。
 
+另外，还可以在`设置 -> 共享`中修改电脑名称即可。需要注意的是，电脑名称中的空格在终端中显示的时候会自动替换成短横线`-`。
 
 ### 自定义终端提示符
+
 默认情况下，Mac 终端中的提示符显示的效果这种格式：`\h:\w \u$`。也即是`电脑名称:当前路径 当前用户名$`。
 
 可以在`~/.bash_profile`文件中修改显示样式，添加如下的一条语句即可：
@@ -89,6 +106,7 @@ PS1内容详情
 ```
 
 ### 彩色化 ls 命令的输出结果
+
 默认 ls 命令的输出中都是同一种颜色，可以通过安装 GNU Coreutils 来替换 Mac 的 ls 命令的输出样式。
 
 首先需要安装 coreutils 软件：
@@ -113,6 +131,7 @@ fi
 ```
 
 ### grep 高亮显示关键字
+
 这个很简单，加上`--color`参数就可以了，为了方便使用，可以在`~/.bash_profile`配置文件中加上 alias 定义：
 
 ```shell

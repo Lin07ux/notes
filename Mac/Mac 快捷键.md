@@ -1,16 +1,19 @@
 [Mac 键盘快捷键](https://support.apple.com/zh-cn/HT201236)
 
 ## 键盘符号
+
 * `↖︎`  Home键 对应  fn + 左方向键
 * `↘︎`  End键  对应  fn + 右方向键
 * `^`   Control键
 
 ## 快捷键
 ### 一般
+
 - `选中文件按空格预览` 预览图片或者pdf文件时有用。配合方向键可以快速预览多张图片。
 - `短按电源键` 可以关闭屏幕，但不能太短，多按几次就有手感了。
 
 ### cmd
+
 - `cmd + ,` 设置当前 active 的程序。
 - `cmd + -/=` 缩小/放大。
 - `cd + 0` 恢复当前窗口到初始大小(无放大和缩小)。
@@ -39,6 +42,7 @@
 
   
 **延时截图及 Grab 应用**
+
 有时候我们需要延时截图，macOS 为我们提供了这个功能，只是藏的比较深。可以直接用 macOS 自带的 Spotlight 搜索到，直接输入 Grab 即可：
 
 ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1487773429516.png)
@@ -59,6 +63,7 @@ screencapture -T 10 screenshot1.jpg
 
 
 ### ctrl
+
 - `ctrl + a` 光标定位到当前行的最前端。
 - `ctrl + e` 光标定位到当前行的最尾端。
 - `ctrl + u` 删除到行首。(在 zsh 中是删除整行)
@@ -77,12 +82,11 @@ screencapture -T 10 screenshot1.jpg
 > 上面的这些快捷键特别是在敲命令时还是很有用的(可能有的确实是在命令行中才生效)。
 
 
-
-
 ### 剪切文件
-- 首先选中文件，按`Command+C`复制文件；
-- 然后按`Command＋Option＋V`就可以把你的文件剪走了！
 
-> `Command+X`只能剪切文字文本之类的
+- 首先选中文件，按`Command + C`复制文件；
+- 然后按`Command + Option + V`就可以把你的文件剪走了！
+
+> `Command + X`只能剪切文字文本之类的
 
 
