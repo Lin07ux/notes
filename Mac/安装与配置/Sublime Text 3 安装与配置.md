@@ -46,7 +46,25 @@ import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe0
 * PHPUnit Completions
 * Side-by-Side Settings
 * SideBarEnhancements
+* View In Browser
 * Vue Syntax Highlight
+
+插件说明：
+
+**View In Browser**
+
+用于添加在浏览器中打开 HTML 文件的快捷键。安装完成后，使用默认的快捷键：
+
+* Firefox 浏览器：`Ctrl + Alt + f`
+* Chrome 浏览器：`Ctrl + Alt + c`
+* IE 浏览器：`Ctrl + Alt + i`
+* Safari 浏览器：`Ctrl + Alt + s`
+
+如果想要自定义快捷键的话，可以在 Keybindings 中配置各浏览器快捷键。
+
+```shell
+{ "keys": [ "ctrl+alt+v" ], "command": "view_in_browser" }, { "keys": [ "f5" ], "command": "view_in_browser", "args": { "browser": "firefox" } }, { "keys": [ "f3" ], "command": "view_in_browser", "args": { "browser": "chrome" } }, { "keys": [ "ctrl+alt+i" ], "command": "view_in_browser", "args": { "browser": "iexplore" } }, { "keys": [ "f4" ], "command": "view_in_browser", "args": { "browser": "safari" } }
+```
 
 ### 3. 设置主题
 

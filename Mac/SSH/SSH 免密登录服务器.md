@@ -1,6 +1,7 @@
-通过在服务器上部署公钥，在本地上做相关的设置即可实现 ssh 的免密登录。
+通过在服务器上部署公钥，在本地上做相关的设置即可实现 ssh 的免密登录。而有些服务器会限制使用账号密码登陆，此时也就只能通过 SSH 密钥登陆了。
 
-## 生成密钥
+## 1. 生成密钥
+
 首先需要在本地生成一个密钥对，使用`ssh-keygen`命令即可。
 
 ```shell
@@ -12,7 +13,8 @@ ssh-keygen -t rsa
 
 这样，就会在`~/.ssh/`目录下生成指定名称的密钥对了。
 
-## 部署公钥到服务器
+## 2. 部署公钥到服务器
+
 接下来，需要使用`ssh-copy-id`命令将刚才生成的公钥部署到服务器上。
 
 > 注意：可能系统中没有安装`ssh-copy-id`这个工具，可能需要先安装。在 Mac 上可以用如下的命令安装：`brew install ssh-copy-id`。
@@ -25,10 +27,12 @@ ssh-keygen -t rsa
 
 > 如果 ssh 的端口不是 22，可用下面命令：`ssh-copy-id -i ~/.ssh/<name>.pub "-p <port> <user>@<host>"`，port 就是 ssh 的端口号。
 
-## 配置 ssh config
+## 3. 配置 ssh config
+
 接下来，在本机上配置一下 ssh 的配置文件。
 
 SSH 连接建立之前，会在系统中寻找它的配置，一般有两个位置：
+    
     * `/etc/ssh/ssh_config` 这里是对所有用户适用的全局配置
     * `~/.ssh/config`或者 `$HOME/.ssh/config` 这是用户的个人配置，这些配置会覆盖全局配置
     
@@ -46,7 +50,8 @@ Host <serv-name>
 这里，`serv-name`我们可以任意定义，只要方便我们记忆即可，这个是在我们登录服务器的时候会用到，是给服务器取的一个别名；`host`、`user`、`port`和上一节的意义相同，当然如果 ssh 的端口是默认的 22 也可以不设置；最后的`IdentityFile`需要我们指定对应的私钥的路径，也就是我们刚才生成的私钥的路径。
 
 
-## 登录服务器
+## 4. 登录服务器
+
 上面设置好之后，即可免密登录了：
 
 `ssh <serv-name>`
@@ -57,7 +62,8 @@ Host <serv-name>
 
 > 当然，也可以不做上面那么多的配置。因为 ssh 默认的认证文件是`~/.ssh/id_dsa`，所以我们如果生成密钥对的时候，使用默认的名称，然后登录服务器的时候，通过`ssh user@host`的方式也是可以免密登录的。但这显然没有上面配置之后方便。
 
-## ssh 配置文件说明
+## 5. ssh 配置文件说明
+
 在 ssh 的配置文件中，都是一行行的键值对。其中，键名不区分大小写，但是值是区分大小写的。
 
 一般常用的键名并不是很多，主要有如下一些：
@@ -80,4 +86,16 @@ Host <serv-name>
 
 当有多台远程终端的时候，config 文件的优势就更加明显了，可以给每个服务器做相应的设置，即可方便的登录对应的服务器，而不需要输入一大串的命令。
 
+
+## 问题
+
+### ssh 登录报错 Permission denied (publickey,gssapi-keyex,gssapi-with-mic)
+
+使用 SSH 登录的时候，提示错误：Permission denied (publickey,gssapi-keyex,gssapi-with-mic)。
+
+这是由于服务器端设置了禁止 root 用户通过 ssh 直接登录导致的。
+
+修改服务器端的`/etc/ssh/sshd_config`文件中的`PermitRootLogin`配置的值为`yes`即可。
+
+> 参考：[ssh免密码登录Permission denied (publickey,gssapi-keyex,gssapi-with-mic) 的解决方案！](https://www.cnblogs.com/xubing-613/p/6844564.html)
 

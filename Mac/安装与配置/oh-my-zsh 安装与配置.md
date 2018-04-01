@@ -20,6 +20,18 @@ sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/to
 uninstall_oh_my_zsh
 ```
 
+### 设置主题
+
+默认的 oh-my-zsh 主题可能并不满意，可以修改 zsh 的配置文件`~/.zshrc`，设置喜欢的主题。主题文件在`~/.oh-my-zsh/themes`目录中。
+
+```shell
+ZSH_THEME="ys"
+```
+
+> 更多主题：[Themes](https://github.com/robbyrussell/oh-my-zsh/wiki/Themes)
+> 
+> 显示当前使用的主题：`echo $ZSH_THEME`。
+
 ### 指令高亮效果
 
 指令高亮效果作用是当用户输入正确命令时指令会绿色高亮，错误时命令红色高亮。zsh 中可以通过[zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)插件来实现。
