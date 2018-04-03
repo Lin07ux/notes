@@ -1,4 +1,5 @@
 ### 检查日期是否是指定的格式
+
 ```php
 function checkDatetime($str, $format="Y-m-d H:i:s"){
     $unixTime  = strtotime($str);
@@ -21,7 +22,7 @@ $x = $x - $y;
 var_dump($x, $y);  // int(11) int(10)
 ```
 
-### 获取当前页面的URL
+### 获取当前页面的 URL
 
 ```php
 /**
@@ -78,6 +79,7 @@ function convertUrlQuery($url)
 > 参考：[PHP解析URL并得到URL中的参数](http://blog.csdn.net/wide288/article/details/17712989)
 
 ### 文件下载
+
 对于浏览器不能直接打开的文件，比如 .zip、.exe、.xsl 等，可以直接使用一个 a 元素来指向这个文件资源，点击就能直接下载。而对于 .jpg 等文件，如果直接点击链接，就是在浏览器中打开了，而不是提示我们下载保存。
 
 我们是通过 Header 请求头来发送文件下载信息，指定下载的是附件，下载后的文件名，content-length 来指定文件的大小，然后通过 readfile 函数来读取文件内容而实现文件下载：
@@ -93,6 +95,7 @@ readfile($filename);
 ```
 
 ### 截取字符串，并补全省略号
+
 截取字符串中指定长度的子串，如果截取长度小于字符串总长度，则添加省略号，否则不添加。而且可以从左侧或右侧截取，还能设置字符串的编码格式。
 
 > 需确保 PHP 支持`mb_substr`和`mb_strlen`函数。

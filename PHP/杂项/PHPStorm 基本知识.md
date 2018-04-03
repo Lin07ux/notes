@@ -8,7 +8,6 @@
 - `Command + D` 快速选中当前文件中与当前选中的单词相同的下一个单词。(原始快捷键是`Ctrl + G`)
 - `Ctrl + Command + D` 快速选中当前文件中与当前选中的单词相同的所有单词。(原始快捷键是`Ctrl + Command + G`)
 
-
 ### Tips
 
 - 快捷键设置中，可以点击搜索边上按钮，然后输入快捷键来搜索对应的设置。
@@ -27,6 +26,7 @@ PHPStorm 2017.1 增加了很多新功能，有个默认开启的参数名和类�
 
 ## 开发
 ### 预览 PHP 文件
+
 PHPStorm 可以直接运行一个 PHP 文件，并在浏览器中打开页面，显示输出的内容。不过要运行 PHP 文件需要先设置一下 PHP Interpreter(PHP 解析器)。
 
 > 如果未设置 PHP Interpreter，在打开的 PHP 文件后，直接点击 PHPStorm 中的浏览器图标的后，会提示错误，让你设置 PHP Interpreter。

@@ -1,12 +1,13 @@
 一般情况下，我们都是使用 PHP 作为脚本语言来开发 web 网站。而其实 PHP 也可以像 shell 一样在命令行状态下执行。另外，从 PHP 5.4 开始，PHP 还内置了一个简单的 web 服务器，可以方便进行测试。
 
 在脚本中，我们可以通过`php_sapi_name()`函数判断是否是在命令行下运行的：
+
 ```shell
-php -r 'echo php_sapi_name(), PHP_EOL;'
-# cli
+php -r 'echo php_sapi_name(), PHP_EOL;'  # 输出：cli
 ```
 
 ### PHP 命令行(CLI)参数详解
+
 使用`php -h`可以查看 PHP 所有的命令行参数。
 
 ```
@@ -45,6 +46,7 @@ args...          传递给要运行的脚本的参数. 当第一个参数以`-`�
 ```
 
 ### 以交互式 shell 模式运行 PHP
+
 常用的命令行模式主要就是用 shell 方式执行 PHP 的指令，从而能够方便的执行一些小的 PHP 片段代码，执行一些简单的任务，而不需要总是新建一个 PHP 文件。
 
 使用 -a 参数就能进入 shell 模式：`php -a`。
@@ -52,6 +54,7 @@ args...          传递给要运行的脚本的参数. 当第一个参数以`-`�
 [官方文档](http://php.net/manual/en/features.commandline.interactive.php)
 
 ### 运行内建 web 服务器
+
 从 PHP 5.4.0 开始，PHP的命令行模式提供了一个内建的web服务器。使用 -S 开始运行 web 服务：`php -S localhost:8000`。
 
 默认情况下，`php -S` 会将当前命令行所在目录作为网站根目录。但是也可以使用 -t 参数来改变网站的根目录。
@@ -59,12 +62,14 @@ args...          传递给要运行的脚本的参数. 当第一个参数以`-`�
 [官方文档](http://php.net/manual/en/features.commandline.webserver.php)
 
 ### 命令行脚本开发
+
 在使用 PHP 开发命令行脚本的时候，提供了两个全局变量`$argc`和`$argv`用于获取命令行输入：
 
 * `$argc`包含了`$argv`数组包含元素的数目；
 * `$argv`是一个数组，包含了提供的参数，第一个参数总是脚本文件名称。
 
 假设我们有一个名为 console.php 的命令行脚本文件：
+
 ```php
 <?php
 echo '命令行参数个数: ' . $argc . "\n";
@@ -85,6 +90,7 @@ $ php console.php hello world
 ```
 
 需要注意的是，如果提供的第一个参数是以 - 开头的话，需要在前面增加 -- ，以告诉php 这后面的参数是提供给我们的脚本作为输入参数的，而不是 php 命令参数：
+
 ```shell
 php -r 'var_dump($argv);' -- -h
 # array(2) {
@@ -99,10 +105,13 @@ php -r 'var_dump($argv);' -h
 ```（  ）。
 
 ### 其他应用
+
 #### 查找 php.ini 文件位置
-使用 --ini 参数，可以列出当前 PHP 的配置文件信息。
+
+使用`--ini`参数，可以列出当前 PHP 的配置文件信息。
 
 #### 查看类/函数/扩展信息
+
 通常，我们可以使用`php --info`命令或者在在 web 服务器上的 php 程序中使用函数 phpinfo() 显示 php 的信息，然后再查找相关类、扩展或者函数的信息，这样做实在是麻烦了一些：
 
 ```shell
@@ -123,6 +132,7 @@ This program is free software; you can redistribute it and/or modify
 ```
 
 #### 语法检查
+
 有时候，我们只需要检查 php 脚本是否存在语法错误，而不需要执行它，比如在一些编辑器或者 IDE 中检查 PHP 文件是否存在语法错误。
 
 使用 -l （ --syntax-check ）可以只对 PHP 文件进行语法检查。

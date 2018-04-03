@@ -1,8 +1,24 @@
 ### 什么是 Opcache
 
-每一次执行 PHP 脚本的时候，该脚本都需要被编译成字节码，而 OPcache 可以对该字节码进行缓存，这样，下次请求同一个脚本的时候，该脚本就不需要重新编译，这极大节省了脚本的执行时间，从而让应用运行速度更快，同时也节省了服务器的开销。
+每一次执行 PHP 脚本的时候，需要解释器先完成对脚本代码的分析，生成可以直接运行的中间代码，也被称为操作码（Operate Code， Opcode），而 Opcache 可以对该操作码进行缓存。
 
-使用 Opcahce 前，需要确保在服务器上安装了 OPcache，从 PHP 5.5 开始，OPcache 已经成为 PHP 核心的一部分，所以基本上不需要手动去安装这个扩展。
+> 使用 Opcahce 前，需要确保在服务器上安装了 OPcache，从 PHP 5.5 开始，OPcache 已经成为 PHP 核心的一部分，所以基本上不需要手动去安装这个扩展。
+
+### 为什么要用 Opcode 缓存
+
+首先看下 PHP 代码执行的生命周期。
+
+当请求一个 PHP 脚本的时候，会经过五个步骤，如下图所示：
+
+![PHP 生命周期](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1522725110061.png)
+
+Zend 引擎每次处理请求的时候，必须先从文件系统读取文件、扫描其词典和表达式、解析文件、创建要执行的计算机代码（称为Opcode）、最后执行 Opcode。每一次请求 PHP 脚本都会执行一遍以上步骤，如果 PHP 源代码没有变化，那么 Opcode 也不会变化，显然没有必要每次都重行生成 Opcode，结合在 Web 中无所不在的缓存机制，我们可以把 Opcode 缓存下来，以后直接访问缓存的 Opcode 就可以更快的响应了。
+
+启用 Opcode 缓存之后的流程图如下所示：
+
+![启用 Opcode 缓存后的流程](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1522725330625.png)
+
+从 PHP 5.5 开始，在核心中集成了 Opcache 来实现对 Opcode 的缓存。
 
 ### 常用配置
 
@@ -11,10 +27,10 @@ Opcache 的配置文件一般位于`/etc/php.d/opcache.ini`文件中。如果找
 我们一般需要设置如下的配置即可：
 
 ```ini
-; 启用 OPcache
+; 启用 Opcache
 opcache.enable=1
 
-; 分配给 OPcache 的内存空间（单位：MB），设置一个大于 64 的值即可。
+; 分配给 Opcache 的内存空间（单位：MB），设置一个大于 64 的值即可。
 opcache.memory_consumption=512
 
 ; 分配给实际字符串的空间（单位：MB），设置一个大于 16 的值即可。

@@ -5,6 +5,7 @@ PsySH 是一个 PHP 的运行时开发平台，交互式调试器和 Read-Eval-P
 * [Packagist](https://packagist.org/packages/psy/psysh)
 
 ### 安装
+
 **直接下载下来用**
 
 ```shell
@@ -24,7 +25,8 @@ psysh
 
 
 ### 文档
-PsySH的文档存放在`~/.local/share/psysh/`。(windows 系统存放在`C:\Users\{用户名}\AppData\Roaming\PsySH\`。)
+
+PsySH 的文档存放在`~/.local/share/psysh/`。(windows 系统存放在`C:\Users\{用户名}\AppData\Roaming\PsySH\`。)
 
 下载中文文档：
 
@@ -37,8 +39,10 @@ wget http://psysh.org/manual/zh/php_manual.sqlite
 
 > 需先安装了 wget，Mac 可以使用`brew install wget`。
 
+> 参考：[PHP manual installation](https://github.com/bobthecow/psysh/wiki/PHP-manual)
 
 ### 特性
+
 * PsySH 是一个交互式的 PHP 运行控制台，在这里你可以写 php 代码运行，并且可以清楚看到每次的返回值：
 
     <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1488507335945.png" width="275"/>
@@ -57,6 +61,7 @@ wget http://psysh.org/manual/zh/php_manual.sqlite
 
 
 ### 功能
+
 1. `show` 查看源代码
     轻松展现任何用户级的对象，类，接口，特质，常数，方法或属性的源代码：
     
@@ -75,6 +80,6 @@ wget http://psysh.org/manual/zh/php_manual.sqlite
 
 5. `exit` 退出 PsySH。
     
-    
+6. `doc` 查看函数文档，如`doc array_merge`。
 
 
