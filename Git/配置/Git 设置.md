@@ -20,4 +20,28 @@ git config 文件可以位于三个地方，这三个地方的配置，后一个
 这种情况下，可以将 core.quotepath 设置为 false，就不会对 0x80 以上的字符进行 quote 了：
 	`$ git config --global core.quotepath false`
 
+### Git Alias
+
+可以在 Git 的配置文件中设置`alias`来为一个或多个命令定义一个新的名称，这些命令通常会包含一些特定的选项或标识。使用别名一般是为了高效的调用一些罕见的、重复的、比较复杂的命令。
+
+比如，可以通过`git config --global --add alias.st status`在全局配置中设置了`status`的别名为`st`，这样就可以使用`git st`表示`git status`了。
+
+也可以直接编辑配置文件，在其中的`[alias]`配置段中添加别名设置，比如：
+
+```ini
+[alias]
+st = status
+```
+
+在 Git 的配置中，并不是只能定义 Git 的子命令别名，还可以定义和运行其他的 shell 命令，这样就可以完成更加复杂的任务。比如，在 Git 的配置文件中的`[alias]`配置段中添加如下的配置：
+
+```ini
+[alias]
+upstream-merge = !"git fetch origin -v && git fetch upstream -v && git merge upstream/master && git push"
+```
+
+这样就定义了一个`upstream-merge`命令，通过这个命令可以完成一系列的 shell 命令。
+
+注意：定义中的`!`是用于告知 Git 来通过 shell 运行这个命令。当然，这样的定义并非只能写 git 操作，还有设置更多其他的 shell 命令。
+
 
