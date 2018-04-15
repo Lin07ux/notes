@@ -33,6 +33,7 @@ import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe0
 * EditorConfigSnippets
 * Emmet
 * FileDiffs
+* GitGutter
 * jQuery
 * JsFormat
 * Laravel 5 Snippets
