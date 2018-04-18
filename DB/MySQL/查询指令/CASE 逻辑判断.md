@@ -1,13 +1,15 @@
+## 一、简介
+
 Case 是 SQL 查询中用得最多的逻辑判断。具有两种格式：*简单 Case 函数*和 *Case 搜索函数*。
 
 ```sql
-# 简单 case 函数
+-- 简单 case 函数
 CASE sex
     WHEN '1' THEN '男'
     WHEN '2' THEN '女'
 ELSE '其他' END;
 
-# case 搜索函数
+-- case 搜索函数
 CASE WHEN sex = '1' THEN '男'
      WHEN sex = '2' THEN '女'
 ELSE '其他' END;
@@ -23,9 +25,11 @@ CASE WHEN col_1 IN ( 'a', 'b') THEN '第一类'
 ELSE '其他' END
 ```
 
-### 应用实例
-#### 将数据重新分组
-有如下数据：(为了看得更清楚，我并没有使用国家代码，而是直接用国家名作为Primary Key)
+## 二、使用
+
+### 2.1 将数据重新分组
+
+有如下数据：(用国家名作为Primary Key)
 
 <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477036529144.png" width="466"/>
 
@@ -56,7 +60,8 @@ GROUP BY CASE country
     ELSE '其他' END
 ```
 
-#### 用一个 SQL 语句完成不同条件的分组
+### 2.2 用一个 SQL 语句完成不同条件的分组
+
 有如下数据：
 
 <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477037205504.png" width="551"/>
@@ -75,12 +80,11 @@ FROM tbl_a
 GROUP BY country;
 ```
 
-#### 在 Check 中使用 Case 函数
+### 2.3 在 Check 中使用 Case 函数
+
 在 Check 中使用 Case 函数在很多情况下都是非常不错的解决方法。
 
-> 可能有很多人根本就不用 Check，那么我建议你在看过下面的例子之后也尝试一下在 SQL 中使用 Check。
-
-公司 A 有个规定，女职员的工资必须高于1000块。如果用 Check 和 Case 来表现的话，如下所示：
+公司 A 有个规定，女职员的工资必须高于 1000 块。如果用 Check 和 Case 来表现的话，如下所示：
 
 ```sql
 CONSTRAINT check_salary CHECK
@@ -101,11 +105,12 @@ CONSTRAINT check_salary CHECK
 但是这样的话，女职员的条件倒是符合了，男职员就无法输入了。
         
 
-#### 根据条件有选择的 UPDATE
-有如下更新条件
+### 2.4 根据条件有选择的 UPDATE
 
-1.	工资 5000 以上的职员，工资减少 10%
-2.	工资在 2000 到 4600 之间的职员，工资增加 15%
+有如下更新条件：
+
+1.	工资 5000 以上的职员，工资减少 10%；
+2.	工资在 2000 到 4600 之间的职员，工资增加 15%。
 
 很容易考虑的是选择执行两次 UPDATE 语句，如下所示：
 
@@ -129,7 +134,7 @@ UPDATE Personnel SET salary =
 WHERE salary >= 5000 OR (salary >= 2000 AND salary <= 4600);
 ```
 
-这里要注意一点，最后一行的`ELSE salary`是必需的，要是没有这行，不符合这两个条件的人的工资将会被写成 NUll,那可就大事不妙了。因为在 Case 函数中`Else`部分的默认值是`NULL`。
+这里要注意一点，最后一行的`ELSE salary`是必需的，要是没有这行，不符合这两个条件的人的工资将会被写成 NUll。因为在 Case 函数中`Else`部分的默认值是`NULL`。
 
 这种方法还可以在很多地方使用，比如说变更主键这种累活。一般情况下，要想把两条数据的 Primary key 交换，需要经过临时存储，拷贝，读回数据的三个过程，要是使用 Case 函数的话，一切都变得简单多了。
 
@@ -148,7 +153,8 @@ WHERE p_key IN ('a', 'b');
 
 同样的也可以交换两个 Unique key。需要注意的是，如果有需要交换主键的情况发生，多半是当初对这个表的设计进行得不够到位，建议检查表的设计是否妥当。
 
-#### 两个表数据是否一致的检查
+### 2.5 两个表数据是否一致的检查
+
 Case 函数不同于 DECODE 函数。在 Case 函数中，可以使用`BETWEEN`、`LIKE`、`IS NULL`、`IN`、`EXISTS`等，可以进行子查询，从而实现更多的功能。
 
 下面具个例子来说明。有两个表，`tbl_A`、`tbl_B`，两个表中都有 keyCol 列。现在我们对两个表进行比较，tbl_A 中的 keyCol 列的数据如果在 tbl_B 的 keyCol 列的数据中可以找到，返回结果’Matched’，如果没有找到，返回结果’Unmatched’。
@@ -175,7 +181,8 @@ FROM tbl_A;
 使用 IN 和 EXISTS 的结果是相同的。当然也可以使用 NOT IN 和 NOT EXISTS，但是这个时候要注意 NULL 的情况。
 
 
-#### 在 Case 函数中使用合计函数
+### 2.6 在 Case 函数中使用合计函数
+
 假设有下面一个表：
 
 <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477041030721.png" width="631"/>
@@ -184,7 +191,7 @@ FROM tbl_A;
 
 只选择一门课程的学生，主修 flag 为 N(实际上要是写入Y的话，就没有下面的麻烦事了，为了举例子，还请多多包含)。
 
-现在我们要按照下面两个条件对这个表进行查询
+现在要按照下面两个条件对这个表进行查询
 
 1.	只选修一门课程的人，返回那门课程的 ID
 2.	选修多门课程的人，返回所选的主课程 ID
@@ -218,7 +225,8 @@ FROM Studentclass
 GROUP BY std_id;
 ```
 
-#### 查询出数据库中每天各种充值类型的金额
+### 2.7 查询出数据库中每天各种充值类型的金额
+
 数据如下：
 
 <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477041685045.png" width="565"/>
@@ -233,7 +241,7 @@ FROM WebGame
 GROUP BY PayTime;
 ```
 
+## 三、转摘
 
-### 转摘
 [你真的会玩SQL吗？Case也疯狂](http://blog.jobbole.com/95032/)
 

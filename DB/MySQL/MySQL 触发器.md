@@ -1,3 +1,5 @@
+## 一、简介
+
 触发器是一个特殊的存储过程，不同的是存储过程要用`CALL`来调用，而触发器不需要使用`CALL`，也不需要手工启动，只要当一个预定义的事件发生的时候，就会被 MySQL 自动调用。
 
 触发器有如下的限制：
@@ -5,8 +7,8 @@
 * 只能对永久表创建触发器，不能在临时表中创建触发器；
 * 对于具有相同触发程序动作时间和事件的给定表，不能有两个触发程序。例如不能存在两个处于`BEFORE`时间的`INSERT`触发器，但是可以分别有一个`BEFORE`和`AFTER`时间的`INSERT`触发器。
 
+### 1.1 创建
 
-### 创建方式
 创建一个触发器需要使用如下的语句结构：
 
 ```sql
@@ -32,31 +34,33 @@ CREATE TRIGGER trigger_name trigger_time trigger_event
 
 如下：创建一个单行触发器：
 
-
 ```sql
-# 创建表
+-- 创建表
 CREATE TABLE account(acct_num INT ,amount DECIMAL(10,2));
-# 创建触发器：在插入数据的时候，设置变量SUM的值为原本的值加上新插入的值
+-- 创建触发器：在插入数据的时候，设置变量SUM的值为原本的值加上新插入的值
 CREATE TRIGGER ins_sum BEFORE INSERT ON account FOR EACH ROW SET @SUM = @SUM + NEW.amount;
 ```
 
-### 查看触发器
+### 1.2 查看触发器
+
 查看触发器是指数据库中已存在的触发器的定义、状态、语法信息等。
 
 可以使用`SHOW TRIGGERS`查看触发器信息，也可以在`information_schema.TRIGGERS`表中进行查看。
 
-### 删除触发器
+### 1.3 删除触发器
+
 使用`DROP TRIGGER`语句可以删除 MySQL 中已经定义的触发器，删除触发器的基本语法。
 
 ```sql
 DROP TRIGGER [schema_name.]trigger_name;
 ```
 
-### 示例
+## 二、使用示例
+
 下面的示例中，数据库表结构如下：
 
 ```sql
-# 产品表
+-- 产品表
 CREATE TABLE Product (
   proID INT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '商品表主键',
   price DECIMAL(10,2) NOT NULL COMMENT '商品价格',
@@ -64,14 +68,14 @@ CREATE TABLE Product (
   dtime DATETIME NOT NULL COMMENT '创建时间'
 ) AUTO_INCREMENT=1 COMMENT='商品表';
 
-# 商品类别汇总表
+-- 商品类别汇总表
 CREATE TABLE ProductType (
   ID INT NOT NULL COMMENT '商品类别(0生鲜,1食品,2生活)',
   amount INT NOT NULL COMMENT '每种类别商品总金额',
   PRIMARY KEY (ID)
 ) COMMENT='商品类别资金汇总表';
 
-# 产品价格变动表
+-- 产品价格变动表
 CREATE TABLE Product_log (
   ID INT AUTO_INCREMENT NOT NULL COMMENT '主键',
   productid INT NOT NULL COMMENT '产品id',
@@ -80,11 +84,12 @@ CREATE TABLE Product_log (
   PRIMARY KEY(ID)
 ) AUTO_INCREMENT=1 COMMENT='产品价格变动表';
 
-# 插入测试数据
+-- 插入测试数据
 INSERT INTO ProductType VALUES(1,0.00),(2,0.00),(3,0.00);
 ```
 
-#### INSERT 触发器
+### 2.1 INSERT 触发器
+
 在 Insert 触发器中，能够使用的数据只有`NEW.[column]`，表示新插入的数据。
 
 在 Product 表中建立 INSERT 触发器，当往 Product 表中插入产品时，更新 ProductType 表对应的分类商品价格。
@@ -112,7 +117,8 @@ SELECT * FROM ProductType;
 
 <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478148268985.png" />
 
-#### UPDATE 触发器
+### 2.2 UPDATE 触发器
+
 Update 触发器中`NEW.[column]`代表更新后的值，`OLD.[column]`代表更新前的值。
 
 ```sql
@@ -152,7 +158,8 @@ UPDATE Product SET type=2 WHERE proid=4;
 
 <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478148600198.png" />
 
-#### DELETE 触发器
+### 2.3 DELETE 触发器
+
 Delete 触发器中，可以使用的数据为`OLD.[column]`，表示要删除的数据。
 
 ```sql
@@ -176,7 +183,8 @@ DELETE FROM product WHERE proID = 4;
 <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478148725664.png" />
 
 
-### 转摘
+## 三、转摘
+
 1. [我的MYSQL学习心得（十二） 触发器](http://www.cnblogs.com/lyhabc/p/3802704.html)
 2. [MySQL 触发器](http://www.cnblogs.com/chenmh/p/4978153.html)
 

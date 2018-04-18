@@ -1,7 +1,11 @@
 MySQL 可以使用安装时自带的 mysqldump 工具来导出数据库、表结构、表数据到一个 sql 文件中。
 
-### 基础导入导出
-#### 部分导入
+> 使用外部 sql 导入数据的时候，可以登录进入 MySQL，然后执行`source /path/to/file.sql`语句来导入 sql 文件。
+
+## 一、基础导出
+
+### 1.1 部分导出
+
 当仅需要导出一部分指定的数据，可以直接使用下面的这个 sql 语句：
 
 ```sql
@@ -10,7 +14,9 @@ SELECT * FROM tbl_name INTO OUTFILE 'file_name';
 
 这里导出的路径如果是相对路径，默认会是在`/var/lib/mysql/`文件夹中。如果要放在其他地方，最好指定绝对路径。
 
-如果导出的时候，想要表头，可以借助 UNION 使用类似如下个是的命令来实现：
+### 1.2 导出表头
+
+如果导出的时候，想要表头，可以借助 UNION 使用类似如下的命令来实现：
 
 ```sql
 SELECT uid, nickname, realname, mobile, idcard
@@ -39,23 +45,14 @@ SELECT * FROM (
   LEFT JOIN db_linkage l ON l.linkageid = a.district
   UNION SELECT 'id', 'excel_id', '市场登记证名称', '区 ID', '区', '地址', '市场举办者（公司）', '负责人', '负责人联系方式', '填表人', '填表人联系方式', '是否省属市场', '当前市场面临的主要问题及今后发展的想法建议'
 ) d
-  ORDER BY d.district desc, d.id
-  INTO OUTFILE '/var/lib/mysql-files/ap.csv';
+ORDER BY d.district desc, d.id
+INTO OUTFILE '/var/lib/mysql-files/ap.csv';
 ```
 
 > 参考：[mysql导出为CSV的同时加上表头](http://blog.turtletl.com/2016/10/17/mysql%E5%AF%BC%E5%87%BA%E4%B8%BACSV%E7%9A%84%E5%90%8C%E6%97%B6%E5%8A%A0%E4%B8%8A%E8%A1%A8%E5%A4%B4/)
 
-> UNION 用于合并两个或多个 SELECT 语句的结果集，并消去表中任何重复行。使用 UNION 时候需要注意的是：
-> 1. UNION 结果集中的列名总是等于第一个 SELECT 语句中的列名
-> 2. UNION 内部的 SELECT 语句必须拥有相同数量的列。
-> 3. 列也必须拥有相似的数据类型。
-> 4. 每条 SELECT 语句中的列的顺序必须相同。
+## 1.3 mysqldump 工具
 
-#### 执行外部 sql 文件
-导入数据的时候，可以登录进入 MySQL，然后执行`source /path/to/file.sql`语句来导入 sql 文件。
-
-
-### 常用方式
 mysqldump 工具有如下几种使用方式：
 
 - `mysqldump [OPTIONS] database [tables]`
@@ -64,26 +61,25 @@ mysqldump 工具有如下几种使用方式：
 
 比如：
 
-1. 导出整个数据库(包括数据库中的数据）：`mysqldump -u username -p dbname > dbname.sql`
-2. 导出数据库结构（不含数据）：`mysqldump -u username -p -d dbname > dbname.sql`
-3. 导出数据库中的某张数据表（包含数据）：`mysqldump -u username -p dbname tablename > tablename.sql`
-4. 导出数据库中的某张数据表的表结构（不含数据）：`mysqldump -u username -p -d dbname tablename > tablename.sql`
+1. 导出整个数据库(包括数据库中的数据）：`mysqldump -u username -p dbname > dbname.sql`。
+2. 导出数据库结构（不含数据）：`mysqldump -u username -p -d dbname > dbname.sql`。
+3. 导出数据库中的某张数据表（包含数据）：`mysqldump -u username -p dbname tablename > tablename.sql`。
+4. 导出数据库中的某张数据表的表结构（不含数据）：`mysqldump -u username -p -d dbname tablename > tablename.sql`。
 
 > `dbname`表示数据库名称；`tablename`表示数据库中的表名；
 
+## 二、定时备份
 
-### 定时备份
-1. 结合 Linux 的 cron 命令可以实现定时备份
+### 1.1 结合 Linux 的 cron 命令可以实现定时备份
 
 比如需要在每天凌晨 1:30 备份某个主机上的所有数据库并压缩 dump 文件为 gz 格式，那么可在`/etc/crontab`配置文件中加入下面代码行：
 
 ```
 30 1 * * * root mysqldump -u root -pPASSWORD --all-databases | gzip > /mnt/disk2/database_`date '+%m-%d-%Y'`.sql.gz
 ```
-
 > `date '+%m-%d-%Y'`得到当前日期的`MM-DD-YYYY`格式，也可以自行修改格式。
 
-2. Shell 脚本备份
+### 1.2 Shell 脚本备份
 
 首先边写备份任务脚本：
 
@@ -109,8 +105,10 @@ echo "Your database backup successfully completed"
 30 1 * * * /backup.sh
 ```
 
+## 三、其他
 
-### 常用参数
+### 3.1 mysqldump 常用参数
+
 - `--all-databases`, `-A` 导出全部数据库。`mysqldump -uroot -p --all-databases`
 
 - `--all-tablespaces`, 

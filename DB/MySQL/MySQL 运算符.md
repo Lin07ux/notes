@@ -1,4 +1,5 @@
 ### <=>
+
 安全等于运算符。这个操作符和`=`操作符执行相同的比较操作，不过`<=>`可以用来判断 NULL 值，而`=`任何值和 NULL 值的比较判断都是 NULL。
 
 * 在两个操作数均为 NULL 时，其返回值为 1 而不为 NULL；
@@ -11,6 +12,7 @@ SELECT NULL <=> NULL; # 1
 ```
 
 ### REGEXP
+
 正则表达式，用来匹配字符串。
 
 语法格式为：`expr REGEXP condition`
@@ -38,6 +40,7 @@ SELECT 'ssky' REGEXP '^s','ssky' REGEXP 'y$' ,'ssky' REGEXP '.sky','ssky' REGEXP
 
 
 ### 逻辑运算符
+
 * 逻辑与运算符：`AND`或者`&&`
 * 逻辑或运算符：`OR`或者`||`
 * 异或运算符：`XOR`
@@ -62,6 +65,7 @@ SELECT 1 XOR 1, 0 XOR 0, 1 XOR 0, 1 XOR NULL, 1 XOR 1 XOR 1;
 
 
 ### 位运算符
+
 位运算符是用来对二进制字节中的位进行测试、移位或者测试处理。
 
 MYSQL 中提供的位运算有：

@@ -18,11 +18,12 @@ MySQL 存取控制包含 2 个阶段：
 
 > `mysql.user`表中没有一个列是保存用户创建时间的。
 
+## 一、帐户管理
 
-## 帐户管理
 MySQL 提供许多语句用来管理用户帐号，这些语句可以用来包括登录和退出 MySQL 服务器、创建用户、删除用户、密码管理、权限管理。MySQL 数据库的安全性，需要通过帐户管理来保证。
 
-### 登录和退出
+### 1.1 登录和退出
+
 在命令行中登录 MySQL，命令如下：
 
 ```
@@ -39,19 +40,20 @@ mysql [-h <host>] -u <username> -p[<password>] [-P <port>] [-e <sql>]
 
 退出登录的话，就用`exit`即可。
 
-### 创建用户
-创建用户有多种方式：
+### 1.2 创建用户
 
-**CREATE**
+创建用户有多种方式。
+
+#### 1.2.1 CREATE
 
 ```sql
-# 语法
+-- 语法
 CREATE USER user [IDENTIFIED BY [PASSWORD] 'password']
     [, user [IDENTIFIED BY [PASSWORD] 'password']];
     
-# 示例：用户名部分为“jeffrey”，主机名默认为“%”（即对所有主机开放权限）
+-- 示例：用户名部分为“jeffrey”，主机名默认为“%”（即对所有主机开放权限）
 CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'mypass';
-# 示例：使用 IDENTIFIED WITH 方式
+-- 示例：使用 IDENTIFIED WITH 方式
 CREATE user 'jeffrey'@'localhost' IDENTIFIED WITH my_auth_plugin;
 ```
 
@@ -69,7 +71,7 @@ CREATE user 'tom'@'localhost' identified BY
 PASSWORD'*6C8989366EAF75BB670AD8EA7A7FC1176A95CEF4';
 ```
 
-**GRANT**
+#### 1.2.2 GRANT
 
 `GRANT USER`语句可以用来创建帐户，通过该语句可以在`user`表中添加一条新记录。比起`CREATE USER`语句创建的新用户，还需要使用`GRANT`语句赋予用户权限。使用`GRANT`语句创建新用户时必须有`GRANT`权限。
 
@@ -93,7 +95,7 @@ GRANT priv_type [(column_list)] [, priv_type [(column_list)]] ...
 GRANT SELECT ,UPDATE ON *.* TO 'testUser'@'localhost' identified BY 'testpwd';
 ```
 
-**直接操作MySQL用户表**
+#### 1.2.3 直接操作MySQL用户表
 
 不管是`CREATE USER`还是`GRANT USER`，在创建用户时，实际上都是在`mysql.user`表中添加一条新记录。所以我们也可以使用`INSERT`语句向`mysql.user`表插入一条记录来创建一个新用户。插入的时候必须要对`mysql.user`表有`INSERT`权限。
 
@@ -107,7 +109,8 @@ INSERT INTO mysql.user(host,user,password,[privilegelist]) VALUES ('host','usern
 INSERT INTO mysql.user(host,user,password) VALUES ('localhost','customer1',password('customer1'));
 ```
 
-### 删除普通用户
+### 1.3 删除普通用户
+
 可以使用`DROP USER`语句删除用户，也可以直接通过`DELETE`语句从`mysql.user`表中删除对应的记录来删除用户。
 
 `DROP USER`语句用于删除一个或多个 MySQL 帐户。要使用`DROP USER`，必须拥有`mysql`数据库的全局`CREATE USER`权限或`DELETE`权限。
@@ -116,34 +119,35 @@ INSERT INTO mysql.user(host,user,password) VALUES ('localhost','customer1',passw
 
 ```sql
 DROP USER 'testUser'@'localhost';
-
-# 或者
+-- 或者
 DELETE FROM mysql.user WHERE `Host`='localhost' and `User`='testUser';
 ```
 
-### 匿名用户
-如果有匿名用户，那么客户端就可以不用密码登录MYSQL数据库，这样就会存在安全隐患。检查匿名用户的方法：
+### 1.4 匿名用户
+
+如果有匿名用户，那么客户端就可以不用密码登录 MYSQL 数据库，这样就会存在安全隐患。检查匿名用户的方法：
 
 ```sql
 SELECT * FROM mysql.user WHERE `User`='';
 ```
 
-如果查找到user字段值为空的那条记录，说明存在匿名用户，需要把这条记录删除。删除语句：
+如果查找到 user 字段值为空的那条记录，说明存在匿名用户，需要把这条记录删除。删除语句：
 
 ```sql
 DELETE FROM mysql.user WHERE `User`='';
 ```
 
+### 1.5 修改密码
 
-### 修改密码
-#### root 用户修改自己的密码
-1、使用`mysqladmin`命令在命令行指定新密码：
+#### 1.5.1 root 用户修改自己的密码
+
+**1、使用`mysqladmin`命令在命令行指定新密码**
 
 ```shell
 mysqladmin -u root -p password"rootpwd";
 ```
 
-2、修改`mysql`数据库的`user`表：
+**2、修改`mysql`数据库的`user`表**
 
 ```sql
 UPDATE mysql.user SET `Password` =password('rootpwd') WHERE `User`='root' and `Host`='localhost';
@@ -151,7 +155,7 @@ UPDATE mysql.user SET `Password` =password('rootpwd') WHERE `User`='root' and `H
 
 执行`update`之后需要执行`flush privileges`语句重新加载用户权限。
 
-3、使用`SET`语句修改 root 用户的密码：
+**3、使用`SET`语句修改 root 用户的密码**
 
 `SET PASSWORD`语句可以用来重新设置其他用户的登录密码或者自己使用的帐户密码。新密码必须用PASSWORD函数加密。语法如下：
 
@@ -167,14 +171,15 @@ SET password=password('123456');
 
 执行之后也需要使用执行`flush privileges`语句或者重启 MySQL 重新加载用户权限。
 
-#### root 用户修改普通用户密码
-1、使用`SET`语句修改普通用户的密码：
+#### 1.5.2 root 用户修改普通用户密码
+
+**1、使用`SET`语句修改普通用户的密码**
 
 ```sql
 SET PASSWORD FOR 'USER'@'HOST' =PASSWORD("ROOTPWD");
 ```
 
-2、使用`UPDATE`语句修改普通用户的密码：
+**2、使用`UPDATE`语句修改普通用户的密码**
 
 ```sql
 UPDATE mysql.user SET `Password` =password('rootpwd') WHERE `User`='root' and `Host`='localhost';
@@ -182,7 +187,7 @@ UPDATE mysql.user SET `Password` =password('rootpwd') WHERE `User`='root' and `H
 
 执行完毕之后需要使用`flush privileges`语句或者重启 MySQL 重新加载用户权限。
 
-3、使用`GRANT`语句修改普通用户密码：
+**3、使用`GRANT`语句修改普通用户密码**
 
 ```sql
 GRANT USAGE ON *.* TO 'someuser'@'%'  IDENTIFIED BY 'somepwd';
@@ -190,14 +195,16 @@ GRANT USAGE ON *.* TO 'someuser'@'%'  IDENTIFIED BY 'somepwd';
 
 > 注意：使用`GRANT`语句和`MYSQLADMIN`设置密码，他们均会加密密码，这种情况下，不需要使用`PASSWORD()`函数。
 
-#### 普通用户修改自身密码
+#### 1.5.3 普通用户修改自身密码
+
 用普通用户的账号登录 MySQL 之后，使用`SET`语句修改自己的密码：
 
 ```sql
 SET password=password('newpassword');
 ```
 
-#### root 用户密码丢失的解决办法
+#### 1.5.4 root 用户密码丢失的解决办法
+
 root 用户的密码丢失后，可以使用`–skip-grant-tables`选项启动 MySQL 服务。这样启动 MySQL 时，服务器将不加载权限判断，任何用户都能访问数据库。所以这样启动 MySQL 服务的时候，建议断开外网接入。
 
 在 Linux 系统下，需要使用`mysqld_safe`来启动 MySQL 服务，也可以使用`/etc/init.d/mysql`命令来启动：
@@ -209,7 +216,8 @@ mysqld_safe --skip-grant-tables user=mysql
 ```
 
 
-## 权限管理
+## 二、权限管理
+
 对于`GRANT`和`REVOKE`语句，`priv_type`可以被指定为以下任何一种：
 
 * `ALL [PRIVILEGES]`  设置除`GRANT OPTION`之外的所有简单权限
@@ -241,7 +249,8 @@ mysqld_safe --skip-grant-tables user=mysql
 * `USAGE` “无权限”的同义词
 * `GRANT OPTION` 允许授予权限
 
-### 授权
+### 2.1 授权
+
 授权就是为某个用户授予权限。授予的权限可以分为多个层级：
 
 * 全局层级  全局权限适用于一个给定服务器中的所有数据库。这些权限存储在`mysql.user`表中。`GRANT ALL ON *.*`和`REVOKE ALL ON *.*`只授予和撤销全局权限。
@@ -252,7 +261,8 @@ mysqld_safe --skip-grant-tables user=mysql
 
 当后续目标是一个表、一个已存储的函数或一个已存储的过程时，`object_type`子句应被指定为`TABLE`、`FUNCTION`或`PROCEDURE`。当从旧版本的 MySQL 升级时，要使用本子句，您必须升级您的授权表。
 
-### 收回权限
+### 2.2 收回权限
+
 收回权限就是取消已经赋予用户的某些权限。收回用户不必要的权限可以在一定程度上保证系统的安全性。
 
 使用`REVOKE`收回权限之后，用户帐户的记录将从`db`、`host`、`tables_priv`、`columns_priv`表中删除，但是用户帐号记录依然在`user`表中保存。
@@ -275,7 +285,8 @@ REVOKE ALL PRIVILEGES, GRANT OPTION FROM user [, user] ...
 REVOKE INSERT ON *.* FROM 'grantUser'@'localhost';
 ```
 
-### 查看权限
+### 2.3 查看权限
+
 `SHOW GRANTS`语句可以显示用户的权限信息。语法如下：
 
 ```sql
