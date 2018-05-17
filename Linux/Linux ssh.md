@@ -6,6 +6,7 @@
 
 * 然后，重启 sshd 服务：`service sshd restart`。
 
+> 如果有 iptables 或其他防火墙，还需要设置防火墙规则。
 
 ### 禁用密码登录
 
