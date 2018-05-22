@@ -81,13 +81,6 @@ scp -r root@202.112.23.12:/home/work/project
 ### grep
 `grep ""`在给定的文件中搜寻指定的字符串。`grep -i ""`在搜寻时会忽略字符串的大小写，而`grep -r ""`则会在当前工作目录的文件中递归搜寻指定的字符串。
 
-### Find
-这个命令会在给定位置搜寻与条件匹配的文件。你可以使用`find -name`来进行区分大小写的搜寻，`find -iname`来进行不区分大小写的搜寻。
-
-```shell
-find <folder-to-search> -iname <file-name>
-```
-
 ### tar
 `tar`命令能创建、查看和提取 tar 压缩文件。
 
