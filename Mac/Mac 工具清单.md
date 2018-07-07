@@ -99,4 +99,12 @@ Dash 搜罗了这个世界上几乎所有的编程语言文档，而且更新速
 
 Mac OSX 安装：`brew install httpie`
 
+### 5. bat
+
+bat 是一个语法高亮显示、和 Git 集成的 cat 高级版本，也就是说，bat 有 cat 的所有功能，且已经集成了代码高亮和 git 版本管理的工具，并且会对过长的文件进行自动分页，不会像 cat 一样全部一次打印。效果图：
+
+![bat](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1527003277019.png)
+
+安装：`brew install bat`
+
 
