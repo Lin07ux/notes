@@ -4,7 +4,6 @@
 
 这个问题在 Android 上和 Mac Safari 上不存在。
 
-
 ### transform 导致 fiexd 元素失效
 
 在 Chrome 和 Opera 浏览器下，使用 CSS3 的`transform: translate(0, 0)`转化位置节点，其所有使用`position: fixed`定位的子孙节点的定位功能均无效。
@@ -45,5 +44,15 @@ OS X 上搭载的 v7.1 以前 Safari 和 iOS v8.0 上搭载的 Safari 浏览器�
 
 * 为最后一列添加`.pull-right`类，将其暴力向右对齐；
 * 手动调整百分比数字，让其针对 Safari 表现更好（这比第一种方式更困难）。
+
+### 微信浏览器阻止拖动元素时页面被拖动
+
+当你的页面中有滑动或者拖拽事件时，整个网页也会随着移动，还能够看到域名信息。只要在`body`标签添加禁止滑动或者拖拽事件即可解决这个问题。这样的话，即使是其他子事件的滑动或者拖拽也会在这里给阻止掉。
+
+```JavaScript
+document.body.addEventListener('touchmove' , function(e){
+    e.preventDefault();
+})
+```
 
 
