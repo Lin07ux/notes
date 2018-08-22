@@ -48,6 +48,15 @@ SQLSTATE[HY000] [2002] No such file or directory
 sudo ln -s /mnt/mysql/mysql.sock /var/lib/mysql.sock
 ```
 
+如果 PHP 访问数据库，依旧会出现该错误，则需要修改 PHP 的配置文件，设置如下两项：
+
+```ini
+pdo_mysql.default_socket=/path/to/mysql.sock
+mysqli.default_socket=/path/to/mysql.sock
+```
+
+或者可以在链接数据库的时候，使用`217.0.0.1`替代`localhost`。
+
 ### 四、其他
 
 配置完成之后，重启 MySQL，一般即可正常，但对数据库进行读写操作时，可能会出现如下的问题：
@@ -57,7 +66,7 @@ sudo ln -s /mnt/mysql/mysql.sock /var/lib/mysql.sock
 ERROR 1146 (42S02): Table ** doesn't exist
 
 # 创建表
-ERROR 1005 (HY000): Can't create table ‘runoob_tbl' (errno: 13)
+ERROR 1005 (HY000): Can't create table 'runoob_tbl' (errno: 13)
 ```
 
 解决办法就是，在新的目录中，删掉`ib_logfile*`文件，这样innoDB引擎的表就正常了。
