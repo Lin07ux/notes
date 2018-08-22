@@ -52,9 +52,16 @@ pushd 命令可以在 cd 进入到一个路径的同时，将路径保存起来�
 
 
 ## 终端设置
+
+### 终端代理
+
+终端中可以设置代理，使用`export http_proxy=`和`export https_proxy=`来设置 http 和 https 代理。如果取消代理，则可以设置代理网址为空即可。
+
+使用 ShadowSocks 时，可以通过点击 ShadowsocksX-NG 小飞机客户端中的`Copy HTTP Proxy Shell Export Line`选项来得到相关的命令和代理地址，直接粘贴到终端中，回车执行即可。
+
 ### 设置 host
 
-、Mac 系统的 host 文件位于：`/etc/hosts`。
+Mac 系统的 host 文件位于：`/etc/hosts`。
 
 ### 修改 hostname($HOST)
 
