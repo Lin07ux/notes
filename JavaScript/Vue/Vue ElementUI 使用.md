@@ -2,6 +2,26 @@
 
 表单验证使用的是一个第三方插件 [async-validator](https://github.com/yiminghe/async-validator)，基本上参考这个插件的说明，就可以生成对应的表单自动验证。
 
+表单验证的规则可以设置为嵌套的对象属性，比如：
+
+```html
+<el-form-item label="跳转地址" prop="content.url" v-if="form.type === 'view'">
+    <el-input v-model="form.content.url" type="url" placeholder="http(s)://"></el-input>
+</el-form-item>
+```
+
+这里的代码，设置 input 关联的是`form.content.url`属性，而规则是通过`prop="content.url"`来引入规则对象中的`content`对象的`url`属性规则：
+
+```js
+rules: {
+    content: {
+        url: [{ required: true, message: '请设置跳转地址', trigger: 'blur' }]
+    }
+    // 还可以这样：
+    // 'content.url': [{ required: true, message: '请设置跳转地址', trigger: 'blur' }]
+}
+```
+
 ### DatePicker 日期选择器
 
 日期选择器会将值设置为一个 Date 对象，而不是一个日期字符串。在 vue-devtools 中显示成如下的样式：`2017-02-06T16:00:00.000Z`。
