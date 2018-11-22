@@ -18,14 +18,14 @@ Flex 布局中，分为容器和容器成员(flex item)两个级别。这两个�
 
 其中，Flex 容器一般是用来设置 flex 属性，使其成为 flex 盒子，还可以设置其他属性来控制其内子元素的布局方式、宽高对齐方式等；在容器成员级别中，可以设置子元素的宽高伸缩度等。下面是 Flex 的属性图：
 
-![Flex 属性图](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466860693911.png)
+![Flex 属性图](http://cnd.qiniu.lin07ux.cn/markdown/1466860693911.png)
 
 
 容器默认存在两根轴：水平的主轴(`main axis`)和垂直的交叉轴(`cross axis`)。主轴的开始位置（与边框的交叉点）叫做`main start`，结束位置叫做`main end`；交叉轴的开始位置叫做`cross start`，结束位置叫做`cross end`。
 
 项目默认沿主轴排列。单个项目占据的主轴空间叫做`main size`，占据的交叉轴空间叫做`cross size`。
 
-![Flex 轴线](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466784316721.png)
+![Flex 轴线](http://cnd.qiniu.lin07ux.cn/markdown/1466784316721.png)
 
 
 ### Flex 容器属性
@@ -81,7 +81,7 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 效果分别如下所示：
 
-![fle-direction](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466837517430.png)
+![fle-direction](http://cnd.qiniu.lin07ux.cn/markdown/1466837517430.png)
 
 
 #### flex-wrap 属性
@@ -91,17 +91,17 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 * nowrap  默认值。不换行。所有的容器成员都排在一条线上。
 
-![flex-wrap nowrap](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466841315540.png)
+![flex-wrap nowrap](http://cnd.qiniu.lin07ux.cn/markdown/1466841315540.png)
 
 
 * wrap  换行。第一行在上方，其他行依次往下排列。
 
-![flex-wrap wrap](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466841431629.png)
+![flex-wrap wrap](http://cnd.qiniu.lin07ux.cn/markdown/1466841431629.png)
 
 
 * wrap-reverse  换行。第一行在下方，其他行依次往上排列。
 
-![flex-wrap](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466841487572.png)
+![flex-wrap](http://cnd.qiniu.lin07ux.cn/markdown/1466841487572.png)
 
 
 #### flex-flow 属性
@@ -116,7 +116,7 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 * space-between  两端对齐。容器成员之间的空格间隙相同。
 * space-around  两端对齐。每个项目两侧的间隔相等。所以，项目之间的间隔比项目与边框的间隔大一倍。
 
-![justify-content](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466842047964.png)
+![justify-content](http://cnd.qiniu.lin07ux.cn/markdown/1466842047964.png)
 
 #### align-items 属性
 定义容器成员在交叉轴上如何对齐。可选值有：
@@ -127,7 +127,7 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 * baseline  容器成员的第一行文字的基线对齐。
 * stretch  默认值。如果项目未设置高度或高度设为`auto`，将占满整个容器的高度。
 
-![align-items](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466842633692.png)
+![align-items](http://cnd.qiniu.lin07ux.cn/markdown/1466842633692.png)
 
 #### align-content 属性
 该属性定义了多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用。
@@ -143,7 +143,7 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 * space-around  每根轴线两侧的间隔都相等。所以，轴线之间的间隔比轴线与边框的间隔大一倍。
 * stretch  默认值。轴线扩展高度/宽度，占满整个交叉轴
 
-![align-content](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466844908229.png)
+![align-content](http://cnd.qiniu.lin07ux.cn/markdown/1466844908229.png)
 
 
 ### Flex 成员属性
@@ -160,7 +160,7 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 }
 ```
 
-![order](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466845429220.png)
+![order](http://cnd.qiniu.lin07ux.cn/markdown/1466845429220.png)
 
 #### flex-grow 属性
 定义容器成员的放大比例，默认为 0，即：如果存在剩余空间，也不放大。
@@ -173,13 +173,13 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 如果所有项目的`flex-grow`属性都为 1，则它们将等分剩余空间（如果有的话）。如果一个项目的`flex-grow`属性为 2，其他项目都为 1，则前者占据的剩余空间将比其他项多一倍。
 
-![flex-grow](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466845515760.png)
+![flex-grow](http://cnd.qiniu.lin07ux.cn/markdown/1466845515760.png)
 
 注意：这个属性是指定容器成员对**剩余空间**的分配比例情况。也就是说，将容器主轴线方向上的长度，减去轴线上所有成员总长度，得到的结果如果是正数，则这部分空间会被按照成员这个属性设置的比例分配给各个容器成员。
 
 比如说：容器盒子的宽度是 480px，`flex-direction: row;`的情况下，其内有三个`flex-basis`为 100px 的容器成员。我们从左到右给予每个容器成员的`flex-grow`值分别为 3、2、1，那么当 flex 作用之后，最左边的容器成员实际增加的宽度可以算到增加的宽度是 90px，于是最后最左边成员的宽度是 190px。
 
-![flex-grow 计算](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466852134445.png)
+![flex-grow 计算](http://cnd.qiniu.lin07ux.cn/markdown/1466852134445.png)
 
 #### flex-shrink 属性
 定义了项目的缩小比例，默认为 1，即：如果空间不足，该项目将缩小。
@@ -194,7 +194,7 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 负值对该属性无效。
 
-![flex-shrink](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466845926932.png)
+![flex-shrink](http://cnd.qiniu.lin07ux.cn/markdown/1466845926932.png)
 
 默认状态下，伸缩项目不会收缩至比其最小内容尺寸（最长的英文词或是固定尺寸元素的长度）更小。可以靠设置`min-width`或`min-height`属性来改变这个默认状态。
 
@@ -202,7 +202,7 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 例如：容器宽度为 480px，主轴方向为水平方向。三个容器成员的`flex-basis`都是 200px，`flex-shrink`分别为 3、2、1。那么就需要这样计算：首先，这三个容器成员总共需要收缩出来`300px * 2 - 480px = 120px`的宽度；然后，这三个成员总的收缩空间为`200px * 3 + 200px  * 2 + 200px * 1 = 1200px`；对应的，每一份收缩比例中，对应的收缩空间为`120px * (200px / 1200px) = 20px`；所以，三个容器成员的最终的收缩空间为：`20px * 3 = 60px`、`20px * 2 = 40px`、`20px * 1 = 20px`，对应的最终宽度就分别是`200px - 60px = 140px`、`200px - 40px = 160px`、`200px - 20px = 180px`。
 
-![flex-shrink 计算](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466857530766.png)
+![flex-shrink 计算](http://cnd.qiniu.lin07ux.cn/markdown/1466857530766.png)
 
 
 #### flex-basis 属性
@@ -244,7 +244,7 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 }
 ```
 
-![align-self](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466846264126.png)
+![align-self](http://cnd.qiniu.lin07ux.cn/markdown/1466846264126.png)
 
 
 ## 参考

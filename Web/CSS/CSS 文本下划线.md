@@ -15,7 +15,7 @@ border-bottom: 1px solid #333;
 line-height: .9;
 ```
 
-![阻止换行](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1469627422880.png)
+![阻止换行](http://cnd.qiniu.lin07ux.cn/markdown/1469627422880.png)
 
 
 ### 3. box-shadow
@@ -33,7 +33,7 @@ background-position: 0 1em;
 
 这样就显得很优雅柔和了：
 
-![background 模拟下划线](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1469627717910.png)
+![background 模拟下划线](http://cnd.qiniu.lin07ux.cn/markdown/1469627717910.png)
 
 不过还有问题，字母 p 和 y 被下划线穿过了，如果遇到字母能自动避开会更好，所以，假如背景是一片实色，即可以给文字设置两层与背景色相同的`text-shadow`来模拟这种效果：
 
@@ -44,7 +44,7 @@ background-position: 0 1em;
 text-shadow: .05em 0 #fff, -.05em 0 #fff;
 ```
 
-![background 和 text-shadow](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1469627826813.png)
+![background 和 text-shadow](http://cnd.qiniu.lin07ux.cn/markdown/1469627826813.png)
 
 此外，使用背景渐变来实现下划线可以做到相当灵活的转换。比如一条绿色虚线下划线：
 
@@ -55,7 +55,7 @@ background-position: 0 1em;
 text-shadow: .05em 0 #fff, -.05em 0 #fff;
 ```
 
-![渐变背景色](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1469627916379.png)
+![渐变背景色](http://cnd.qiniu.lin07ux.cn/markdown/1469627916379.png)
 
 可以通过色标的百分比调整虚线的虚实比例，用`background-size`来调整虚线的疏密。
 

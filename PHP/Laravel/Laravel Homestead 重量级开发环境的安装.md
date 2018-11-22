@@ -150,11 +150,11 @@ http://homestead.app
 
 配置好`Homestead.yaml`文件后，在`Homestead`目录下运行`vagrant up`命令，Vagrant 将会启动虚拟机并自动配置共享文件夹以及 Nginx 站点，初次启动需要花费一点时间进行初始化：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505829921509.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505829921509.png)
 
 启动之后，就可以在浏览器中通过`http://homestead.app`访问 Laravel 应用了（前提是 Web 目录下已经部署 Laravel 应用代码）：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505829948144.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505829948144.png)
 
 - 要登录到该虚拟机，使用``vagrant ssh`命令；
 - 关闭该虚拟机，可以使用`vagrant halt`命令；
@@ -354,7 +354,7 @@ share homestead.app
 
 运行完该命令之后，就可以看到一个 Ngrok 界面出现，其中包含活动日志和分享站点所需的公开访问 URL：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505832122347.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505832122347.png)
 
 > 在终端中通过`vagrant ssh`登录虚拟机之后，执行`share`命令的时候，可能会有错误出现。此时可以尝试在 VirtualBox 中打开该虚拟机，登录后执行`share`命令来分享站点。
 

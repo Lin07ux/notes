@@ -205,7 +205,7 @@ SELECT * FROM my_user WHERE age = 25 OR user_id = 1 AND user_id > 3;
 
 可能查询出来的结果如下图所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494922973754.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494922973754.png)
 
 这是由于，`AND`的优先级高于`OR`优先级，所以会先执行`user_id = 1 AND user_id > 3`这个判断条件(没有符合的结果)，然后再和前面的`age = 25`查询出来的结果合并，最终得到的结果就都是 age 字段的值为 25 的结果了。
 
@@ -217,5 +217,5 @@ SELECT * FROM my_user WHERE (age = 25 OR user_id = 1) AND user_id > 3;
 
 结果可能如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494923167342.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494923167342.png)
 

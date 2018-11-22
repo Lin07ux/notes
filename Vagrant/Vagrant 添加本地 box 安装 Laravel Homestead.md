@@ -26,7 +26,7 @@ vagrant box add laravel/homestead ~/Downloads/virtualbox.box
 
 执行之后，大概是这个样子：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505796479115.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505796479115.png)
 
 **注意：添加成功之后，一定不要急着执行`vagrant up`**
 

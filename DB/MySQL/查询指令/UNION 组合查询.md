@@ -44,7 +44,7 @@ SELECT user_id, user_nickname, user_status FROM users WHERE user_id > 3
 
 结果可能如下图所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494918055570.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494918055570.png)
 
 可以看到，查询的结果中包含两条 user_id 为 4 的记录。
 

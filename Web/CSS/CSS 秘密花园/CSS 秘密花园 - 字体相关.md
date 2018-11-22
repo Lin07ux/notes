@@ -1,7 +1,7 @@
 ### 特定字符特定字体
 有时候可能我们需要将某个或某些特定的字符使用不同的字体来显示，而其他的字符则正常显示。比如下图所示的，将`&`符号使用不同的字体来显示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476189873995.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476189873995.png)
 
 我们可以通过修改 HTML 结构将特定的字体进行单独的处理，添加不同的 CSS 样式从而实现需求。但是更多情况下，我们可能并不能修改 HTML 结构(比如 CMS 系统中)。这就需要用到下面的方法了。
 
@@ -61,7 +61,7 @@ h1 {
 
 效果类似如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476191000485.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476191000485.png)
 
 可以看到，`&`符号应用了一个不同的字体！不过，我们也仅能给其设置不同的字体，而不能修改其他的样式。
 
@@ -89,11 +89,11 @@ h1 {
 
 为了解决这个问题，类型设计师经常会在他们的字体中添加额外的字符，称为连字符。这些都是单独设计的字形的二联体或三联体，用于排版方案中当对应的字符彼此相邻时。例如，下图中的一些常见的连体字母，它们看起来比之前对应字符单独放在一起的时候好了很多。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476191257134.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476191257134.png)
 
 还有一些所谓的自由连体字“discretionary ligatures”：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476191340028.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476191340028.png)
 
 但是，浏览器从来不会默认使用自由连体字（尽管这是正确的），并往往不会使用常见的连字体（这是一个 bug）。事实上，直到最近，显式使用任何连写字的唯一方法就是使用它的等效 Unicode 字符——如，`&#xfb01;`表示 fi 连写。这种方法比解决问题带来了更大的麻烦：
 
@@ -132,7 +132,7 @@ font-variant-ligatures: common-ligatures
 ### 断字
 在排版的时候，经常会用到文字两端对齐，一般都会用到`text-align: justify;`样式，但是这种样式会为了要对齐，去调整文本间距产生的“空白流”。这不仅让文本看起来不美观，对可读性也有影响：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476191833453.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476191833453.png)
 
 在印刷中，对齐一直是和连字符走在一起的。因为连字符允许单词被分解成音节表示，需要用于调整的空白非常少，这样文本看起来也更自然。
 
@@ -146,7 +146,7 @@ hyphens: auto;
 
 这就是需要的所有东西了。你可以在下图中看到效果：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476191977682.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476191977682.png)
 
 > 当然，为了让它能生效，你需要通过 HTML 的 lang 属性声明一种语言，虽然这是你在编写 HTML 时都必须声明的。
 

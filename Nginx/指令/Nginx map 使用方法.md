@@ -106,12 +106,12 @@ agent: curl
 
 当用 Chrome 浏览器访问的时候，可以看到类似如下的结果：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473948258181.png" width="433"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1473948258181.png" width="433"/>
 
 
 当用其他浏览器，如 IE 浏览器访问的时候，会有类似如下的输出：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473948310822.png" width="323"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1473948310822.png" width="323"/>
 
 #### 进阶示例
 下面的示例演示了如何使用 map 指令块中正则表达式中的位置捕获：在 map 指令块中，正则匹配中，使用了一个小括号，从而生成了一个位置捕获`$1`。这个位置捕获虽然不能再 map 指令块中的值中使用，但是可以在其他的位置使用。
@@ -139,7 +139,7 @@ http {
 
 当我们访问的 URI 类似于`/hello/aaa/bbb`的时候，会有类似如下的输出：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473948546062.png" width="241"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1473948546062.png" width="241"/>
 
 
 ### 转载

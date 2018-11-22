@@ -4,9 +4,9 @@
 
 ### 光标类别
 目前，CSS 中有如下一些光标，其中，后者是新增的光标：
-![css-cursor-01](http://7xkt52.com1.z0.glb.clouddn.com/2016-04-13%20css-cursor-01.png)
+![css-cursor-01](http://cnd.qiniu.lin07ux.cn/2016-04-13%20css-cursor-01.png)
 
-![css-cursor-02](http://7xkt52.com1.z0.glb.clouddn.com/2016-04-13%20css-cursor-02.png)
+![css-cursor-02](http://cnd.qiniu.lin07ux.cn/2016-04-13%20css-cursor-02.png)
 
 ### 隐藏光标
 在一切情景下，我们也需要隐藏掉光标，如，那些用于消息展示和机上娱乐的东西，或者是当你观看视频时。

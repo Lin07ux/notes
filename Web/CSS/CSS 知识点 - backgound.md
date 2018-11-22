@@ -9,7 +9,7 @@
 
 其常用的值对应的坐标如下图所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484662450241.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1484662450241.png)
 
 **注意**
 
@@ -28,7 +28,7 @@
 
 通过一个 Gif 图来描述其对应的效果：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/Zz6n6vY.jpg)
+![](http://cnd.qiniu.lin07ux.cn/Zz6n6vY.jpg)
 
 **将来的特性**
 

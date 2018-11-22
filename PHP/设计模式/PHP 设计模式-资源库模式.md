@@ -5,7 +5,7 @@ Repository 模式是架构模式，在设计架构时，才有参考价值。应
 
 
 ## UML 类图
-![资源库模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1468080648919.png)
+![资源库模式](http://cnd.qiniu.lin07ux.cn/markdown/1468080648919.png)
 
 
 ## 示例代码

@@ -77,7 +77,7 @@ Route::get('/', function () {
 前端页面的结果就如下：
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505658407874.png" width="344"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505658407874.png" width="344"/>
 </div>
 
 如果直接返回一个数组：
@@ -91,7 +91,7 @@ Route::get('/', function () {
 那么返回的结果就是一个 JSON 字符串：
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505658577474.png" width="301"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505658577474.png" width="301"/>
 </div>
 
 
@@ -185,7 +185,7 @@ Route::get('/tasks/{task}/{pro}', function ($id, $profile) {
 结果如下：
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505884431004.png" width="304"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505884431004.png" width="304"/>
 </div>
 
 如果需要某个参数是可选的，可以在参数后面加上`?`标记来实现，但前提是要确保路由的相应变量有默认值：

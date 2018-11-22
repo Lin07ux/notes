@@ -12,7 +12,7 @@
 
 这些演示都是一样的功能，只是实现的方法不同。应用程序由两个独立的聊天组件实例组成。当用户在一个实例里提交一个消息的时候，它应该在两个聊天窗口都出现，因为消息状态是共享的，下面是一个截图：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476844886112.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476844886112.png)
 
 
 ### 用一个对象共享状态
@@ -20,7 +20,7 @@
 
 数据在示例的应用程序当中流转的的过程如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476844949387.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476844949387.png)
 
 index.html 关键代码：
 
@@ -133,7 +133,7 @@ Client 组件的主要内容为：
 ### 用 Vuex 共享状态
 现在来试试看用 Vuex 实现。同样的，先上图，也便于我们将 Vuex 的术语（actions，mutations等等）对应到我们刚刚完成的示例中。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476845404272.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476845404272.png)
 
 正如你所看到的，Vuex 简单地形式化了我们刚刚完成的过程。使用它的时候，所做的事情其实和我们上面做过的非常像：
 

@@ -81,7 +81,7 @@ SELECT DISTINCT age, `name` FROM my_user;
 
 这样并不会仅仅显示 age 字段不同的记录。结果可能会如下所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494921174663.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494921174663.png)
 
 ### 2.4 限制记录数量
 

@@ -4,7 +4,7 @@
 
 盒模型是 CSS 中的基础布局模型。一个盒子，有边框，和其他盒子之间会有间距，和里面装的东西之间有距离，里面装的东西也有大小。一个元素也像盒子一样，有`content`，有`padding`，有`border`，有`margin`，这些形成一个元素的盒模型。
 
-![盒模型](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20box-model.png)
+![盒模型](http://cnd.qiniu.lin07ux.cn/2015-10-28%20box-model.png)
 
 在确定元素的准确位置的时候，需要借助图中的四个`edge`。它们按照范围，从小到大分别是：
 
@@ -50,17 +50,17 @@
 
 其效果如下图：
 
-![效果图1](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-1.png)
+![效果图1](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-1.png)
 
 可以看出，在默认情况下，背景图的起始点为 padding box 的左上角，而背景色没有起始点，将铺满整个 border-box （margin box 不会有背景色）。
 
 需要注意的是，背景图的可视范围也是 border box，而不是仅仅局限于 padding box。调整一下背景图的位置(`backround-position`)，或者扩展(`background-repeat`)，就能看出来：
 
-![效果图2](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-2.png)
+![效果图2](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-2.png)
 
 `background-clip`能够调整背景图/背景色的可见区域，但是并不能改变背景图的起始点。该属性的默认值是`border-box`，如果更改了，效果如下：
 
-![效果图3](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-3.png)
+![效果图3](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-3.png)
 
 无论怎么修改可见范围，这个例子中的背景图的起始点都是 padding box 左上角，这就是背景图起始点的概念。它对应的是css3中新增的`background-origin`，其默认值正是`padding-box`。如果修改了`background-origin`，那么属性`background-position`产生的位置偏移，包括`right`、`bottom`等关键字的情况，都会对应地改变参考的边。
 
@@ -91,7 +91,7 @@ CSS 规范中这样描述绝对定位：
 </div>
 ```
 
-![效果图4](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-4.png)
+![效果图4](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-4.png)
 
 ### 2、absolute
 
@@ -131,11 +131,11 @@ CSS 代码：
 
 显示的结果如下：
 
-![效果图5](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-5.png)
+![效果图5](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-5.png)
 
 注意两个元素都有完整的内外边距和边框，而此时`div.pos-element`的坐标是(0, 0)，图中间距为 10px。经过分析可以得知，这个 10px 间距来自`div.pos-element`的`margin`。所以可以得到什么结论呢？结论如下：
 
-![效果图6](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-6.png)
+![效果图6](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-6.png)
 
 首先，网页的平面坐标系和通常的数学平面直角坐标系不同，y 轴的正方向是朝下的。这种搭配的情况下，构成坐标系 x/y 轴的是用作容器的元素的 padding edge。其中 padding edge 的左上角即为坐标系的原点。
 
@@ -174,7 +174,7 @@ CSS 代码：
 
 效果如下图：
 
-![效果图9](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-9.png)
+![效果图9](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-9.png)
 
 - **`display`被设置为`inline-block`的元素之间，`margin`不会相互重叠，否则会进行`margin`重叠计算**
 
@@ -209,7 +209,7 @@ CSS 代码：
 
 效果如下图所示，可以看出，被定义为`inline-block`的时候，两个子元素之间的间距明显增大，变成 20px。这一点是在设置元素位置的时候，也是需要加以考虑的。
 
-![效果图10](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-10.png)
+![效果图10](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-10.png)
 
 ### 4、float
 
@@ -219,7 +219,7 @@ CSS 代码：
 
 一般的文字环绕效果，就是将图片设置`float`之后形成的效果，这些位于文档流内的文字，仍然会为浮动元素留出空间，而并非互不相干。这其实是浮动元素影响行框（line box）的宽度的结果。
 
-![效果图7](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-7.png)
+![效果图7](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-7.png)
 
 (2)、浮动元素也会受到文档流的影响
 
@@ -231,7 +231,7 @@ CSS 代码：
 
 我们很熟悉浮动元素是会一个接一个地寻找空间排列的，但这一条却告诉我们，如果前面还有块元素，那么它们也会影响浮动元素的上边缘位置。如下图：
 
-![效果图8](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-8.png)
+![效果图8](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-8.png)
 
 那浮动元素的位置是如何确定的呢？
 
@@ -267,7 +267,7 @@ CSS 代码：
 
 效果见下图：
 
-![效果图11](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-11.png)
+![效果图11](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-11.png)
 
 浮动元素的盒模型是完全从父元素的 content box 的左上角(右排显示则为右上角)开始计算的。所以在上面代码生成的效果中，浮动元素和父元素的上边界之间的距离是 20px。
 

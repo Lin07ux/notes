@@ -21,7 +21,7 @@ PHPStorm 2017.1 增加了很多新功能，有个默认开启的参数名和类�
 3. 在搜索的结果中，一般第一行就可以直接切换参数名提示的状态，选中该行之后按`Enter`键即可关闭了。
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505355668866.png" width="277" />
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505355668866.png" width="277" />
 </div>
 
 ## 开发
@@ -33,11 +33,11 @@ PHPStorm 可以直接运行一个 PHP 文件，并在浏览器中打开页面，
 
 设置 PHP Interpreter 只需要在设置中，Language & Frameworks 分组中找到 PHP，点击即可显示出设置的地方。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1481686076788.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1481686076788.png)
 
 默认没有设置，可以点击图中的红框中的按钮，进入设置页面。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1481686914470.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1481686914470.png)
 
 虽然 MacOS 中默认是安装了 PHP 的，不过由于 PHPStorm 需要使用 CGI 的方式解析 PHP，直接使用 MacOS 自带的 PHP 解析器的时候，打开预览页面会出现 502 错误。所以我们需要自行安装 PHP 和 PHP-fpm，并将自己安装的解析器设置为 PHPStorm 默认的解析器。
 

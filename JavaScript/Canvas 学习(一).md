@@ -78,7 +78,7 @@ if (canvas.getContext){
 
 canvas 元素默认被网格所覆盖。通常来说网格中的一个单元相当于 canvas 元素中的一像素。栅格的起点为左上角(坐标为(0,0))。所有元素的位置都相对于原点定位。如下图所示。
 
-![画布栅格](http://7xkt52.com1.z0.glb.clouddn.com/2016-04-21%20Canvas_default_grid.png)
+![画布栅格](http://cnd.qiniu.lin07ux.cn/2016-04-21%20Canvas_default_grid.png)
 
 HTML 中的元素 canvas 只支持一种原生的图形绘制：矩形。所有其他的图形的绘制都至少需要生成一条路径。我们拥有众多路径生成的方法让复杂图形的绘制成为了可能。
 
@@ -232,7 +232,7 @@ cxt.clearRect(50, 50, 100, 100);
 
 效果图：
 
-![Canvas 矩形](http://7xkt52.com1.z0.glb.clouddn.com/2016-04-21%20Canvas-rect.png)
+![Canvas 矩形](http://cnd.qiniu.lin07ux.cn/2016-04-21%20Canvas-rect.png)
 
 
 ### Path2D 对象
@@ -404,7 +404,7 @@ for (var i=0;i<7;i++){
 
 想要获得精确的线条，必须对线条是如何描绘出来的有所理解。见下图，用网格来代表 canvas 的坐标格，每一格对应屏幕上一个像素点。在第一个图中，填充了 (2,1) 至 (5,5) 的矩形，整个区域的边界刚好落在像素边缘上，这样就可以得到的矩形有着清晰的边缘。
 
-![Canvas lineWidth](http://7xkt52.com1.z0.glb.clouddn.com/2016-04-23%20canvas-lineWidth.png)
+![Canvas lineWidth](http://cnd.qiniu.lin07ux.cn/2016-04-23%20canvas-lineWidth.png)
 
 如果你想要绘制一条从 (3,1) 到 (3,5)，宽度是 1.0 的线条，你会得到像第二幅图一样的结果。实际填充区域（深蓝色部分）仅仅延伸至路径两旁各一半像素。而这半个像素又会以近似的方式进行渲染，这意味着那些像素只是部分着色，结果就是以实际笔触颜色一半色调的颜色来填充整个区域（浅蓝和深蓝的部分）。这就是上例中为何宽度为 1.0 的线并不准确的原因。
 

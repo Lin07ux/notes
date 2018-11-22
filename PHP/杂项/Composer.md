@@ -276,7 +276,7 @@ composer config repo.packagist composer https://packagist.laravel-china.org
 
 Composer 安装其他的扩展的原理如下图：
 
-![Composer install 原理](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1463823325781.png)
+![Composer install 原理](http://cnd.qiniu.lin07ux.cn/markdown/1463823325781.png)
 
 Composer 就是安装在系统上的`composer`工具。所有 package 元数据和 zip 文件的下载、安装工作都是它来完成的。
 

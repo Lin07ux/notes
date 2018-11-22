@@ -40,6 +40,6 @@ screenshot name [optional]
 当`screenshot`这个命令执行完成之后，截取的图片会出现在火狐浏览器的缺省下载目录里。
 
 如果你不喜欢命令行，有一个选项可以将这个命令也按钮的形式出现，就是下面图中这个选项：
-![设置截屏按钮](http://7xkt52.com1.z0.glb.clouddn.com/2015-08-03设置截屏按钮.jpg)
+![设置截屏按钮](http://cnd.qiniu.lin07ux.cn/2015-08-03设置截屏按钮.jpg)
 
 

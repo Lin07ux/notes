@@ -19,7 +19,7 @@ default-character-set=utf8mb4
 
 上面三种设置的方式都只指定了字符集，没有去做校对，我们可以用`show variables like 'char%';`命令查询当前服务器的字符集和校对规则。
 
-![查看服务器字符集](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1509676786650.png)
+![查看服务器字符集](http://cnd.qiniu.lin07ux.cn/markdown/1509676786650.png)
 
 ### 数据库级别
 
@@ -31,7 +31,7 @@ CREATE DATABASE my_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 创建之后可以通过`SHOW CREATE DATABASE my_db;`命令来查看数据库的字符集：
 
-![查看数据库字符集](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1509677010701.png)
+![查看数据库字符集](http://cnd.qiniu.lin07ux.cn/markdown/1509677010701.png)
 
 修改数据库的字符集则可以使用如下的方式：
 
@@ -49,7 +49,7 @@ CREATE TABLE my_table DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 创建之后可以通过`SHOW CREATE TABLE my_table;`命令来查看数据库的字符集：
 
-![查看表字符集](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1509677431226.png)
+![查看表字符集](http://cnd.qiniu.lin07ux.cn/markdown/1509677431226.png)
 
 修改数据库的字符集则可以使用如下的方式：
 

@@ -13,13 +13,13 @@ markdown 写作的时候，图片插入是一件比较麻烦的事情。常见�
 ## 预览
 预览效果如下：
 
-![预览效果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1463411070326.png)
+![预览效果](http://cnd.qiniu.lin07ux.cn/markdown/1463411070326.png)
 
 第一步，截图；第二步，粘贴；done!
 
 还可以直接拷贝图片，然后一步上传：
 
-![极速本地图片转图片链接](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1463446291131.png)
+![极速本地图片转图片链接](http://cnd.qiniu.lin07ux.cn/markdown/1463446291131.png)
 
 
 ## 特性
@@ -57,7 +57,7 @@ sudo pip install requests
 ### 4. 配置图床信息
 在前面图床的信息拿到之后，在 alfred 中输入`mdimgsetup`命令，可以打开一个文本文档，如下：
 
-![配置图床信息](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1463446782382.png)
+![配置图床信息](http://cnd.qiniu.lin07ux.cn/markdown/1463446782382.png)
 
 在这个文档中，设置你的七牛图床的信息，`AK`，`SK`是访问密钥，`url`是上面配置的图床访问地址，`bucket`是空间名字，`prefix`是图床上传的前缀，这个可以随意配置，作为分类使用，比如我的是 markdown。
 

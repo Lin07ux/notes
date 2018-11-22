@@ -8,17 +8,17 @@ Alfred 3.0 中增加的文字快速拓展功能，可以帮我们把一些日常
 
 打开 Alfred 的设置菜单，找到 Features 里面的 Snippets，你可以看到下图这个设置面板：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1534906519747.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1534906519747.png)
 
 想要创建 Snippets，首先要建立一个 Collection（集合）。点击左侧 Collection 底部的 「+」号，输入集合的名字。
 
 在设置中，你可以选择是否为这个 Collection 设置一个前缀或者后缀，这个功能的主要目的是为了方便区分，当你在使用时，通过输入前缀或者后缀可以快速显示某一个集合内的所有 Snippets。我们在这里给这个名为「Personal」的 Collection 添加一个「!」作为前缀。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1534906647235.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1534906647235.png)
 
 添加 Collection 后，就可以来创建你的第一个 Snippets 了。点击右侧底部的「+」，输入 Snippets 的名字和关键词，然后在下方输入你希望拓展的内容。在这里以添加个人邮箱为例，在上面的 Keyword 里填入「GM」作为关键词，然后下方输入 myemail@gmail.com，点击 Save 来保存，这样我们就创建了一条 Snippets。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1534906686579.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1534906686579.png)
 
 
 ### 2、设置
@@ -39,7 +39,7 @@ Snippets 不仅仅可以输入固定的内容，还能通过一些特殊的占�
 
 还可以使用多个剪贴板内容，以便我们多次粘贴，然后一次性输出格式化的数据。使用这个功能前，需要先在 Alfred -- Feature -- Clipboard 中打开 Clipboard History 中的 Keep Plain Text。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1534907251517.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1534907251517.png)
 
 
 

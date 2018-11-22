@@ -55,7 +55,7 @@ BFC 是一个独立的布局环境，其中的元素布局是不受外界的影�
 
 效果如下图：
 
-![BFC 对盒模型的影响](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-29%20BFC-float-1.png)
+![BFC 对盒模型的影响](http://cnd.qiniu.lin07ux.cn/2015-10-29%20BFC-float-1.png)
 
 可以看到，这里两个子元素`div.son`和父元素的上边距、左边距、下边距都是 20px，说明子元素是完全包含在父元素的 content box 中的。也即是：子元素的左上角，将会对准父元素的 content box 的左上角。（对于从右到左的格式来说，则是子元素的右上角对准父元素的 content box 的右上角）。
 
@@ -73,7 +73,7 @@ BFC 产生外边距折叠需要满足一个条件：**两个相邻元素要处�
 
 > 有一点没有搞明白，如果设置这两个子元素的`overflow`不为`visible`并不能避免外边距折叠发生，谁能指导下？
 
-![BFC 对盒折叠边距的影响](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-29%20BFC-float-2.png)
+![BFC 对盒折叠边距的影响](http://cnd.qiniu.lin07ux.cn/2015-10-29%20BFC-float-2.png)
 
 ### 3、BFC 对浮动包含元素的影响
 
@@ -108,13 +108,13 @@ BFC 产生外边距折叠需要满足一个条件：**两个相邻元素要处�
 
 如果父元素没有创建一个 BFC，那么父元素将不会被两个子元素所撑开。而如果将父元素设置了`overflow: hidden`，那么将给父元素创建一个 BFC，从而能够被子元素所撑开了。在这个新的 BFC 中浮动元素又回归到页面的常规流之中了。效果见下图：
 
-![BFC 对浮动元素包含的影响](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20effect-picture-11.png)
+![BFC 对浮动元素包含的影响](http://cnd.qiniu.lin07ux.cn/2015-10-28%20effect-picture-11.png)
 
 ### 4、BFC 对行盒元素的影响
 
 对于浮动图片和元素组成的布局中，会形成文字环绕图片的效果，如 Figure1 所示。之所以会出现这种状况，是由于浮动元素会影响行盒元素的宽度。
 
-![BFC 对行盒的影响1](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-29%20BFC-float-3.jpg)
+![BFC 对行盒的影响1](http://cnd.qiniu.lin07ux.cn/2015-10-29%20BFC-float-3.jpg)
 
 如果我们不想出现这样的效果，而是让图片和文字分开布局，如 Figure2 中那样，这时可以使用外边距，也可以用 BFC 来处理。
 
@@ -152,7 +152,7 @@ p {
 
 给 div.floated 元素添加左浮动后，显示效果如下图中的左图所示，此时文字环绕左侧的浮动元素；给文字添加`overflow: hidden`样式之后，效果如下图右侧图所示，文字和浮动元素左右分开了。（如果给文字添加的是`display:inline-block`样式，那么文字会像一个块元素一样显示在浮动元素的下方了。）
 
-![BFC 对行盒的影响1](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-29%20BFC-float-4.png)
+![BFC 对行盒的影响1](http://cnd.qiniu.lin07ux.cn/2015-10-29%20BFC-float-4.png)
 
 ### 5、BFC 在多列布局中的应用
 

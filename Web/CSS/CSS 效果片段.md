@@ -22,7 +22,7 @@ li:hover {
 }
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1468997594653.png" width="485"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1468997594653.png" width="485"/>
 
 > 参考：[一加官网](http://www.oneplus.cn/)
 
@@ -47,7 +47,7 @@ pre {
 
 这里由于设置了`lin-height: 1.5;`，所以两行文本的高度就是 3em，那么背景中就要设置高度为 3em，默认即为可重复的。另外，`backgrouun-origin: content-box;`表示背景是从文本区域开始展示的，避免斑马纹和文本之间出现错位。
 
-![斑马纹](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472349064385.png)
+![斑马纹](http://cnd.qiniu.lin07ux.cn/markdown/1472349064385.png)
 
 
 ### 保持在页面最底部

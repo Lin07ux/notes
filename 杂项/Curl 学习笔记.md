@@ -29,7 +29,7 @@ curl http://httpbin.org
 curl http://httpbin.org/post --request POST
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474261155375.png" width="643"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474261155375.png" width="643"/>
 
 
 ### 附加请求数据
@@ -40,10 +40,10 @@ curl http://httpbin.org/post --request POST
 curl http://httpbin.org/get?a=1&b=2
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474261384702.png" width="676"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474261384702.png" width="676"/>
 
 > 对于 GET 请求不可使用`--data`选项附加数据，只能使用 URL 编码方式附加在 URL 后面。
-> <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474261178171.png" width="638"/>
+> <img src="http://cnd.qiniu.lin07ux.cn/markdown/1474261178171.png" width="638"/>
 
 
 ### form 表单提交
@@ -87,7 +87,7 @@ curl http://httpbin.org/post --form "name=Lin07ux" --form "f=@/Users/Lin07ux/Dow
 curl httpbin.org/post --include --request POST --data 'name=Lin07ux'
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474262006810.png" width="568"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474262006810.png" width="568"/>
 
 或者，只显示头信息：
 
@@ -95,7 +95,7 @@ curl httpbin.org/post --include --request POST --data 'name=Lin07ux'
 curl http://httpbin.org --head
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474262265252.png" width="674"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474262265252.png" width="674"/>
 
 > `--head` 选项貌似没有办法用在其他类型的请求上，否则会报错。
 
@@ -107,7 +107,7 @@ curl http://httpbin.org --head
 curl http://httpbin.org/headers --header 'nickname: Lin07ux' --header 'user-agent: spdb'
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474262771939.png" width="735"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474262771939.png" width="735"/>
 
 > 设置的 header 是以键值对的方式传入的，header 名称和其值之间使用`:`分割，`:`后面可以有空格，会被自动过滤掉，但是前面不能有空格。另外，传入的 header 名称会自动转成首字母大写的情况。
 
@@ -119,7 +119,7 @@ curl http://httpbin.org/headers --header 'nickname: Lin07ux' --header 'user-agen
 curl http://httpbin.org/headers --referer http://a.b.com
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474262873039.png" width="637"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474262873039.png" width="637"/>
 
 
 ### 包含 cookie
@@ -129,7 +129,7 @@ curl http://httpbin.org/headers --referer http://a.b.com
 curl http://httpbin.org/headers --cookie "name=Lin07ux;website=http://a.b.com"
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474262971121.png" width="645"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474262971121.png" width="645"/>
 
 
 ### http 认证
@@ -139,7 +139,7 @@ curl http://httpbin.org/headers --cookie "name=Lin07ux;website=http://a.b.com"
 curl http://lin07ux.org/basic-auth/lin07ux/123456 --user lin07ux:123456
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474263113473.png" width="670"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474263113473.png" width="670"/>
 
 
 ### 自动跳转
@@ -151,7 +151,7 @@ curl http://httpbin.org/redirect/1 --location
 
 由于`http://httpbin.org/redirect/1`会 302 跳转到`http://httpbin.org/get`。所以，如果加上`--location`会返回`http://httpbin.org/get`的内容，而不加的话，就不会自动跳转了：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474263298927.png" width="863"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474263298927.png" width="863"/>
 
 
 ### 显示详细的通信过程
@@ -161,7 +161,7 @@ curl http://httpbin.org/redirect/1 --location
 curl http://httpbin.org/post --verbose --request POST --data "name=Lin07ux"
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474262427174.png" width="641"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474262427174.png" width="641"/>
 
 
 ### 转摘

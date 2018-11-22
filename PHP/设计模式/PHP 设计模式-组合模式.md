@@ -5,7 +5,7 @@
 
 
 ## UML 类图
-![组合模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467642105352.png)
+![组合模式](http://cnd.qiniu.lin07ux.cn/markdown/1467642105352.png)
 
 可以看出，组合对象和单个对象都继承自同一个类，所以他们会有相同的接口，从而使他们能够通过相同的方式进行调用。
 

@@ -1,6 +1,6 @@
 在页面中，经常会用到如下的打点加载效果：
 
-![dot loading](http://7xkt52.com1.z0.glb.clouddn.com/dot-loading.gif)
+![dot loading](http://cnd.qiniu.lin07ux.cn/dot-loading.gif)
 
 有多种实现方法：
 

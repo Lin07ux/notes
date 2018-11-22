@@ -56,12 +56,12 @@ Object.keys({
 * Number
     传入数值参数时，返回值是一个空数组。因为数值会被转换成`Number`对象，而`Number`对象是没有可提取属性的。
     
-    ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1534911496673.png)
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/1534911496673.png)
 
 * String
     传入字符串参数时，返回的是一个从 0 开始的数组，当然，如果是空字符串，返回的就是空数组了。这是由于 String 类型的参数会被转换成 String 对象：
     
-    ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1534911621316.png)
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/1534911621316.png)
 
 ### 2. 获得属性列表
 

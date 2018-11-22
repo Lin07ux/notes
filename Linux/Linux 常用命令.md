@@ -22,7 +22,7 @@ chown [-R] user:group dir
 
 这个命令还可以结合`-l`、`-a`等参数来用不同的方式显示当前目录的内容。
 
-![ls](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470977375989.png)
+![ls](http://cnd.qiniu.lin07ux.cn/markdown/1470977375989.png)
 
 ### mkdir (Make Directory)
 新建一个新目录
@@ -35,7 +35,7 @@ chown [-R] user:group dir
 
 > 使用`cd -`可以返回前一个进入的工作目录。
 
-![cd](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470977556815.png)
+![cd](http://cnd.qiniu.lin07ux.cn/markdown/1470977556815.png)
 
 ### rm (Remove)
 删除给定的文件或文件夹，可以使用`rm -r`递归删除文件夹，用`rm -f`删除不会进行确认。

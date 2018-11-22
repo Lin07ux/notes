@@ -18,7 +18,7 @@
 目前百度云插件已停止打包，使用最新版本方法如下：
 
 * [下载百度云插件源代码](https://github.com/acgotaku/BaiduExporter) 并解压，如图：
-    ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1486533803024.png)
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/1486533803024.png)
 
 * 方法一（直接安装crx文件）：直接将下载好的文件夹中的`chrome.crx`文件拖动到浏览器的`扩展程序`界面进行安装。
 
@@ -26,9 +26,9 @@
 
 * 方法二（开发者模式加载）
     - 打开 Chrome 的扩展程序界面，勾选 开发者模式 并点击刚显示出来的 加载已解压的扩展程序 按钮。如图：
-        ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1486534009968.png)
+        ![](http://cnd.qiniu.lin07ux.cn/markdown/1486534009968.png)
 
     - 选择解压好的源码中的 Chrome 文件夹，如图：
-        ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1486534064157.png)
+        ![](http://cnd.qiniu.lin07ux.cn/markdown/1486534064157.png)
 
 

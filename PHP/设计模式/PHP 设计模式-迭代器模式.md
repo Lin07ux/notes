@@ -7,7 +7,7 @@ PHP 标准库（SPL）中提供了迭代器接口 Iterator，要实现迭代器�
 
 
 ## UML 类图
-![迭代器模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467899552621.png)
+![迭代器模式](http://cnd.qiniu.lin07ux.cn/markdown/1467899552621.png)
 
 
 ## 示例代码

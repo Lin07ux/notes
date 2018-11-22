@@ -50,11 +50,11 @@
 
 有时候我们需要延时截图，macOS 为我们提供了这个功能，只是藏的比较深。可以直接用 macOS 自带的 Spotlight 搜索到，直接输入 Grab 即可：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1487773429516.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1487773429516.png)
 
 回车之后没有打开任何窗口，你可能觉得刚刚是打开了假的 App。但其实，这个 App 本身就是没有 UI 的，只会在 Menu Bar 上面显示一条菜单。我们可以在这里找到延时截图的选项：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1487773476125.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1487773476125.png)
 
 点击之后，按照提示操作就好，默认的延时时间是 10 秒。要注意的是，延时截图会截取整个屏幕，不能截区域。我们可以先把图片保存下来，然后再打开 Preview（预览）App 裁剪就好了.
 

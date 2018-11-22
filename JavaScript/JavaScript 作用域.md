@@ -79,7 +79,7 @@ let 的话，声明和初始化是分开的，只有真正执行到 let 语句�
 
 比如，可以在浏览器的调试工具中进行如下的操作：
 
-![TDZ 示例](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479273008633.png)
+![TDZ 示例](http://cnd.qiniu.lin07ux.cn/markdown/1479273008633.png)
 
 在第一步中，声明并赋值一个 let 变量 map。但是在赋值的时候，由于`Map()`不带 new 不能被调用，所以就出错了。此时变量 map 就已经被困在了 TDZ 里面而无法再对其进行操作了。
 

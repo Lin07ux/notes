@@ -2,11 +2,11 @@
 
 可以使用以下命令使文件在三种状态间切换：
 
-![切换状态](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1464932592834.png)
+![切换状态](http://cnd.qiniu.lin07ux.cn/markdown/1464932592834.png)
 
 也可以跳过中间状态切换：
 
-![跳过中间状态的切换](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1464932635964.png")
+![跳过中间状态的切换](http://cnd.qiniu.lin07ux.cn/markdown/1464932635964.png")
 
 ### 追加 Commit
 
@@ -117,19 +117,19 @@ git clean -fx           # 5
 
 我们分别`checkout –b`出来两个分支，独立开发互不干扰。在 develop_newfeature_authorcheck 里修改了点东西，push 到 develop。然后 checkout 到 develop_newfeature_apiwrapper，执行`git pull`，将 develop_newfeature_authorcheck 分支的修改直接拉下来与本地代码 merge，且产生一个 commit，也就是 merge commit。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049400931.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1479049400931.png)
 
 此处的 F commmit 是无意义的，它只是一个 merge commit。而且个 commit message 里面的 branch 日后也不存了，这些分支都会被清除掉，所以完全没有必要生成和保留这个 merge commit。
 
 如果使用`git pull –-rebase`这样的结局就完全不一样：它并不会产生一个 merge commit，而是会将你的 E commit 附加到 D commit 的结尾处。也就是说，会将你的 develop_newfeature_apiwrapper 分支的基点变成在 develop_newfeature_authorcheck 分支上的 D commit。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049586790.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1479049586790.png)
 
 ### 删除本地中存在的、已经在远程被删除的分支
 
 可以通过命令`git remote show origin`来查看有关于 origin 的一些信息，包括分支是否 tracking。当我们删除一个远程的分支之后，在本地使用这个命令会显示出类似如下的信息：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049827419.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1479049827419.png)
 
 本地删除的分支那一行上提示你可以通过`git remote prune`移除这个分支。（也就是说你可以刷新本地仓库与远程仓库的保持这些改动的同步。）
 
@@ -139,6 +139,6 @@ git remote prune origin
 
 执行之后，这个在远程删除的分支在你本地仓库也将被删除。再通过`git branch –a`来查看就可以看到其已经被删除了：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479049942671.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1479049942671.png)
 
 

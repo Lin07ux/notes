@@ -1,7 +1,7 @@
 转摘：[CSS秘密花园： 通过亮度调节去强调(De-emphasize)](http://www.w3cplus.com/css3/css-secrets/de-emphasize-by-dimming.html)
 
 很多时候，我们需要通过在元素背后添加一个半透明的深色叠加来让内容变暗，强调并提醒用户关注某个UI元素。例如，lightboxes 和“quick tours”接口经常需要这种效果：
-![深色半透明](http://7xkt52.com1.z0.glb.clouddn.com/2016-04-12%20de-emphasize.png)
+![深色半透明](http://cnd.qiniu.lin07ux.cn/2016-04-12%20de-emphasize.png)
 
 完成这个效果有多种方式，下面来分别分析。
 

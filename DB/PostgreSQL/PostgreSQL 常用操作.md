@@ -125,7 +125,7 @@ DROP USER user_name;
 \dx
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1526542496048.png" width="352"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1526542496048.png" width="352"/>
 
 ### 安装插件
 

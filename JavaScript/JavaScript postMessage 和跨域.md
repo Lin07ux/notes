@@ -88,7 +88,7 @@ window.addEventListener("message", function(e){
 
 当点击`abc.html`页面后，从`def.html`返回内容了。效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476800511534.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476800511534.png" width="275"/>
 
 
 ### 示例二

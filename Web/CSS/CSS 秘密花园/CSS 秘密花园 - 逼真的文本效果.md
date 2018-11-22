@@ -12,7 +12,7 @@ background: hsl(210, 13%, 60%);
 color: hsl(210, 13%, 30%);
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476149142998.png" width="252"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476149142998.png" width="252"/>
 
 背景较亮，文字较暗，我们可以给文字底部设置一个较亮的阴影：
 
@@ -22,7 +22,7 @@ text-shadow: 0 1px 1px hsla(0,0%,100%,.8);
 
 对应的效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476149164926.png" width="254"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476149164926.png" width="254"/>
 
 > 这里阴影的亮度取决于想要的效果以及确切的颜色，所以你需要用 alpha 参数做一些试验，直到找到合适的亮度值。
 > 
@@ -38,7 +38,7 @@ text-shadow: 0 -1px 1px black;
 
 效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476149431553.png" width="133"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476149431553.png" width="133"/>
 
 ### 描边文本
 实现描边效果，最普遍的方法是给图层应用多个不同偏移量的`text-shadow`值，使其包裹在文字四周：
@@ -51,7 +51,7 @@ text-shadow: 1px 1px black, -1px -1px black, 1px -1px black, -1px 1px black;
 
 实现的效果如下图：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476149504998.png" width="131"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476149504998.png" width="131"/>
 
 如果描边的效果需要很粗，那么使用多个不同偏移量的 text-shadow 可能就会有不好的效果了，而且代价较高。
 
@@ -67,7 +67,7 @@ text-shadow: 0 0 .1em, 0 0 .3em;
 
 效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476149795197.png" width="132"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476149795197.png" width="132"/>
 
 自然，也可以对这个发光效果做动画效果，需要设置 transition。
 
@@ -88,7 +88,7 @@ text-shadow: 0 1px hsl(0,0%,85%),
 
 效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476150126718.png" width="243"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476150126718.png" width="243"/>
 
 这个要转换成mixin更容易，或者说用一个函数来实现更恰当：
 

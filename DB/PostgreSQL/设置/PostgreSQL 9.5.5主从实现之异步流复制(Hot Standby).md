@@ -45,7 +45,7 @@ wal_keep_segments = 64  # 默认是 0
 * `max_wal_senders`则需要设置为一个大于 0 的数，它表示主库最多可以有多少个并发的 standby 数据库；
 * `wal_keep_segments`也应当设置为一个尽量大的值，以防止主库生成 WAL 日志太快，日志还没有来得及传送到 standby 就被覆盖，但是需要考虑磁盘空间允许，一个 WAL 日志文件的大小是 16M。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1526546039977.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1526546039977.png)
 
 如上图，一个 WAL 日志文件是 16M，如果`wal_keep_segments`设置为 64，也就是说将为 standby 库保留 64 个 WAL 日志文件，那么就会占用 16 * 64 = 1GB 的磁盘空间，所以需要综合考虑，在磁盘空间允许的情况下设置大一些，就会减少 standby 重新搭建的风险。
 
@@ -67,7 +67,7 @@ CREATE ROLE name REPLICATION LOGIN PASSWORD 'password';
 host    replication   repl   192.168.111.0/24  md5
 ```
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1526547045499.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1526547045499.png)
 
 如上图，这行配置的意思是允许用户`repl`从`192.168.111.0/24`网络上发起到本数据库的流复制连接，简言之即允许从库服务器连接主库去拖 WAL 日志数据。
 
@@ -102,7 +102,7 @@ pg_basebackup -h 192.168.111.101 -U repl -F p -x -P -R -D /usr/local/postgresql/
 
 运行命令后看到如下进度提示就说明生成基础备份成功：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1526547442860.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1526547442860.png)
 
 如上图，由于我们在`pg_hba.conf`中指定的 md5 认证方式，所以需要输入密码。
 
@@ -124,11 +124,11 @@ hot_standby=on   # 启用 hot_standby
 
 在主库和从库服务器上，分别通过`ps -ef|grep postgres`查看一下进程：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1526547813185.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1526547813185.png)
 
 两个服务器上，都有类似图中圈出的进程和数值，则说明已经同步成功了。此时，登陆从库，可以查看数据库、数据表和数据都已经同步过来了。同时，如果尝试在从库中删除或修改数据，则会报错：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1526547919450.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1526547919450.png)
 
 如上图，standby 的数据无法删除，正如之前说的，standby 只提供只读服务，而只有 master 才能进行读写操作，所以 master 才有权限删除数据，master 删除的同时 standby 中的数据也将同步删除，关于异步流复制的内容到这里就已经全部介绍完毕了。
 

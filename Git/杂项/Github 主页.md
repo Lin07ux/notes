@@ -102,19 +102,19 @@ git push origin --delete gh-pages
 
 2. 在 Github 上切换到你的项目主页，点击`Settings`设置按钮
 
-![Github settings](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471843387641.png)
+![Github settings](http://cnd.qiniu.lin07ux.cn/markdown/1471843387641.png)
 
 3. 点击`Launch automatic page generator`，启动页面自动生成器：
 
-![Launch automatic page generator](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471843430749.png)
+![Launch automatic page generator](http://cnd.qiniu.lin07ux.cn/markdown/1471843430749.png)
 
 4. 进入主页设计页面（这里使用的是 Markdown 编辑器），并填写相关的信息，还可以添加 Google 的统计插件。注意，这里我们一般可以通过加载`README.md`文件来直接从中读取内容，否则你就得自己手动编写。
 
-![主页设计](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471843487926.png)
+![主页设计](http://cnd.qiniu.lin07ux.cn/markdown/1471843487926.png)
 
 5. 点击`Continue To Layouts`按钮，进入模板选择页面。这里你可以选择自己喜欢的模板样式，是不是很漂亮？而且很多模板相信大家都在一些项目的主页中看到过。
 
-![Layouts](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471843537716.png)
+![Layouts](http://cnd.qiniu.lin07ux.cn/markdown/1471843537716.png)
 
 6. 选择好模板后，可以点击左上角的`Publish page`发布页面，然后就可以看到成功提示了。
 

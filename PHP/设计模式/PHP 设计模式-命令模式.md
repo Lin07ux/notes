@@ -7,7 +7,7 @@ Laravel 中的 Artisan 命令就使用了命令模式。
 
 
 ## UML 类图
-![命令模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467898456033.png)
+![命令模式](http://cnd.qiniu.lin07ux.cn/markdown/1467898456033.png)
 
 
 ## 示例代码

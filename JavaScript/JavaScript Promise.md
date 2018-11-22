@@ -620,7 +620,7 @@ Final Task
 
 这段代码的流程图如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475200270424.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475200270424.png" width="275"/>
 
 可以看出，A 抛错时，会按照`taskA → onRejected → finalTask`这个流程来处理。A 抛错后，若没有对它进行处理，状态就会维持 rejected ，taskB 不会执行，直到 catch 了错误。如果 A 抛错之后，其后立即捕获了这个错误，那么 taskB 就可以执行：
 

@@ -5,7 +5,7 @@
 
 
 ## UML 类图
-![备忘录模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467904158344.png)
+![备忘录模式](http://cnd.qiniu.lin07ux.cn/markdown/1467904158344.png)
 
 备忘录模式所涉及的角色有三个：备忘录(Memento)角色、发起人(Originator)角色、负责人(Caretaker)角色。
 

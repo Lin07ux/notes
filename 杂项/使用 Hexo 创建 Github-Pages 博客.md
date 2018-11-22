@@ -264,11 +264,11 @@ hexo clean
 
 然后，在页面的右上角，点击十字标记，选择"New respository"，创建一个新的仓库。
 
-![创建新仓库](http://7xkt52.com1.z0.glb.clouddn.com/2015-08-01%20Github-create-a-new-resposition.png "创建一个新的GitHub仓库")
+![创建新仓库](http://cnd.qiniu.lin07ux.cn/2015-08-01%20Github-create-a-new-resposition.png "创建一个新的GitHub仓库")
 
 在打开的创建新仓库页面，填写入仓库的名称，以及可选填的描述，然后设置仓库为"Public"：
 
-![创建新仓库](http://7xkt52.com1.z0.glb.clouddn.com/2015-08-01%20Github-create-a-new-resposition-2.png "创建一个新的GitHub仓库")
+![创建新仓库](http://cnd.qiniu.lin07ux.cn/2015-08-01%20Github-create-a-new-resposition-2.png "创建一个新的GitHub仓库")
 
 **请注意**：仓库的名称是特定的，格式为**你的Github账号名.github.com**，比如，对于我的，名称就是"Lin07ux.github.com"。
 

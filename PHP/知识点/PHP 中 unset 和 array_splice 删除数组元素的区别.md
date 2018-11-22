@@ -20,7 +20,7 @@ $a;
 
 三次展示的数组的结果如下图所示：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1532055244805.png" width="211" />
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1532055244805.png" width="211" />
 
 可以看到，使用`unset()`方法删除了索引为`1`的值后，其他数值索引没有发生变化，而使用`array_splice()`方法删除一个元素后，数值索引被重新排序了。
 

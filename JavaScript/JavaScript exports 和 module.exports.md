@@ -1,6 +1,6 @@
 在 commonJS 的模块化写法中，经常会遇到`exports`和`module.exports`。这两者的关系经常难以区分。下面就简单梳理下。
 
-![exports 与 module.exports 的关系](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479006903041.png)
+![exports 与 module.exports 的关系](http://cnd.qiniu.lin07ux.cn/markdown/1479006903041.png)
 
 当一个 js 文件需要模块化的时候，node 环境中会给文件注入`exports`和`module.exports`这两个变量，并且刚开始的时候这两个变量是指向同一个空对象的，随后你就可以拿着这两个变量做了一系列操作，都会修改同一个对象。关键处在于：**只有`module.exports`会被返回**以便后续其他模块 require 引用使用。
 

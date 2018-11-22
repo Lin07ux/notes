@@ -93,7 +93,7 @@ autojump 是一个快速切换、跳转到不同路径的工具，通过简单�
 3. 将`autojump`加入到`~/.zshrc`的`plugins`中。
 4. 重新加载配置：`source ~/.zshrc`。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1521623224522.png" width="915"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1521623224522.png" width="915"/>
 
 ### encode64
 

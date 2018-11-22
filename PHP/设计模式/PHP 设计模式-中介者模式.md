@@ -5,7 +5,7 @@
 
 
 ## UML 类图
-![中介者模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467901461099.png)
+![中介者模式](http://cnd.qiniu.lin07ux.cn/markdown/1467901461099.png)
 
 
 ## 示例代码

@@ -179,7 +179,7 @@ BFC(块级格式上下文 Block Formatting Context)是一个独立的布局环�
 
 在这里，`div.container`的两个子元素是浮动元素，所以这个元素的高度就只有 20px（就是其内边距的大小）。而如果给这个元素添加一个`overflow: hidden`的属性，使其建立一个 BFC，那它就能被撑开了。具体效果见下图：
 
-![用 BFC 撑开元素](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-28%20BFC-float.png)
+![用 BFC 撑开元素](http://cnd.qiniu.lin07ux.cn/2015-10-28%20BFC-float.png)
 
 以上，就是关于浮动的一些解释，基本上掌握了浮动的布局和清除浮动的影响，就不会有太多的问题了。
 

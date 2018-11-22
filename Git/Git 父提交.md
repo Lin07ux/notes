@@ -6,7 +6,7 @@ Git 中有一个特殊的指针`HEAD`，它指向当前所在的本地分支（�
 
 如果所有的提交都在同一个分支（假设是 master）产生，`HEAD`应该指向该分支的最后一次提交，如图所示：
 
-![HEAD 无分支](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473486415408.png)
+![HEAD 无分支](http://cnd.qiniu.lin07ux.cn/markdown/1473486415408.png)
 
 在这样的一个仓库中，因为没有合并产生，任何一次提交都是没有第二父提交的。自然，在这样的仓库中，`HEAD^`或`HEAD~1`指向的是倒数第二次提交，`HEAD^^`或`HEAD~2`指向的是倒数第三次提交，依次类推，都是正确的。
 
@@ -14,7 +14,7 @@ Git 中有一个特殊的指针`HEAD`，它指向当前所在的本地分支（�
 
 如果有分支合并情况，假设目前的分支状态如下：
 
-![HEAD 有分支](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473486625039.png)
+![HEAD 有分支](http://cnd.qiniu.lin07ux.cn/markdown/1473486625039.png)
 
 在`qwq3`的时候有分支`test`产生，分支`test`于`db56`提交后，合并入`master`分支并产生提交`ad0b`。
 

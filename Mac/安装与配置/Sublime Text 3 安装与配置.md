@@ -14,7 +14,7 @@ import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe0
 
 安装好 Package Control 之后，可以通过快捷键`Shift + Command + P`调出包管理窗口，输入`pci`即可找到`Package Control: Install Package`，然后输入对应的包名称，找到包，按回车即可安装。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1521794771267.png" width="488"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1521794771267.png" width="488"/>
 
 主要安装的插件如下：
 

@@ -25,7 +25,7 @@
 
 常用的 HTTP 状态码如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1495195783935.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1495195783935.png)
 
 状态代码有三位数字组成，第一个数字定义了响应的类别，且有五种可能取值：
 

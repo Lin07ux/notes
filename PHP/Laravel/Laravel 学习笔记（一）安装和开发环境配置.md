@@ -108,13 +108,13 @@ Laravel 乃至 PHP 的开发工具中，IDE 首选的自然就是 PHPStorm 了�
 这个插件需要从 PHPStorm 中直接进行搜索安装：`Settings -- Plugins -- Browse repositories...`，然后在打开的窗口中，输入`laravel`就可以搜索到需要的插件了。点击右侧的`Install`就可以安装了。
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505650602682.png" width="414"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505650602682.png" width="414"/>
 </div>
 
 安装完成之后，就需要对当前的项目启用插件了：`Settings -- Laravel Plugin`，选中`Enable plugin for this project`。
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505651007674.png" width="490"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505651007674.png" width="490"/>
 </div>
 
 ### laravel-ide-helper

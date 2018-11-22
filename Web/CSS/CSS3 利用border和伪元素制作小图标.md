@@ -1,7 +1,7 @@
 ## 边框
 如果一个元素的边框宽度不为0，而高宽都为0，那么就会显示出如下的图形：
 
-![边框](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470481211379.png)
+![边框](http://cnd.qiniu.lin07ux.cn/markdown/1470481211379.png)
 
 这是由于浏览器处理后的效果：在两个边框交接处，会自动的给每个边框分一半的区域。所以，将其他边框的颜色设置为透明，只保留一个边框，我们就可以利用和特性来制作三角形了。
 
@@ -45,12 +45,12 @@
 
 效果如下图所示：
 
-![边框制作三角形](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470481508651.png)
+![边框制作三角形](http://cnd.qiniu.lin07ux.cn/markdown/1470481508651.png)
 
 ### 旗帜图标
 利用边框可以实现如下图所示的边框：
 
-![旗帜图标](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470481807148.png)
+![旗帜图标](http://cnd.qiniu.lin07ux.cn/markdown/1470481807148.png)
 
 对应的 CSS 如下：
 
@@ -92,7 +92,7 @@
 
 效果如下图：
 
-![直角三角形](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470484760525.png)
+![直角三角形](http://cnd.qiniu.lin07ux.cn/markdown/1470484760525.png)
 
 ### 伪元素
 利用伪元素，能够在不增加 HTML 结构的情况下，制作出一些辅助图标。比如，可以利用伪元素的边框制作出三角形。如下所示：
@@ -129,5 +129,5 @@
 
 效果如下图所示：
 
-![伪元素和边框结合](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470481690670.png)
+![伪元素和边框结合](http://cnd.qiniu.lin07ux.cn/markdown/1470481690670.png)
 

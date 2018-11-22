@@ -7,7 +7,7 @@
 
 
 ## UML 类图
-![对象池模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467256335361.png)
+![对象池模式](http://cnd.qiniu.lin07ux.cn/markdown/1467256335361.png)
 
 
 ## 示例代码

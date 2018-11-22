@@ -4,7 +4,7 @@
 ## 输出信息
 console 有多个方法可以能在控制台中输出不同的信息。
 
-![console 几种输出效果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470923380548.png)
+![console 几种输出效果](http://cnd.qiniu.lin07ux.cn/markdown/1470923380548.png)
 
 
 ### log() 方法
@@ -29,13 +29,13 @@ console.log(variable [, variable, …],)
 
 这些格式占位符的浏览器支持程度并不相同，`%o`和`%O`可能在某些浏览器中并不通用。而且这两者在不同的浏览器中的作用可能也不相同：对于普通对象这两者表现相同，都是输出对象及其属性；在 FireFox 中，这两者都是输入可展开的 DOM 元素，在 Chrome 中则分别对应其作用，而在 IE 中则不支持这两个格式占位符。下图分别展示其输出普通对象和 DOM 元素的效果：
 
-![%o和%O输出普通对象](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467123474850.png)
+![%o和%O输出普通对象](http://cnd.qiniu.lin07ux.cn/markdown/1467123474850.png)
 
-![%o和%O输出DOM元素](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467123509660.png)
+![%o和%O输出DOM元素](http://cnd.qiniu.lin07ux.cn/markdown/1467123509660.png)
 
 使用`%c`占位符时，对应的后面的参数必须是 CSS 语句，用来对输出内容进行 CSS 渲染。于是，利用`%c`配合 CSS 可以做出吊炸天的效果，比如背景色、字体颜色渐变、字体 3D 效果、图片等，甚至颜文字、emoji。如下图：
 
-![%c效果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467123779641.png)
+![%c效果](http://cnd.qiniu.lin07ux.cn/markdown/1467123779641.png)
 
 需要注意的是：
 
@@ -46,7 +46,7 @@ console.log(variable [, variable, …],)
 
 如果要输出字符画，其实就是输出一串字符串，只是对于需要换行的地方，使用`\n`来代替。如下图：
 
-![%s字符画](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467123875031.png)
+![%s字符画](http://cnd.qiniu.lin07ux.cn/markdown/1467123875031.png)
 
 推荐三个 ASCII 字符画制作工具：
 
@@ -70,7 +70,7 @@ console.log("第二组第二条: anran");
 console.groupEnd();
 ```
 
-![输出效果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470929042022.png)
+![输出效果](http://cnd.qiniu.lin07ux.cn/markdown/1470929042022.png)
 
 
 ## dir() 查看对象信息
@@ -86,7 +86,7 @@ var info = {
 console.dir(info);
 ```
 
-![效果图](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470929214090.png)
+![效果图](http://cnd.qiniu.lin07ux.cn/markdown/1470929214090.png)
 
 
 ## dirxml() 显示某个 DOM 节点的内容
@@ -104,7 +104,7 @@ console.dir(info);
 </script>
 ```
 
-![效果图](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470929648198.png)
+![效果图](http://cnd.qiniu.lin07ux.cn/markdown/1470929648198.png)
 
 
 ## assert() 断言
@@ -118,7 +118,7 @@ var year = 2014;
 console.assert(year == 2018 );
 ```
 
-![效果图](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470929795902.png)
+![效果图](http://cnd.qiniu.lin07ux.cn/markdown/1470929795902.png)
 
 
 ## trace() 追踪函数的调用
@@ -135,7 +135,7 @@ function add2(a,b){return add1(a,b);}
 function add1(a,b){return add(a,b);}
 ```
 
-![效果图](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470929994180.png)
+![效果图](http://cnd.qiniu.lin07ux.cn/markdown/1470929994180.png)
 
 
 ## time() 计时功能
@@ -149,7 +149,7 @@ for(var i=0;i<1000;i++){
 console.timeEnd("控制台计时器一");
 ```
 
-![效果图](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470930119046.png)
+![效果图](http://cnd.qiniu.lin07ux.cn/markdown/1470930119046.png)
 
 
 ## profile() 性能分析

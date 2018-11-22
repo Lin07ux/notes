@@ -11,7 +11,7 @@
 
 
 ## UML 类图
-![依赖注入模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467731008188.png)
+![依赖注入模式](http://cnd.qiniu.lin07ux.cn/markdown/1467731008188.png)
 
 在本例中，我们在 Connection 类（调用者）的构造方法中依赖注入 Parameters 接口的实现类（被调用者），如果不使用依赖注入的话，则必须在 Connection 中创建该接口的实现类实例，这就形成紧耦合代码，如果我们要切换成该接口的其它实现类则必须要修改代码，这对到测试和扩展而言都是极为不利的。
 

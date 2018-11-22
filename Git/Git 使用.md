@@ -269,13 +269,13 @@ git remote set-url --add origin git@oschain.net:Lin07ux/gitskills.git
 
 这样就能给仓库的 origin 添加了三个远程仓库。使用`git remote -v`就可以看到远程仓库的详情：
 
-![添加多个远程仓库的结果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471764048297.png)
+![添加多个远程仓库的结果](http://cnd.qiniu.lin07ux.cn/markdown/1471764048297.png)
 
 以后只要使用`git push origin master`就可以一次性 push 到 3 各库里面了(使用`git push`也可)。
 
 其实，`git remote set-url --add origin`就是往当前 git 项目的 config 文件(路径为`.git/config`)里增加一行记录，每执行一次就会增加一行。所以说，你直接在 config 里面直接添加 url 来修改也是可以的，不必去执行 git 命令。
 
-![config 内容](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471764092521.png)
+![config 内容](http://cnd.qiniu.lin07ux.cn/markdown/1471764092521.png)
 
 > 虽然能够使用 git push 能同时推送到多个仓库，但是拉取的时候，只能拉取 origin 里的一个 url 地址(即`fetch-url`，如上图)，这个 fetch-url 默认为你添加的到 origin 的第一个地址。如果你想更改，只需要更改 config 文件里，那三个 url 的顺序即可，fetch-url 会自动对应排行第一的那个 url 连接。
 

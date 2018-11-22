@@ -23,7 +23,7 @@ show variables like '%secure%';
 
 会看到类似如下的设置：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1488964364779.png" width="367"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1488964364779.png" width="367"/>
 
 其中`secure_file_priv`对应的值即为安全路径。在导出的时候，将导出文件的路劲前缀改成这个即可。
 

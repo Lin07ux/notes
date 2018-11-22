@@ -120,13 +120,13 @@ EditorConfig 提供了多个指令用于配置代码样式，但是并非每个�
 下面的这些编辑器默认都能支持 EditorConfig，不需要进行额外的插件安装：
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505453923495.png" width="645"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505453923495.png" width="645"/>
 </div>
 
 而下面的这些编辑器则需要单独安装插件之后才能支持：
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505454046924.png" width="645"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505454046924.png" width="645"/>
 </div>
 
 

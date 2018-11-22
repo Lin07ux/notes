@@ -115,7 +115,7 @@ SELECT * FROM Product;
 SELECT * FROM ProductType;
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478148268985.png" />
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1478148268985.png" />
 
 ### 2.2 UPDATE 触发器
 
@@ -149,14 +149,14 @@ DELIMITER ;
 UPDATE Product SET price = 40.00 WHERE proid = 4;
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478148575182.png" />
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1478148575182.png" />
 
 
 ```sql
 UPDATE Product SET type=2 WHERE proid=4;
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478148600198.png" />
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1478148600198.png" />
 
 ### 2.3 DELETE 触发器
 
@@ -180,7 +180,7 @@ DELIMITER ;
 DELETE FROM product WHERE proID = 4;
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478148725664.png" />
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1478148725664.png" />
 
 
 ## 三、转摘

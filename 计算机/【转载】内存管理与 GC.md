@@ -30,17 +30,17 @@ BUT，如果在书桌和抽屉之间频繁进行文件的交换，工作效率�
 
 ① 初始阶段：
 
-![初始阶段](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-01.jpg "初始阶段")
+![初始阶段](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-01.jpg "初始阶段")
 
 ② 标记阶段：
 
-![标记阶段](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-02.jpg "标记阶段")
+![标记阶段](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-02.jpg "标记阶段")
 
 其中，红色背景白色字体的对象为已标记的对象。重复这一阶段步骤，已标记的对象会被视为“存活”的对象，而没有被标记的对象就将被进行回收。
 
 ③ 清除阶段：
 
-![清除阶段](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-03.jpg "清除阶段")
+![清除阶段](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-03.jpg "清除阶段")
 
 将前面阶段中没有被标记的对象进行回收，这一操作被称为清除阶段。在扫描的同时，还需要将存活对象的标记清除掉，以便于下一次 GC 操作做好准备。标记清除算法的处理时间，是和存活对象与对象总数的总和相关的。
 
@@ -54,21 +54,21 @@ BUT，如果在书桌和抽屉之间频繁进行文件的交换，工作效率�
 
 ① 初始阶段：
 
-![初始阶段](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-04.jpg "初始阶段")
+![初始阶段](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-04.jpg "初始阶段")
 
 ② 复制收集阶段：
 
 复制阶段-1
 
-![复制阶段-1](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-05.jpg "复制阶段-1")
+![复制阶段-1](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-05.jpg "复制阶段-1")
 
 复制阶段-2
 
-![复制阶段-2](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-06.jpg "复制阶段-2")
+![复制阶段-2](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-06.jpg "复制阶段-2")
 
 ③ 清除阶段：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-07.jpg "清除阶段")
+![](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-07.jpg "清除阶段")
 
 在清除阶段会将旧空间废弃掉，也就可以将死亡对象所占用的空间一口气全部释放出来，而没有必要再次扫描每个对象。下次 GC 的时候，现在的新空间也就成为了下次的旧空间。
 
@@ -82,15 +82,15 @@ BUT，如果在书桌和抽屉之间频繁进行文件的交换，工作效率�
 
 ① 初始阶段：
 
-![初始阶段](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-08.jpg "初始阶段")
+![初始阶段](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-08.jpg "初始阶段")
 
 ② 引用计数阶段：
 
-![引用计数阶段](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-09.jpg "引用计数阶段")
+![引用计数阶段](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-09.jpg "引用计数阶段")
 
 ③ 清除阶段：
 
-![清除阶段](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-10.jpg "清除阶段")
+![清除阶段](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-10.jpg "清除阶段")
 
 当对象引用发生变化时，引用计数也会跟着变化。在这里，由对象 B 到对象 D 的引用失效了，于是对象 D 的引用计数变为 0。由于对象D的引用计数变为了 0，因此由对象D到对象C 和对象E的引用数也分别相应减少。最后，对象 D 和对象 E 引用数变为了 0，所以需要被清除。
 
@@ -102,7 +102,7 @@ BUT，如果在书桌和抽屉之间频繁进行文件的交换，工作效率�
 
 - 无法释放循环引用的对象
 
-![无法释放循环引用的对象](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-11.jpg "无法释放循环引用的对象")
+![无法释放循环引用的对象](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-11.jpg "无法释放循环引用的对象")
 
 - 必须在引用发生增减时对引用计数做出正确的增减：想想漏掉了对某个对象计数的增减会怎么样？
 - 引用计数管理并不适合并行处理：想想如果多个线程同时对引用计数进行增减又会怎样？
@@ -123,7 +123,7 @@ GC 的基本算法，大体上都逃不出上述三种方式以及它们的衍�
 
 下图直观地展示了 CLR 对三个代的回收操作：
 
-![CLR对三个代的回收操作](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-08%20memory-and-gc-12.jpg "CLR对三个代的回收操作")
+![CLR对三个代的回收操作](http://cnd.qiniu.lin07ux.cn/2015-10-08%20memory-and-gc-12.jpg "CLR对三个代的回收操作")
 
 回想刚刚说到的几种基本回收方式，我们可以将其组合一下来为分代回收奠定实现基础：
 

@@ -72,7 +72,7 @@ sayHello()  // 通过闭包访问到了局部变量 text
 
 对于上面的闭包，`sayHello`函数在最下层，上层是函数`greeting`，最外层是全局场景。如下图：
 
-![上下文执行环境](http://7xkt52.com1.z0.glb.clouddn.com/2015-08-05%20javascript-closure.png)
+![上下文执行环境](http://cnd.qiniu.lin07ux.cn/2015-08-05%20javascript-closure.png)
 
 因此当`sayHello`被调用的时候，`sayHello`会通过上下文场景找到局部变量`text`的值，因此在屏幕的对话框中显示出”Hello Closure”。
 

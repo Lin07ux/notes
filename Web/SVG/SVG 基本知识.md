@@ -15,11 +15,11 @@ SVG 文件可以像图片文件一样在 HTML 和 CSS 中被引用。
 ## SVG 基本形状
 SVG 中，预定义了 6 种基本的形状：`rect`、`circle`、`ellipse`、`line`、`polyline`、`polygon`，这六种基本形状都可以通过`path`路径转换实现。
 
-![SVG 六种基本形状](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484654797629.png)
+![SVG 六种基本形状](http://cnd.qiniu.lin07ux.cn/markdown/1484654797629.png)
 
 这六种形状的基本属性如下：
 
-![六种形状的基本属性](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1485783241809.png)
+![六种形状的基本属性](http://cnd.qiniu.lin07ux.cn/markdown/1485783241809.png)
 
 
 ### 1. rect 矩形
@@ -67,7 +67,7 @@ SVG 中`rect`元素用于绘制矩形、圆角矩形，含有 6 个基本属性�
 
 效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484656171054.png" width="231"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1484656171054.png" width="231"/>
 
 
 ### 2. circle 圆形
@@ -89,7 +89,7 @@ SVG 中`circle`元素用于绘制圆形，含有 3 个基本属性用于控制�
 
 效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484656388176.png" width="174"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1484656388176.png" width="174"/>
 
 
 ### 3. ellipse 椭圆
@@ -112,7 +112,7 @@ SVG 中`ellipse`元素用于绘制椭圆，是`circle`元素更通用的形式�
 
 效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484656683061.png" width="174"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1484656683061.png" width="174"/>
 
 
 ### 4. line 直线
@@ -137,7 +137,7 @@ SVG 中`ellipse`元素用于绘制椭圆，是`circle`元素更通用的形式�
 
 效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484657055729.png" width="131"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1484657055729.png" width="131"/>
 
 
 ### 5. polyline 折线
@@ -159,7 +159,7 @@ SVG 中`ellipse`元素用于绘制椭圆，是`circle`元素更通用的形式�
 
 效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484657870315.png" width="126"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1484657870315.png" width="126"/>
 
 ### 6. polygon 多边形
 `polygon`和折线很像，它们都是由连接一组点集的直线构成。不同的是，`polygon`的路径在最后一个点处自动回到第一个点。需要注意的是，矩形也是一种多边形，如果需要更多灵活性的话，你也可以用多边形创建一个矩形。
@@ -178,7 +178,7 @@ SVG 中`ellipse`元素用于绘制椭圆，是`circle`元素更通用的形式�
 
 效果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484658397797.png" width="147"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1484658397797.png" width="147"/>
 
 
 ## SVG path 路径
@@ -225,7 +225,7 @@ d='M 10 10 l 20 20'
 #### rect to path
 如下图所示，一个`rect`是由 4 个弧和 4 个线段构成；如果 rect 没有设置 rx 和 ry 则 rect只是由 4 个线段构成。 rect 转换为 path 只需要将 A ~ H 之间的弧和线段依次实现即可。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484660996224.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1484660996224.png)
 
 ```javascript
 function rect2path(x, y, width, height, rx, ry) {
@@ -276,7 +276,7 @@ function rect2path(x, y, width, height, rx, ry) {
 
 如下图，椭圆可以看成 A 点到 C 做 180 度顺时针画弧、C 点到 A 做 180 度顺时针画弧即可。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1484661268446.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1484661268446.png)
 
 ```javascript
 function ellipse2path(cx, cy, rx, ry) {
@@ -444,7 +444,7 @@ fill 用来描述 SVG 对象内部的颜色，有如下两个属性：
 
 有了元素以后还需要有对应的属性用来表示动画的特征，譬如：要动画的元素属性名称、起始值、结束值、变化值、开始时间、结束时间、重复次数、动画速度曲线函数等等。
 
-![动画参数](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1485784622866.png)
+![动画参数](http://cnd.qiniu.lin07ux.cn/markdown/1485784622866.png)
 
 
 ## 优化和工具

@@ -23,7 +23,7 @@ var naturalWidth = document.getElementById('img').naturalWidth,
     naturalHeight = document.getElementById('img').naturalHeight;
 ```
 
-![naturalWidth / naturalHeight](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472484850577.png)
+![naturalWidth / naturalHeight](http://cnd.qiniu.lin07ux.cn/markdown/1472484850577.png)
 
 ### IE7/8中的兼容性实现：
 

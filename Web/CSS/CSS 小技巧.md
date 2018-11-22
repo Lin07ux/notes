@@ -7,9 +7,9 @@
 
 示例：实现的效果如下图所示，当 input 处于 focus 状态的时候，外面的灰色框要变成高亮状态。
 
-![HTML 结构](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470718599041.png)
+![HTML 结构](http://cnd.qiniu.lin07ux.cn/markdown/1470718599041.png)
 
-![效果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470718591282.png)
+![效果](http://cnd.qiniu.lin07ux.cn/markdown/1470718591282.png)
 
 HTML 基本结构如下：
 ```html

@@ -23,7 +23,7 @@ ERROR 1215 (HY000): Cannot add foreign key constraint
 
     显示的结果类似如下：
     
-    ![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1495702369207.png)
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/1495702369207.png)
 
     可以从红框中的地方看到对应的表信息。
     

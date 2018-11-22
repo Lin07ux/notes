@@ -36,7 +36,7 @@ SELECT 'ssky' REGEXP '^s','ssky' REGEXP 'y$' ,'ssky' REGEXP '.sky','ssky' REGEXP
 
 结果如下：
 
-![正则运算符](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472186332971.png)
+![正则运算符](http://cnd.qiniu.lin07ux.cn/markdown/1472186332971.png)
 
 
 ### 逻辑运算符
@@ -61,7 +61,7 @@ SELECT 1 XOR 1, 0 XOR 0, 1 XOR 0, 1 XOR NULL, 1 XOR 1 XOR 1;
 
 结果如下：
 
-![XOR](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472186567470.png)
+![XOR](http://cnd.qiniu.lin07ux.cn/markdown/1472186567470.png)
 
 
 ### 位运算符

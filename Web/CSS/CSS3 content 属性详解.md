@@ -19,7 +19,7 @@ h2::after{
 }
 ```
 
-显示效果：![插入纯文字](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1470995058170.png)
+显示效果：![插入纯文字](http://cnd.qiniu.lin07ux.cn/markdown/1470995058170.png)
 
  
 ### 嵌入文字符号
@@ -46,14 +46,14 @@ h2::after{
 }
 ```
 
-![效果图](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471010028745.png)
+![效果图](http://cnd.qiniu.lin07ux.cn/markdown/1471010028745.png)
 
 > `quotes`属性用于设置嵌套引用（embedded quotation）的引号类型。有三种赋值方式：
 > 1. `none` 规定 "content" 属性的 "open-quote" 和 "close-quote" 的值不会产生任何引号。
 > 2. `string string string string` 定义要使用的引号。前两个值规定第一级引用嵌套，后两个值规定下一级引号嵌套。后两个值可以不填写。
 > 3. `inherit` 规定应该从父元素继承 quotes 属性的值。
 > 其可以使用的引号字符如下表
-> ![quotes 引号字符](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471009833718.png)
+> ![quotes 引号字符](http://cnd.qiniu.lin07ux.cn/markdown/1471009833718.png)
 
 
 ### 插入图片
@@ -69,7 +69,7 @@ h3::after{
 }
 ```
 
-![插入图片](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471010185632.png)
+![插入图片](http://cnd.qiniu.lin07ux.cn/markdown/1471010185632.png)
 
 
 ### 插入元素的属性值
@@ -85,7 +85,7 @@ a:after{
 }
 ```
 
-![插入元素属性值](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471010281150.png)
+![插入元素属性值](http://cnd.qiniu.lin07ux.cn/markdown/1471010281150.png)
 
 
 ### 插入项目编号
@@ -111,7 +111,7 @@ h1:before{
 }
 ```
 
-![编号](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471010384936.png)
+![编号](http://cnd.qiniu.lin07ux.cn/markdown/1471010384936.png)
 
 > `counter-increment`默认情况下，会将其第一个参数对应的计数器加1，但是还可以指定第二个参数，表示计数器变化的值，比如：`counter-increment: my 10;`表示计数器 my 的值在这一步加 10；`counter-increment: my -2;`表示计数器 my 的值在这一步减2。
 
@@ -128,7 +128,7 @@ h1:before{
 }
 ```
 
-![修饰编号](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471010457174.png)
+![修饰编号](http://cnd.qiniu.lin07ux.cn/markdown/1471010457174.png)
 
 项目的编号可以不仅仅是数字编号，还可以参考 ul 元素的`list-style-type`属性的值。
 
@@ -143,7 +143,7 @@ h1:before{
 }
 ```
 
-![其他类型的编号](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471010542048.png)
+![其他类型的编号](http://cnd.qiniu.lin07ux.cn/markdown/1471010542048.png)
 
 编号还能进行嵌套使用，每种类型的元素都可以有其独立的编号，而不互相影响：
 
@@ -178,7 +178,7 @@ p{
 }
 ```
 
-![嵌套编号](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471010665514.png)
+![嵌套编号](http://cnd.qiniu.lin07ux.cn/markdown/1471010665514.png)
 
 对于上面的例子，p 元素的编号是连续的。如果我们想对于每一个 h1 元素后的三个 p 重新编号的话，可以使用`counter-reset`属性重置：
 
@@ -189,7 +189,7 @@ h1{
 }
 ```
 
-![重置编号](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471010777041.png)
+![重置编号](http://cnd.qiniu.lin07ux.cn/markdown/1471010777041.png)
 
 每一类元素的编号不仅仅能在其上使用，还可以在其他元素上被使用，这样就可以实现更复杂的编号：
 
@@ -235,7 +235,7 @@ h3{
 }
 ```
 
-![嵌套编号](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1471011090223.png)
+![嵌套编号](http://cnd.qiniu.lin07ux.cn/markdown/1471011090223.png)
 
 
 ## 参考

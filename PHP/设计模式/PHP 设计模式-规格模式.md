@@ -5,7 +5,7 @@
 
 
 ## UML 类图
-![规格模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1468058717037.png)
+![规格模式](http://cnd.qiniu.lin07ux.cn/markdown/1468058717037.png)
 
 
 ## 示例代码

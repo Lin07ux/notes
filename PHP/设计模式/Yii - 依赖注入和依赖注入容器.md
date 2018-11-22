@@ -247,7 +247,7 @@ private $_dependencies = [];
 
 DI 容器的 5 个数组内容和作用如下图所示：
 
-![DI 容器 5 个数组示意图](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479624212393.png)
+![DI 容器 5 个数组示意图](http://cnd.qiniu.lin07ux.cn/markdown/1479624212393.png)
 
 ### 注册依赖
 使用 DI 容器，首先要告诉容器，类型及类型之间的依赖关系，声明一这关系的过程称为注册依赖。使用`yii\di\Container::set()`和`yii\di\Container::setSinglton()`可以注册依赖。DI 容器是怎么管理依赖的呢？要先看看`yii\di\Container::set()`和`yii\Container::setSinglton()`。
@@ -732,7 +732,7 @@ $_definitions = [
 
 在调用`get('userLister')`过程中又发生了什么呢？说实话，这个过程不是十分复杂，但是由于涉及到递归和回溯，可能理解起来会比较费劲。请对照下面的 DI 容器解析依赖获取实例的过程示意图， 以及前面关于`get()`、`build()`、`getDependencies()`、`resolveDependencies()`等函数的源代码，了解大致流程。
 
-![DI 容器解析依赖获取实例的过程示意图](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1479631095464.png)
+![DI 容器解析依赖获取实例的过程示意图](http://cnd.qiniu.lin07ux.cn/markdown/1479631095464.png)
 
 > 在”DI容器解析依赖获取实例的过程示意图“中绿色方框表示 DI 容器的 5 个数组；浅蓝色圆边方框表示调用的函数和方法；蓝色箭头表示读取内存；红色箭头表示写入内存；虚线箭头表示参照的内存对象；粗线绿色箭头表示回溯过程；图中 3 个圆柱体表示实例化过程中，创建出来的 3 个实例。
 

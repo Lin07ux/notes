@@ -6,7 +6,7 @@ JavaScript 中的 this 关键字，在不同的场景下，会化身不同的对
 
 JavaScript 由于其在运行期进行绑定的特性，this 可以是全局对象、当前对象或者任意对象，这完全取决于函数的调用方式。JavaScript  中函数的调用有以下几种方式：作为对象方法调用、作为函数调用、作为构造函数调用、通过 apply 或 call 调用。常言道，字不如表，表不如图。为了让人更好的理解 JavaScript this 到底指向什么？下面用一张图来进行解释：
 
-![JavaScript this 决策树](http://7xkt52.com1.z0.glb.clouddn.com/2015-10-29%20this-in-javascript.png)
+![JavaScript this 决策树](http://cnd.qiniu.lin07ux.cn/2015-10-29%20this-in-javascript.png)
 
 上图我称之为"JavaScript this决策树"（非严格模式下）。下面通过例子来说明这个图如何来帮助我们对 this 进行判断.
 

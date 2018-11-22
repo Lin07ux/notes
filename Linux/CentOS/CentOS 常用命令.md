@@ -9,7 +9,7 @@
 > 
 > LSB 是 Linux Standard Base 的缩写，`lsb_release`命令用来显示 LSB 和特定版本的相关信息。`-a, –all`就是显示所有信息，显示包括版本信息、发行版的 ID、发行版的描述信息、具体版本号、发行版代号的信息。
 
-![系统信息](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472016795049.png)
+![系统信息](http://cnd.qiniu.lin07ux.cn/markdown/1472016795049.png)
 
 ### 查看 IP
 `ifconfig [eth]` 这样能够查看所有的网卡的 IP 相关信息，也可以指定具体的网卡。
@@ -25,7 +25,7 @@
 
 > `-h`表示方便阅读。`-a`表示全部文件系统列表
 
-![df -lh](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472016895387.png)
+![df -lh](http://cnd.qiniu.lin07ux.cn/markdown/1472016895387.png)
 
 `du` 可以查看文件和文件夹的大小：
 
@@ -41,7 +41,7 @@
 ### 查看系统负载
 `uptime`可以查看系统运行了多久，有多少用户登录等信息。
 
-![uptime](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472017584432.png)
+![uptime](http://cnd.qiniu.lin07ux.cn/markdown/1472017584432.png)
 
 上图中显示的意义是：
 

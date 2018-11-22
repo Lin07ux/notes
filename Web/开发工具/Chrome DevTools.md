@@ -50,7 +50,7 @@ console.log("A group-less log trace.");
 
 结果如下图所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494903900862.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494903900862.png)
 
 ### 3. table 表格输出
 
@@ -65,7 +65,7 @@ console.table([[1,2,3], [2,3,4]]);
 
 结果如下图所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494904007384.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494904007384.png)
 
 `console.table()`中的第二个参数是可选项。你可以定义任何你想显示的属性字符串数组。
 
@@ -87,7 +87,7 @@ console.table(family, ["firstName", "lastName", "age"]);
 
 结果如下所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494904075198.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494904075198.png)
 
 ### 4. time、timeEnd 统计时间
 
@@ -110,11 +110,11 @@ console.timeEnd("Array initialize");
 
 结果如下图所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494904332334.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494904332334.png)
 
 当`console.time()`方法正在执行期间，将会在 TimeLine 选项卡中生成一个时间轴记录并为其做出注解。这对于追踪应用的使用以及其来源非常有用。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494904417466.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494904417466.png)
 
 ### 5. log 输出信息
 
@@ -128,7 +128,7 @@ console.log("%cThis will be formatted with large, blue text", "color: blue; font
 
 结果如下图所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494904197280.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494904197280.png)
 
 ### 6. info 提示类信息
 
@@ -251,7 +251,7 @@ document.body.contentEditable = true;
 
 在调试的时候，如果需要知道某个元素上面绑定了什么触发事件，可以使用`getEventListeners($('selector'))`方法以数组对象的格式返回某个元素绑定的所有事件。你可以在控制台里展开对象查看详细的内容。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475038798915.png" width="536"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475038798915.png" width="536"/>
 
 如果需要选择其中的某个事件，可以通过下面的方法来访问：
 
@@ -312,7 +312,7 @@ var myArray=[{a:1,b:2,c:3},{a:1,b:2,c:3,d:4},{k:11,f:22},{a:1,b:2,c:3}]
 
 要是直接在控制台里输入数组的名称，Chrome 会以文本的形式返回一个数组对象。但你完全可以通过`console.table(variableName)`方法来以表格的形式输出每个元素的值。例如下图：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475039172089.png" width="300"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475039172089.png" width="300"/>
 
 
 ### 6. 通过控制台方法来检查元素
@@ -328,7 +328,7 @@ var myArray=[{a:1,b:2,c:3},{a:1,b:2,c:3,d:4},{k:11,f:22},{a:1,b:2,c:3}]
 
 `dir($('selector'))`会返回匹配选择器的DOM元素的所有属性，可以展开输出的结果查看详细内容。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475039323110.png" width="263"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475039323110.png" width="263"/>
 
 ### 9. 清空控制台输出
 输入`clear()`方法，然后回车运行，即可清空控制台中的所有输出信息。

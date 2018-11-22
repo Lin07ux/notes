@@ -4,7 +4,7 @@
 
 这款软件是 Mac + iPhone 结合使用，利用蓝牙进行距离感应，能够对 Mac 电脑进行自动锁屏/开锁。当手机远离 Mac 的时候，会自动将 Mac 锁屏，当靠近 Mac 的时候，会自动将 Mac 解锁。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1480985999380.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1480985999380.png)
 
 [Near Lock](http://nearlock.me/)
 
@@ -12,7 +12,7 @@
 
 快捷键提示。只需要长按 cmd，可弹出当前 active 的软件的快捷键。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1480990487746.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1480990487746.png)
 
 [cheatsheet](https://www.mediaatelier.com/CheatSheet/)
 
@@ -103,7 +103,7 @@ Mac OSX 安装：`brew install httpie`
 
 bat 是一个语法高亮显示、和 Git 集成的 cat 高级版本，也就是说，bat 有 cat 的所有功能，且已经集成了代码高亮和 git 版本管理的工具，并且会对过长的文件进行自动分页，不会像 cat 一样全部一次打印。效果图：
 
-![bat](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1527003277019.png)
+![bat](http://cnd.qiniu.lin07ux.cn/markdown/1527003277019.png)
 
 安装：`brew install bat`
 

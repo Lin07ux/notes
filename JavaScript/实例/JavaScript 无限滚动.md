@@ -72,7 +72,7 @@ ClientRect {
 
 如下图所示：
 
-![getBoundingClientRect](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472563795989.png)
+![getBoundingClientRect](http://cnd.qiniu.lin07ux.cn/markdown/1472563795989.png)
 
 通过上面这两个 API，就可以计算出元素底部边缘与屏幕底部边缘的位置了。修改代码如下：
 

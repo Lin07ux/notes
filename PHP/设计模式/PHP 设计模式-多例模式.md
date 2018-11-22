@@ -5,7 +5,7 @@
 
 
 ## UML 类图
-![多例模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467195293378.png)
+![多例模式](http://cnd.qiniu.lin07ux.cn/markdown/1467195293378.png)
 
 > 这里的类图中的`INSTANCE_1`和`INSTANCE_2`属性其实可以不要。
 

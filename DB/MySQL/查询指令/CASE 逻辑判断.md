@@ -31,11 +31,11 @@ ELSE '其他' END
 
 有如下数据：(用国家名作为Primary Key)
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477036529144.png" width="466"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1477036529144.png" width="466"/>
 
 根据这个国家人口数据，统计亚洲和北美洲的人口数量。应该得到下面这个结果：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477036551942.png" width="400"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1477036551942.png" width="400"/>
 
 如果使用 Case 函数，SQL 代码如下：
 
@@ -64,11 +64,11 @@ GROUP BY CASE country
 
 有如下数据：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477037205504.png" width="551"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1477037205504.png" width="551"/>
 
 按照国家和性别进行分组，得出结果如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477037226649.png" width="488"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1477037226649.png" width="488"/>
 
 普通情况下，用 UNION 也可以实现用一条语句进行查询。但是那样增加消耗(两个 Select 部分)，而且 SQL 语句会比较长。使用 Case 的话就能很好的解决：
 
@@ -138,7 +138,7 @@ WHERE salary >= 5000 OR (salary >= 2000 AND salary <= 4600);
 
 这种方法还可以在很多地方使用，比如说变更主键这种累活。一般情况下，要想把两条数据的 Primary key 交换，需要经过临时存储，拷贝，读回数据的三个过程，要是使用 Case 函数的话，一切都变得简单多了。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477040405810.png" width="505"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1477040405810.png" width="505"/>
 
 假设有如上数据，需要把主键`a`和`b`相互交换。用 Case 函数来实现的话，代码如下：
 
@@ -185,7 +185,7 @@ FROM tbl_A;
 
 假设有下面一个表：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477041030721.png" width="631"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1477041030721.png" width="631"/>
 
 有的学生选择了同时修几门课程(100,200)也有的学生只选择了一门课程(300,400,500)。选修多门课程的学生，要选择一门课程作为主修，主修 flag 里面写入 Y。
 
@@ -229,7 +229,7 @@ GROUP BY std_id;
 
 数据如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1477041685045.png" width="565"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1477041685045.png" width="565"/>
 
 ```sql
 SELECT PayTime as '支付时间（按天算）',

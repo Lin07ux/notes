@@ -8,7 +8,7 @@ location /i/ {
 
 请求`http://foofish.net/i/top.gif`这个地址时，那么在服务器里面对应的真正的资源是`/data/w3/i/top.gif`文件。注意：**真实的路径是 root 指定的值加上 location 指定的值**。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476061025524.png" width="272"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476061025524.png" width="272"/>
 
 而 alias 正如其名：alias 指定的路径是 location 的别名，不管 location 的值怎么写，资源的**真实路径都是 alias 指定的路径**，比如：
 
@@ -20,7 +20,7 @@ location /i/ {
 
 同样请求`http://foofish.net/i/top.gif`时，在服务器查找的资源路径是：`/data/w3/top.gif`。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476061099215.png" width="272"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476061099215.png" width="272"/>
 
 
 不同点在于：

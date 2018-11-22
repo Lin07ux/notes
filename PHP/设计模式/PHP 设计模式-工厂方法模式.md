@@ -13,7 +13,7 @@
 
 
 ## UML 类图
-![工厂方法](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467191387171.png)
+![工厂方法](http://cnd.qiniu.lin07ux.cn/markdown/1467191387171.png)
 
 
 ## 示例代码

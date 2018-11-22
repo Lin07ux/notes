@@ -45,19 +45,19 @@ wget http://psysh.org/manual/zh/php_manual.sqlite
 
 * PsySH 是一个交互式的 PHP 运行控制台，在这里你可以写 php 代码运行，并且可以清楚看到每次的返回值：
 
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1488507335945.png" width="275"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1488507335945.png" width="275"/>
 
 * 它很智能地知道你的代码是否已经结束：
 
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1488507352965.png" width="275"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1488507352965.png" width="275"/>
 
 * 自动完成。PsySH 可以像控制台那样，按下两次`[tab]`键自动补全，帮你自动完成变量名，函数，类，方法，属性，甚至是文件：
 
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1488507383031.png" width="275"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1488507383031.png" width="275"/>
 
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1488507390034.png" width="275"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1488507390034.png" width="275"/>
 
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1488507404414.png" width="275"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1488507404414.png" width="275"/>
 
 
 ### 功能
@@ -65,9 +65,9 @@ wget http://psysh.org/manual/zh/php_manual.sqlite
 1. `show` 查看源代码
     轻松展现任何用户级的对象，类，接口，特质，常数，方法或属性的源代码：
     
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1488507493658.png" width="275"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1488507493658.png" width="275"/>
 
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1488507501696.png" width="275"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1488507501696.png" width="275"/>
 
 2. `list` 反射列表
     list 命令知道所有关于你的代码 - 和其他人的。轻松地列出并搜索所有的变量，常量，类，接口，特点，功能，方法和属性。

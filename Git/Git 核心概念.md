@@ -25,7 +25,7 @@
 
 Git 每一次提交都是对项目文件的一个完整拷贝，因此你可以完全恢复到以前的任一个提交而不会发生任何区别。这里有一个问题：如果我的项目大小是 10M，那 Git 占用的空间是不是随着提交次数的增加线性增加呢？我提交（commit）了10次，占用空间是不是 100M 呢？很显然不是，Git 是很智能的，如果文件没有变化，它只会保存一个指向上一个版本的文件的指针，即：对于一个特定版本的文件，Git 只会保存一个副本，但可以有多个指向该文件的指针。未变化的文件只保存上一个版本的指针。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475826508370.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475826508370.png" width="275"/>
 
 ### Git 对象
 
@@ -39,13 +39,13 @@ SHA-1 校验和因此就是上文提到的文件的**指针**。和 C 语言中�
 
 blob 对象保存的仅仅是文件的内容，tree 对象更像是操作系统中的文件夹，它可以保存 blob 对象和 tree 对象。一个单独的 tree 对象包含一条或多条 tree 记录，每一条记录含有一个指向 blob 对象或子 tree 对象的 SHA-1 指针，并附有该对象的权限模式 (mode)、类型和文件名信息等：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475826793234.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475826793234.png" width="275"/>
 
 当你对文件进行修改并提交时，变化的文件会生成一个新的 blob 对象，记录文件的完整内容（是全部内容，不是变化内容），然后针对该文件有一个唯一的 SHA-1 校验和，修改此次提交该文件的指针 为该 SHA-1 校验和，而对于没有变化的文件，简单拷贝上一次版本的指针即 SHA-1 校验和，而不会生成一个全新的 blob 对象，这也解释了 10M 大小的项目进行 10 次提交总大小远远小于 100M 的原因。
 
 但是 tree 对象中的信息没有作者、时间、保存这些快照的原因。而 commit 对象就是问了解决这些问题诞生的， commit 对象的格式很简单：指明了该时间点项目快照的顶层 tree 对象、作者/提交者信息（从 Git 设置的 user.name 和 user.email 中获得)以及当前时间戳、一个空行，上一次的提交对象的 I D以及提交注释信息。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475826926199.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475826926199.png" width="275"/>
 
 上图的 Test.txt 是第一次提交之前生成的，第一次它的初始 SHA-1 校验和以 3c4e9c开头。随后对它进行了修改，所以第二次提交时生成了一个全新 blob 对象，校验和以 1f7a7a 开头。而第三次提交时 Test.txt 并没有变化，所以只是保存最近版本的 SHA-1 校验和而不生成全新的 blob 对象。在项目开发过程中新增加的文件在提交后都会生成一个全新的 blob 对象来保存它。注意除了第一次每个提交对象都有一个指向上一次提交对象的指针。
 
@@ -91,7 +91,7 @@ Git 切换分支也很快：
 
 如果顺着一个分支走下去可以到达另一个分支的话，那么 Git 在合并两者时，只会简单地把指针右移，因为这种单线的历史分支不存在任何需要解决的分歧，所以这种合并过程可以称为快进（Fast forward）。比如：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475826304639.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475826304639.png" width="275"/>
 
 > 注意箭头方向，因为每一次提交都有一个指向上一次提交的指针，所以箭头方向向左，更为合理。
 
@@ -99,11 +99,11 @@ Git 切换分支也很快：
 
 当分支出现分叉时，就有可能出现冲突，而这时 Git 就会要求你去解决冲突，比如像下面的历史：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475828584160.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475828584160.png" width="275"/>
 
 因为 master 分支和 dev 分支不在一条线上，即 v7 不是 v5 的直接祖先，Git 不得不进行一些额外处理。就此例而言，Git 会用两个分支的末端（ v7 和 v5 ）以及它们的共同祖先（ v3 ）进行一次简单的三方合并计算。合并之后会生成一个和并提交v8 ：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475828604511.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475828604511.png" width="275"/>
 
 注意：合并提交有两个祖先（ v7 和 v5 ）。
 
@@ -118,11 +118,11 @@ First, rewinding head to replay your work on top of it...
 Applying: added staged command
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475828680879.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475828680879.png" width="275"/>
 
 进行 rebase 合并的时候，首先会回到两个分支最近的共同祖先 v3，根据当前分支（也就是要进行变基的分支 dev）后续的历次提交对象（包括 v4 ， v5），生成一系列文件补丁，然后以基底分支（也就是主干分支 master）最后一个提交对象（v7）为新的出发点，逐个应用之前准备好的补丁文件，最后会生成一个新的合并提交对象（v7'），从而改写 dev 的提交历史，使它成为 master 分支的直接下游，如下图：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475828808145.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475828808145.png" width="275"/>
 
 然后就可以回到 master 分支进行快速合并 Fast-forward了，因为 master 分支和 dev 分支在一条线上：
 
@@ -131,7 +131,7 @@ $ git checkout master
 $ git merge dev
 ```
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475828887076.png" width="275"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475828887076.png" width="275"/>
 
 现在的 v7' 对应的快照，其实和普通的三方合并，即上个例子中的 v8 对应的快照内容一模一样。虽然最后整合得到的结果没有任何区别，但变基能产生一个更为整洁的提交历史。如果视察一个变基过的分支的历史记录，看起来会更清楚：仿佛所有修改都是在一根线上先后进行的，尽管实际上它们原本是同时并行发生的。
 

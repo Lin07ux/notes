@@ -40,7 +40,7 @@ location /files {
 
 但我们注意到，url 上`/files`没有加后缀`/`，而 alias 设置的`/home/`是有后缀`/`的，这个`/`就导致我们可以从`/home/`目录穿越到他的上层目录：当访问的是`http://example.com/files../`的时候，就会得到`/home/../`这个目录的信息，如下图所示：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1497578867340.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1497578867340.png)
 
 解决这个漏洞只需要保证`location`和`alias`的值都有或都没有后缀`/`。
 

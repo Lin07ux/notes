@@ -2,7 +2,7 @@
 
 这是一个 Git 的 GUI 比较工具，免费，支持中文。界面如下：
 
-![P4Merge](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1468385877584.png)
+![P4Merge](http://cnd.qiniu.lin07ux.cn/markdown/1468385877584.png)
 
 ### 下载安装
 

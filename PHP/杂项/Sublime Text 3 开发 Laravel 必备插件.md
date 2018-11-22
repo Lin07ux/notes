@@ -11,7 +11,7 @@ Sublime Text 中有很多的插件可以帮助我们更好的开发 Laravel 项�
 效果如下：
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505363991925.png" width="617"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505363991925.png" width="617"/>
 </div>
 
 ### Blade Snippets
@@ -23,7 +23,7 @@ Sublime Text 中有很多的插件可以帮助我们更好的开发 Laravel 项�
 安装之后，在编辑 Blade 模板文件的时候，输入对应的短语，就会有相关的提示信息出现，选择要使用的语法后，按下`Enter`键就会自动完成语法。
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/blade.gif"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/blade.gif"/>
 </div>
 
 ### Laravel 5 Artisan
@@ -33,7 +33,7 @@ Sublime Text 中有很多的插件可以帮助我们更好的开发 Laravel 项�
 这个插件使得我们可以直接在 Sublime Text 的界面中执行 Laravel 的 Artisan 命令。安装好之后，就可以通过`Cmd/Ctrl + Shift + P`快捷键调出对话框，输入 Laravel Artisan 相关的命令后就可以回车执行了。
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505373414980.png" width="600"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505373414980.png" width="600"/>
 </div>
 
 #### Laravel 5 Snippets
@@ -43,7 +43,7 @@ Sublime Text 中有很多的插件可以帮助我们更好的开发 Laravel 项�
 该插件可以使我们能更方便快捷的写 Laravel 代码，包含了很多的 Laravel 代码片段。
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505373785896.png" width="755"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505373785896.png" width="755"/>
 </div>
 
 ### EditorConfig
@@ -87,7 +87,7 @@ Sublime Text 中有很多的插件可以帮助我们更好的开发 Laravel 项�
 当在一个`.editorconfig`文件中输入这些指令中的某一个时，将会有一个提示窗口，选中后按`Enter`键就会自动生成对应的配置。
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505367074443.png" width="358"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505367074443.png" width="358"/>
 </div>
 
 
@@ -96,6 +96,6 @@ Sublime Text 中有很多的插件可以帮助我们更好的开发 Laravel 项�
 提供了一个自动对齐快捷键，主要是用于美化代码的作用。快捷键是`command + control + a`。示例如下：
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/eIBowAw.gif"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/eIBowAw.gif"/>
 </div>
 

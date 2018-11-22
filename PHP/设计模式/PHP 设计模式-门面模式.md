@@ -3,7 +3,7 @@
 
 
 ## UML 类图
-![门面模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467732256531.png)
+![门面模式](http://cnd.qiniu.lin07ux.cn/markdown/1467732256531.png)
 
 
 ## 示例代码

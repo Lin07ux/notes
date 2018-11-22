@@ -11,7 +11,7 @@
 
 
 ## UML 类图
-![建造者模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467213206719.png)
+![建造者模式](http://cnd.qiniu.lin07ux.cn/markdown/1467213206719.png)
 
 
 ## 示例代码

@@ -198,7 +198,7 @@ console.log(Person.__proto__.__proto__); // Object{}
 
 其对应的继承链式图如下：
 
-![JavaScript Prototype继承](http://7xkt52.com1.z0.glb.clouddn.com/2015-08-15%20JavaScript-prototype.png)
+![JavaScript Prototype继承](http://cnd.qiniu.lin07ux.cn/2015-08-15%20JavaScript-prototype.png)
 
 ### 4、属性查找
 当查找一个对象的属性的时候，`JavaScript`会向上遍历原型链，直到找到给定的属性为止。如果到达原型链的顶部，也就是`Object.Prototype`时，仍旧未找到指定的属性，就会返回`undefined`。

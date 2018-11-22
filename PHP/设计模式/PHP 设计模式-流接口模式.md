@@ -5,7 +5,7 @@ Laravel 中流接口模式有着广泛使用，比如查询构建器，邮件等
 
 
 ## UML 类图
-![流接口模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467734799559.png)
+![流接口模式](http://cnd.qiniu.lin07ux.cn/markdown/1467734799559.png)
 
 
 ## 示例代码

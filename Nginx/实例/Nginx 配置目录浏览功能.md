@@ -114,7 +114,7 @@ location /download {
 
 下图是配置完后的最终效果：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1481253081572.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1481253081572.png)
 
 ### 转摘
 [配置 Nginx 的目录浏览功能](http://www.swiftyper.com/2016/12/08/nginx-autoindex-configuration/)

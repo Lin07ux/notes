@@ -3,7 +3,7 @@
 
 
 ## UML 类图
-![原型模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467259337654.png)
+![原型模式](http://cnd.qiniu.lin07ux.cn/markdown/1467259337654.png)
 
 
 ## 示例代码

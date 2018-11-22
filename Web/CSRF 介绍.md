@@ -7,7 +7,7 @@ CSRF(Cross-site request forgery)，中文名称：跨站请求伪造，也被称
 ### 基本原理
 下图简单阐述了 CSRF 攻击的思想：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1474465651170.png" width="526"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1474465651170.png" width="526"/>
 
 从图中可以看出，要完成一次 CSRF 攻击，受害者必须依次完成两个步骤：
 

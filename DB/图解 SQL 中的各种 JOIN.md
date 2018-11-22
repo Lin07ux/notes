@@ -1,6 +1,6 @@
 SQL 中的 JOIN 查找类似于数学中集合的概念，对应于集合的概念，SQL JOIN 可以有如下的集中方式：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505229097188.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505229097188.png)
 
 下面就使用图形加示例的方式来进行解释各种 JOIN 的效果。
 
@@ -46,7 +46,7 @@ mysql> SELECT * from Table_B ORDER BY PK ASC;
 
 **文氏图**：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505229236237.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505229236237.png)
 
 **示例查询**：
 
@@ -81,7 +81,7 @@ ON A.PK = B.PK;
 
 **文氏图**：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505229352381.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505229352381.png)
 
 **示例查询**：
 
@@ -117,7 +117,7 @@ ON A.PK = B.PK;
 
 **文氏图**：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505229451176.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505229451176.png)
 
 **示例查询**：
 
@@ -153,7 +153,7 @@ ON A.PK = B.PK;
 
 **文氏图**：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505229553658.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505229553658.png)
 
 **示例查询**：
 
@@ -205,7 +205,7 @@ WHERE Table_A.PK IS NULL;
 
 **文氏图**：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505229746773.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505229746773.png)
 
 **示例查询**：
 
@@ -236,7 +236,7 @@ WHERE B.PK IS NULL;
 
 **文氏图**：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505229825948.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505229825948.png)
 
 **示例查询**：
 
@@ -267,7 +267,7 @@ WHERE A.PK IS NULL;
 
 **文氏图**：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505229903471.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1505229903471.png)
 
 **示例查询**：
 

@@ -42,7 +42,7 @@ Level 2 对 Level 1 进行了改进，XMLHttpRequest Level 2 中新增了以下�
 ## XMLHttpRequest 兼容性
 关于 xhr 的浏览器兼容性，大家可以直接查看“Can I use”这个网站提供的结果 [XMLHttpRequest 兼容性](http://caniuse.com/#search=XMLHttpRequest)，下面提供一个截图：
 
-![XMLHttpRequest 兼容性](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1469078921728.png)
+![XMLHttpRequest 兼容性](http://cnd.qiniu.lin07ux.cn/markdown/1469078921728.png)
 
 从图中可以看到：
 

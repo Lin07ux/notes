@@ -59,19 +59,19 @@ animation-fill-mode: none | forwards | backwards | both;
 > 纵轴表示 translateY 的值，为 0 时表示 translateY 的值为 0，纵轴一格表示 50px。 
 
 1. `animation-fill-mode: none`
-    ![none](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1480571996893.png)
+    ![none](http://cnd.qiniu.lin07ux.cn/markdown/1480571996893.png)
 
 2. `animation-fill-mode: forwards`
     
-    ![forwards](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1480572054242.png)
+    ![forwards](http://cnd.qiniu.lin07ux.cn/markdown/1480572054242.png)
 
 3. `animation-fill-mode: backwards`
     
-    ![backwards](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1480572093181.png)
+    ![backwards](http://cnd.qiniu.lin07ux.cn/markdown/1480572093181.png)
 
 4. `animation-fill-mode: both`
 
-    ![both](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1480572129979.png)
+    ![both](http://cnd.qiniu.lin07ux.cn/markdown/1480572129979.png)
 
 
 ### animation-timing-function
@@ -119,7 +119,7 @@ div:target {
 
 当时间函数分别设置为`transition-time-function: step(4, start)``transition-time-function: step(4, end)`的时候，两者之间的差异如下图所描述：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1487913239088.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1487913239088.png)
 
 可以看到，`start`值，只要动画被触发，它就会立即开始，而`end`值，它开始于第一个步骤的结尾处（在这个案例中，将会在一秒钟之后被触发）。
 
@@ -164,7 +164,7 @@ See the Pen [listAni](http://codepen.io/Yetty/pen/BQWZWz/) by [Yetty](http://cod
 
 比如[京东2017海外招聘](http://jdc.jd.com/h5/jd-campus-2017/international/index.html)。效果如下：
 
-![有序动画](http://7xkt52.com1.z0.glb.clouddn.com/UJBfQ3E.gif)
+![有序动画](http://cnd.qiniu.lin07ux.cn/UJBfQ3E.gif)
 
 ### 调试动画
 将`animation-play-state`设置为`paused`，`animation-delay`设置为不同的负值，就可以查看动画在不同帧时的状态，便于进行动画调试。
@@ -177,9 +177,9 @@ See the Pen [listAni](http://codepen.io/Yetty/pen/BQWZWz/) by [Yetty](http://cod
 
 下面的两个图片，分别是设置了透明和设置了`display`的效果，可以看到设置`display`的时候(第二张图片)是先全部显示出来，然后才进行了动画效果的：
 
-![opacity](http://7xkt52.com1.z0.glb.clouddn.com/2016-04-13%20animate-opacity.gif)
+![opacity](http://cnd.qiniu.lin07ux.cn/2016-04-13%20animate-opacity.gif)
 
-![display](http://7xkt52.com1.z0.glb.clouddn.com/2016-04-13%20animate-display.gif)
+![display](http://cnd.qiniu.lin07ux.cn/2016-04-13%20animate-display.gif)
 
 如果需要在动画结束后触发一些效果，可以绑定`webkitTransitionEnd`事件来触发。比如，我们需要在当前页面的动画都走完了之后，才能继续向下滑动：
 

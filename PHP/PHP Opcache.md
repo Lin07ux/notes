@@ -10,13 +10,13 @@
 
 当请求一个 PHP 脚本的时候，会经过五个步骤，如下图所示：
 
-![PHP 生命周期](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1522725110061.png)
+![PHP 生命周期](http://cnd.qiniu.lin07ux.cn/markdown/1522725110061.png)
 
 Zend 引擎每次处理请求的时候，必须先从文件系统读取文件、扫描其词典和表达式、解析文件、创建要执行的计算机代码（称为Opcode）、最后执行 Opcode。每一次请求 PHP 脚本都会执行一遍以上步骤，如果 PHP 源代码没有变化，那么 Opcode 也不会变化，显然没有必要每次都重行生成 Opcode，结合在 Web 中无所不在的缓存机制，我们可以把 Opcode 缓存下来，以后直接访问缓存的 Opcode 就可以更快的响应了。
 
 启用 Opcode 缓存之后的流程图如下所示：
 
-![启用 Opcode 缓存后的流程](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1522725330625.png)
+![启用 Opcode 缓存后的流程](http://cnd.qiniu.lin07ux.cn/markdown/1522725330625.png)
 
 从 PHP 5.5 开始，在核心中集成了 Opcache 来实现对 Opcode 的缓存。
 

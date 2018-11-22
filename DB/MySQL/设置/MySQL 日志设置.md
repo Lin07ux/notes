@@ -5,7 +5,7 @@
 show variables like 'log_error';
 ```
 
-![error](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472474884018.png)
+![error](http://cnd.qiniu.lin07ux.cn/markdown/1472474884018.png)
 
 ### 慢查询日志
 所谓的慢查询日志就是用来记录在MySQL中运行速度缓慢的执行语句，所以说这个文件很方便整体的性能调优。
@@ -16,7 +16,7 @@ show variables like 'log_error';
 show variables like 'long_query_time';
 ```
 
-![slow query](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472475055116.png)
+![slow query](http://cnd.qiniu.lin07ux.cn/markdown/1472475055116.png)
 
 默认情况下，MySQL 数据库并不启动慢查询日志，需要我们手动来设置这个参数，当然，如果不是调优需要的话，一般不建议启动该参数，因为存在一定的性能影响。
 
@@ -25,7 +25,7 @@ show variables like 'slow_query%';
 set global slow_query_log = ON;
 ```
 
-![slow log](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472475475453.png)
+![slow log](http://cnd.qiniu.lin07ux.cn/markdown/1472475475453.png)
 
 同样的，还可以设置慢查询的日志路径和慢查询的时间界限。
 
@@ -36,7 +36,7 @@ set global slow_query_log = ON;
 show variables like 'log_queries_not_using_indexes';
 ```
 
-![slow not using](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472476130444.png)
+![slow not using](http://cnd.qiniu.lin07ux.cn/markdown/1472476130444.png)
 
 
 ### 慢查询日志输出方式
@@ -50,7 +50,7 @@ select sleep(11);
 select * from mysql.slow_log;
 ```
 
-![table](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1472475916156.png)
+![table](http://cnd.qiniu.lin07ux.cn/markdown/1472475916156.png)
 
 默认是关闭的，我们可以将该参数打开，进行详细的记录：
 

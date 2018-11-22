@@ -3,7 +3,7 @@
 ### repeat
 `background-repeat`取值为`repeat`时，表示背景图片沿容器的 X 轴和 Y 轴平铺。将会平铺满整个容器。如果背景图片的尺寸和容器尺寸不能完全匹配之时，会造成背景图片不全。如下图所示：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475211450381.png" width="421"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475211450381.png" width="421"/>
 
 ### repeat-x
 `repeat-x`可以说是`repeat`的分值之一，表示背景图片沿容器的 X 轴平铺。和`repeat`有点类似，有可能在容器最右侧不具备背景图片展示的空间，造成背景图片显示不全。
@@ -33,7 +33,7 @@ round(320 / 100) = round(3.2) = 3
 
 假设我们的容器是 520 x 320，而背景图片的尺寸是 100 x 100。那么水平方向将会平铺 5 张背景图，而相邻两张背景图之间会有一个 20 / 5 = 4 间距。同样道理，在垂直方向也会适当的间距。甚至，如果在某个方向上只有一个允许平铺的次数不超过两次的时候，就仅仅会重复一次。来看一个[效果](http://codepen.io/airen/pen/ZpJLAg)：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1475213018528.png" width="1277"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1475213018528.png" width="1277"/>
 
 ### 不同的 x 和 y 轴的 repeat 值
 从规范中，我们可以获得`<repeat-style>`可以有 x 和 y 的值，也就是说，在`background-repeat`取值是，可以将 x 和 y 的值任意组合，比如`round space`、`space round`、`round repeat-y`之类的。

@@ -68,7 +68,7 @@ Route::get('/', function () {
 最终的结果都一样：
 
 <div align="center">
-    <img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1505660311148.png" width="314"/>
+    <img src="http://cnd.qiniu.lin07ux.cn/markdown/1505660311148.png" width="314"/>
 </div>
 
 当然，对于变量已经定义，且比较多的情况下，我们还可以使用`compact()`方法来进行打包：

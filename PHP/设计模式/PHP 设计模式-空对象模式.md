@@ -25,7 +25,7 @@ $obj->callSomething();
 
 
 ## UML 类图
-![空对象模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467956299545.png)
+![空对象模式](http://cnd.qiniu.lin07ux.cn/markdown/1467956299545.png)
 
 
 ## 示例代码

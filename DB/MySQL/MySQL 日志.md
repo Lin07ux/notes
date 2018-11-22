@@ -78,7 +78,7 @@ PURGE {MASTER | BINARY} LOGS BEFORE 'date'
 
 比如，当前有如下的二进制文件记录：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476584427375.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476584427375.png)
 
 
 使用`PURGE MASTER LOGS;`删除创建时间比`binlog.000003`早的所有日志文件，命令如下：
@@ -89,7 +89,7 @@ PURGE MASTER LOGS TO "joe-bin.000003";
 
 执行后，二进制文件如下所示，可以看到`joe-bin.000001`和`joe-bin.000002`两个日志文件被删除了：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476584495316.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476584495316.png)
 
 删除 2013 年 3 月 30 日前创建的所有日志文件，执行命令如下：
 
@@ -111,7 +111,7 @@ show binlog events in 'joe-bin.000006';
 
 内容如下类似如下：
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476584710951.png" width="470"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1476584710951.png" width="470"/>
 
 但如果想知道 binlog 文件的创建时间，就需要 mysqlbinlog 工具来查看了。
 
@@ -262,7 +262,7 @@ show variables like '%slow%';
 
 结果类似如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476586061536.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476586061536.png)
 
 ### 4.3 删除慢查询日志
 

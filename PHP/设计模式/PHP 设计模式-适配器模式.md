@@ -9,7 +9,7 @@
 
 
 ## UML 类图 
-![适配器模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1467608821683.png)
+![适配器模式](http://cnd.qiniu.lin07ux.cn/markdown/1467608821683.png)
 
 这里有两类接口：纸质书接口(PaperBookInterface)和电子书接口(EBookInterface)。为了能像阅读纸质书一样阅读电子书，可以将电子书的接口重新包装一遍，使其符合纸质书的接口规则。于是就出现了电子书的适配器接口(EBookAdapter)。
 

@@ -26,7 +26,7 @@ EXPLAIN SELECT * FROM user WHERE id = 1;
 
 > 默认情况下，EXPLAIN 的输出是一个横向的表格，如果想要竖向显示，可以在语句最后添加`\G`来更改。
 
-<img src="http://7xkt52.com1.z0.glb.clouddn.com/markdown/1473954724661.png" width="817"/>
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1473954724661.png" width="817"/>
 
 ### 2.1 结果参数解释
 

@@ -55,7 +55,7 @@ img.addEventListener("load", function() {
 
 效果如下图：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476249945069.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476249945069.png)
 
 为什么 canvas 会将 png 的透明区域转成黑色呢？**canvas转换成jpeg之前移除alpha通道，所以透明区域被填充成了黑色**。而一般情况下，我们并不想转成黑色，而且转成白色。
 
@@ -82,7 +82,7 @@ getBase64(canvas, function(dataUrl) { ... });
 
 效果如下图：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476250274091.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476250274091.png)
 
 可以看到，如果图片中有半透明的颜色，还是会被转成黑色。
 
@@ -104,7 +104,7 @@ getBase64(canvas, function(dataUrl) { ... });
 
 效果如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1476250746267.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1476250746267.png)
 
 转摘：[canvas转base64/jpeg时，透明区域变成黑色背景的解决方案](http://www.dengzhr.com/frontend/html/1096) 或 [canvas转base64/jpeg时，透明区域变成黑色背景的解决方案](http://www.tuicool.com/articles/iaUzUrv)
 

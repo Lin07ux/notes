@@ -3,7 +3,7 @@
 
 但是，对元素进行 3D transform 变化的时候，所参照的坐标系统并不是元素的初始坐标系统，而是一个新的坐标系统：坐标原点位于元素的中心点，而 X、Y、Z 轴的方向不变。如果想要改变这个坐标系的原点位置，使用 CSS `transform-origin`属性。`transform-origin`的默认值是`50% 50%`，因此，默认情况下，transform 坐标系的原点位于元素中心。
 
-![CSS transform 坐标系统](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466693091340.png)
+![CSS transform 坐标系统](http://cnd.qiniu.lin07ux.cn/markdown/1466693091340.png)
 
 
 ## transform 变换
@@ -21,11 +21,11 @@
 
 例如，下面一个包含两个变换函数的 transform 的效果（gif）：
 
-![两个变换函数效果](http://7xkt52.com1.z0.glb.clouddn.com/markdown/transform-1.gif)
+![两个变换函数效果](http://cnd.qiniu.lin07ux.cn/markdown/transform-1.gif)
 
 如果交换这两个变换函数的顺序，是这样的效果：
 
-![交换顺序](http://7xkt52.com1.z0.glb.clouddn.com/markdown/transform-2.gif)
+![交换顺序](http://cnd.qiniu.lin07ux.cn/markdown/transform-2.gif)
 
 可以看到，由于坐标系会随着每一次变换发生改变，因此不同顺序的情况下，元素最终的位置也不同。
 
@@ -129,7 +129,7 @@
 
 `perspective`代表摄像机距离屏幕的距离，看上去和 z 轴深度非常近似。但是，它并不等同于摄像机的 z 坐标位置（`perspective`还只能取正值），而是会影响摄像机本身的其他属性。下面用这个图说明`perspective`的值变化的效果（修改自 w3c 的配图）：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466696033006.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1466696033006.png)
 
 图中`d1`和`d2`分别表示两个不同的`perspective`的值，其中`d2`小于`d1`。然后，你会惊奇地发现，一个原本位于屏幕之后（`z`坐标为负值）的物体，竟然是随着“走近”而变得更小了！显然，这不符合我们在三维空间里运动的基本感受。其原因是，网页的三维投影平面是固定的，`perspective`在改变摄像机的位置的同时，也同时改变了摄像机本身的其他属性。
 
@@ -140,7 +140,7 @@
 ### 对布局的影响
 transform 影响的是视觉渲染，而不是布局。因此，除以下情况外，transform 不会影响到布局：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1466696154612.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1466696154612.png)
 
 这个因为`overflow`生成滚动条从而影响布局的反例，也发生于`position: relative;`再进行偏移的情况。
 

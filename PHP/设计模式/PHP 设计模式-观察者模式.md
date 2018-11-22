@@ -9,7 +9,7 @@ PHP 为观察者模式定义了两个接口：`SplSubject`和`SplObserver`。`Sp
 
 
 ## UML 类图
-![观察者模式](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1468056838147.png)
+![观察者模式](http://cnd.qiniu.lin07ux.cn/markdown/1468056838147.png)
 
 
 ## 示例代码

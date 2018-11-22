@@ -6,22 +6,22 @@
 
 首先，当前的分支情况如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478523792810.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1478523792810.png)
 
 develop 分支的 commit log 如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478523844876.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1478523844876.png)
 
 develop_fixbug_imageprint 分支的 commit log 如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478523873396.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1478523873396.png)
 
 可以看到，develop_fixbug_imageprint 的 commit log 是和 devleop 的 commit log 一模一样。我们现在切换到 develop_fixbug_imageprint 进行一些操作。
 
 添加一个 1.txt 文件，然后`git add .`，`git commit –m 'add 1.txt'`。
 再添加一个 2.txt 文件，然后`git add .`，`git commit –m 'add 2.txt'`。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478523996294.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1478523996294.png)
 
 现在我们要合并代码到 develop 分支。但是这两个提交是为了解决一个问题的，所以我们想将他们合并成一个提交。此时就需要用到`git rebase`命令了。
 
@@ -29,19 +29,19 @@ develop_fixbug_imageprint 分支的 commit log 如下：
 
 如果添加了”-i“参数，则是指交互模式。就是说你可以干预 rebase 这个事务的过程，包括设置 commit message，暂停 commit 等等。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478525584244.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1478525584244.png)
 
 我们设置第二个”pick 657a291 add 2.txt” 为” s 657a291 add 2.txt”这里的 s 就是 squash 命令的简写。此时跳出来了一个临时文件，最上面是两行之前的 commit message。
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478526030231.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1478526030231.png)
 
 我们修改下这个 commit message，设置新的信息：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478526082581.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1478526082581.png)
 
 操作完成之后，再在 develop_fixbug_imageprint 分支上查看 commit log，如下：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1478526211414.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1478526211414.png)
 
 可以看到已经没有之前的那两个提交的历史了。之后合并该分支到 develop 上就不会出现杂乱的 commit log 了。
 
@@ -59,7 +59,7 @@ rebase 需要基于一个分支来设置你当前的分支的基线，这基线�
 
 首先假设我们有 3 个 commit：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494409536000.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494409536000.png)
 
 我们需要将`2dfbc7e8`和`c4e858b5`合并成一个 commit，那么我们输入如下命令：
 
@@ -69,7 +69,7 @@ git rebase -i f1f92b
 
 之后就会进入到默认的编辑器进行合并设置的操作。如下图：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494409679865.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494409679865.png)
 
 可以看到其中分为两个部分，上方未注释的部分是填写要执行的指令，而下方注释的部分则是指令的提示说明。指令部分中由前方的命令名称、`commit hash`和`commit message`组成。
 
@@ -84,7 +84,7 @@ git rebase -i f1f92b
 
 如果没有冲突，或者冲突已经解决，则会出现如下的`commit message`编辑窗口：
 
-![](http://7xkt52.com1.z0.glb.clouddn.com/markdown/1494409947082.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/1494409947082.png)
 
 其中，非注释部分就是两次的`commit message`，你要做的就是将这两个修改成新的`commit message`。修改完成后，输入`wq`保存并退出，再次输入`git log`查看 commit 历史信息，就会发现这两个 commit 已经合并了。
 
