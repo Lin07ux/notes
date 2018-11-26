@@ -2,13 +2,13 @@ Python 解释器具有简单的行编辑功能。在 Unix 系统上，任何 Pyt
 
 > 在 Python 主窗口中输入`Control-P`可能是检查是否支持命令行编辑的最简单的方法。如果发出嘟嘟声（计算机扬声器），则说明你可以使用命令行编辑功能。如果没有任何声音，或者显示`^P`字符，则说明命令行编辑功能不可用；你只能通过退格键从当前行删除已键入的字符并重新输入。
 
-### 安装
+## 安装
 
 Python 解释器一般在安装 Python 的时候就会自动安装的。由于 Python 是跨平台的，所以不论是在 Unix/Linux 平台，还是在 Windows 平台，都可以进行安装。
 
 > [官网下载](https://www.python.org/downloads/)
 
-#### Mac
+### Mac
 
 在 Mac 中，默认已经安装了 Python2，所以是可以直接在命令行中通过输入`Python`命令来打开 Python 解析器的。
 
@@ -23,12 +23,15 @@ brew search python
 # 然后就可以使用下面的命令安装 python3 了
 brew install python3
 
+# 更新
+brew upgrade python3
+
 # 安装完成后，需要使用 python3 来代替 python
 python3 --version  # 查看版本
 python3 # 进入 python3 解释器
 ```
 
-#### Windows
+### Windows
 
 在 Windows 中安装则需要在官网上下载对应的 msi 安装包，然后进行安装即可。
 
@@ -37,7 +40,7 @@ python3 # 进入 python3 解释器
 下载地址为：[Python v2.7.8](https://www.python.org/download/releases/2.7.8/)
 
 
-### 启用解释器
+## 启用解释器
 
 启动 Python 解释器有三种方法，需要在命令行中输入不同格式的命令：
 
@@ -47,7 +50,7 @@ python3 # 进入 python3 解释器
 
 * 输入`python -m module [arg] ...`语句，这可以调用一些 Python 模块，这类似在命令行中键入完整的路径名执行模块源文件一样。
 
-#### 参数传递
+### 参数传递
 
 调用解释器时，脚本名和附加参数传入一个名为`sys.argv`的字符串列表。可以通过`import sys`引入 sys 模块，就能够获取这个列表。列表的长度大于等于 1。
 
@@ -61,7 +64,7 @@ python3 # 进入 python3 解释器
 
 > `-c 指令`或者`-m 模块`之后的参数不会被 Python 解释器的选项处理机制所截获，而是留在`sys.argv`中，供脚本命令操作。
 
-#### 交互模式
+### 交互模式
 
 从 tty 读取命令时，我们称解释器工作于交互模式。这种模式下它根据*主提示符*来执行，主提示符通常标识为三个大于号(`>>>`)；继续的部分被称为*从属提示符*，由三个点标识(`...`)。在第一行之前，解释器打印欢迎信息、版本号和授权提示：
 
