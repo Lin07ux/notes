@@ -24,7 +24,7 @@
 print(chr(0xEF).chr(0xBB).chr(0xBF));
 ```
 
-当然，如果你是在生成文件，可能是下面两种：
+当然，如果是在生成文件，可能是下面两种：
 
 ```php
 fwrite($file, chr(0xEF).chr(0xBB).chr(0xBF));
