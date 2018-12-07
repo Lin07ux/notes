@@ -1,3 +1,14 @@
+### 获取毫秒级时间戳
+
+```php
+function getMillisecond ()
+{
+    list($uSec, $sec) = explode(" ", microtime());
+
+    return $sec * 1000 + substr($uSec, 2, 3) * 1;
+}
+```
+
 ### 检查日期是否是指定的格式
 
 ```php
