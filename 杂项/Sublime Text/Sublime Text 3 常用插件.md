@@ -10,6 +10,9 @@
 * `jQuery`
 * `JSFormat`  JS 代码格式化
 * `JSMinifier` JS 代码压缩
+* [`Minify`](https://github.com/tssajo/minify) 压缩或美化 JS、JSON、CSS、HTML、SVG 等多种文件
+
+> Minify 需要借助 Node 和相关的插件来实现具体格式的文件的压缩和美化，常见的插件如下：`npm install -g clean-css-cli uglifycss js-beautify html-minifier uglify-js minjson svgo`。不需要的可以不安装。
 
 ## CSS
 
