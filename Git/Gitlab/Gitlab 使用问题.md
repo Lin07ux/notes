@@ -22,4 +22,28 @@
 
     <img src="http://cnd.qiniu.lin07ux.cn/markdown/1486720393164.png" width="929"/>
 
+### 屏蔽掉注册功能
+
+对于 Gitlab 11.7 版本，设置路径为：
+
+```
+Admin Area --> Setting --> General --> Sign-up restrictions --> 取消勾选 Sign-up enabled
+```
+
+### 关闭 Auto DevOps
+
+对于 Gitlab 11.7 版本，设置路径为：
+
+```
+# 影响全部仓库的默认配置
+Admin area --> Settings --> CI/CD --> Continuous Integration and Deployment --> 取消勾选 Default to Auto DevOps pipeline for all projects
+
+# 影响单个仓库的配置
+project’s Settings --> CI/CD --> Auto DevOps --> 取消勾选 Default to Auto DevOps pipeline
+```
+
+这里的`Default to Auto DevOps pipeline`，如果选中，就表示允许执行 Auto DevOps，取消则表示禁止。
+
+> 参考：[Auto DevOps](https://docs.gitlab.com/ce/topics/autodevops/#enablingdisabling-auto-devops-at-the-instance-level-administrators-only)
+
 
