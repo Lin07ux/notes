@@ -28,7 +28,7 @@ systemctl start postgresql-9.5
 默认情况下，PostgreSQL 有一个用户 postgres，可以直接登陆，不需要密码，但是只能在数据库服务器本机中登陆。 还可以登陆时指定数据库。
 
 ```shell
-psql -U postgres -d postgres
+/usr/local/pgsql/bin/psql -U postgres -d postgres
 ```
 
 ### 常用命令
@@ -85,11 +85,14 @@ DROP SCHEMA schema_name [ CASCADE ];
 
 > 参考：
 > 1. [PostgreSQL 批量权限 管理方法](https://yq.aliyun.com/articles/41512)
+
 ### 授权
 
 ```sql
 -- 将用户对某个 schema 中的全部表的都设置权限
 GRANT SELECT, UPDATE, INSERT ON ALL TABLES IN SCHEMA schema_name TO role_name;
+-- 赋予用户对某个数据库的全部权限
+GRANT ALL PRIVILEGES ON DATABASE database_name TO role_name;
 ```
 
 ### 取消授权
@@ -112,6 +115,16 @@ dropuser [connection-option...] [option...] [username]
 ```sql
 DROP USER user_name;
 ```
+
+### 设置用户角色
+
+可以使用`ALTER USER`来变更用户角色。系统内置有多种角色，如：`SUPERUSER`、`CREATEDB`、`CREATEROLE`等。
+
+```
+ALTER USER role_specification [ WITH ] option [ ... ]
+```
+
+> 参考：[ALTER USER](https://www.postgresql.org/docs/9.5/sql-alteruser.html)
 
 ## 插件
 

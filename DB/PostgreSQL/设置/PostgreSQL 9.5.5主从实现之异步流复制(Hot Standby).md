@@ -116,9 +116,12 @@ hot_standby=on   # 启用 hot_standby
 
 更改之后就可以启动从库了。
 
-> 启动从库时，如提示`data`目录的权限有问题，则根据提示将`data`目录的权限设置成`0700`即可：`chmod -R 0700 /usr/local/postgresql/data/`。
-> 
-> 在从库运行`pg_ctl start -l /usr/local/postgresql/log/pg_server.log`可以查看启动日志。
+如果有提示权限问题，需要先检查从服务器的`data`目录的权限和所有者，可以通过如下方式重置：
+
+```shell
+chown postgres:postgres -R /usr/local/postgresql/data/
+chmod 0700 -R /usr/local/postgresql/data/
+```
 
 #### 2.3 验证
 
