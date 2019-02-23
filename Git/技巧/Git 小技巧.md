@@ -8,6 +8,14 @@
 
 ![跳过中间状态的切换](http://cnd.qiniu.lin07ux.cn/markdown/1464932635964.png")
 
+### 克隆项目的全部信息
+
+克隆项目可以使用`git clone`，但默认情况下，这个只会将仓库中的主分支(`master`)下载下来，如果需要将项目的全部分支、标签都下载下来，可以加入`--mirror`选项：
+
+```shell
+git clone --mirror <origin_url>
+```
+
 ### 追加 Commit
 
 如果想对刚才做的 commit 做适当修改，可以紧接着写修改的操作，然后执行命令`git commit --amend`即可将暂存区中的内容补充到最近的一次 commit 中。
@@ -24,7 +32,10 @@ git commit -m 'initial commit'
 git add forgotten_file
 # 将这个漏掉的文件追加到刚才的提交中
 git commit --amend
+# 追加文件，而且不修改提交信息
+git commit --amend --no-edit
 ```
+
 上面的这三条命令最终只是产生一个提交，第二个提交命令修正了第一个的提交内容。
 
 ### 放弃本地修改，强制更新
