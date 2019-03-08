@@ -86,22 +86,29 @@ source /etc/profile
 
 ### 6. 配置启动脚本
 
-新建脚本`/usr/local/redis/ets/redis`，输入如下内容：
+新建脚本`/usr/local/redis/etc/redis`，输入如下内容：
 
 ```shell
-#!/bin/bash
-#chkconfig: 2345 80 90
+#!/bin/sh
+#
 # Simple Redis init.d script conceived to work on Linux systems
 # as it does use of the /proc filesystem.
 
-PATH=/usr/local/bin:/sbin:/usr/bin:/bin
+### BEGIN INIT INFO
+# Provides:     redis_6379
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Redis data structure server
+# Description:          Redis data structure server. See https://redis.io
+### END INIT INFO
+
 REDISPORT=6379
-EXEC=/usr/local/redis/bin/redis-server
-REDIS_CLI=/usr/local/redis/bin/redis-cli
-   
-PIDFILE=/var/run/redis.pid
-CONF="/usr/local/redis/etc/redis.conf"
-   
+EXEC=/usr/local/bin/redis-server
+CLIEXEC=/usr/local/bin/redis-cli
+
+PIDFILE=/var/run/redis_${REDISPORT}.pid
+CONF="/usr/local/redis/redis.conf"
+
 case "$1" in
     start)
         if [ -f $PIDFILE ]
@@ -111,10 +118,6 @@ case "$1" in
                 echo "Starting Redis server..."
                 $EXEC $CONF
         fi
-        if [ "$?"="0" ] 
-        then
-              echo "Redis is running..."
-        fi
         ;;
     stop)
         if [ ! -f $PIDFILE ]
@@ -123,22 +126,18 @@ case "$1" in
         else
                 PID=$(cat $PIDFILE)
                 echo "Stopping ..."
-                $REDIS_CLI -p $REDISPORT SHUTDOWN
-                while [ -x ${PIDFILE} ]
-               do
+                $CLIEXEC -p $REDISPORT shutdown
+                while [ -x /proc/${PID} ]
+                do
                     echo "Waiting for Redis to shutdown ..."
                     sleep 1
                 done
                 echo "Redis stopped"
         fi
         ;;
-   restart|force-reload)
-        ${0} stop
-        ${0} start
+    *)
+        echo "Please use start or stop as first argument"
         ;;
-  *)
-    echo "Usage: /etc/init.d/redis {start|stop|restart|force-reload}" >&2
-        exit 1
 esac
 ```
 
@@ -148,7 +147,7 @@ esac
 
 ```shell
 # 复制脚本文件到init.d目录下
-cp /usr/local/redis/ets/redis /etc/init.d/
+cp /usr/local/redis/etc/redis /etc/init.d/
 
 # 给脚本增加运行权限
 chmod +x /etc/init.d/redis
@@ -179,6 +178,42 @@ netstat -an|grep 6379
 ### 9. 问题
 
 如果启动失败，则可以通过`systemctl status redis`查看相关信息。根据错误提示进行调整即可。
+
+#### 9.1 取消认证密码
+
+默认情况下，Redis 是只允许本地登录，且不需要使用密码进行认证的。如果开启了有认证密码的 Redis 服务，则关闭的时候也需要提供认证密码，否则无法正常关闭。
+
+为了在前面配置的系统服务配置文件中，可以自动关闭，可以将`stop`命令改成类似如下的操作：
+
+```shell
+stop)
+    if [ ! -f $PIDFILE ]
+    then
+        echo "$PIDFILE does not exist, process is not running"
+    else
+        PID=$(cat $PIDFILE)
+        echo "Stopping ..."
+        
+        PASSWORD=$(cat $CONF | grep '^\s*requirepass'|awk '{print $2}'|sed 's/"//g')
+        
+        if [ -z $PASSWORD ]
+        then 
+            $CLIEXEC -p $REDISPORT shutdown
+        else
+            $CLIEXEC -a $PASSWORD -p $REDISPORT shutdown
+        fi
+
+        while [ -x /proc/${PID} ]
+        do
+            echo "Waiting for Redis to shutdown ..."
+            sleep 1
+        done
+        echo "Redis stopped"
+    fi
+    ;;
+```
+
+> 参考：[Redis设置密码之后，关闭服务的问题](https://blog.csdn.net/u010309394/article/details/81807597)
 
 ### 10. 参考
 
