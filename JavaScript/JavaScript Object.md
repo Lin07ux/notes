@@ -3,6 +3,7 @@ JavaScript 中，一切皆对象。作为最基础的 Object，在新版的 ES5�
 ## 方法
 
 ### Object.assign
+
 该方法可以深拷贝一个对象。属于 ES6 规范。格式为：
 
 ```javascript
@@ -43,6 +44,7 @@ if (typeof Object.assign != 'function') {     Object.assign = function(target,
 
 
 ## 对象继承
+
 js 创建之初，正值 java 大行其道，面向对象编程春风正盛，js 借鉴了 java 的对象机制，但仅是看起来像，也就是 js 的构造函数，如下：
 
 ```JavaScript

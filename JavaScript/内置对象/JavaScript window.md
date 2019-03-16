@@ -1,12 +1,12 @@
 window 就是指当前的浏览器窗口。JavaScript 的所有对象都存在于一个运行环境之中，这个运行环境本身也是对象，称为“顶层对象”。这就是说，JavaScript 的所有对象，都是“顶层对象”的下属。不同的运行环境有不同的“顶层对象”，在浏览器环境中，这个顶层对象就是`window`对象。所有浏览器环境的全局变量，都是`window`对象的属性。
 
-## window 对象的属性
+## 一、window 对象的属性
 
-### document
+### 1.1 document
 
 `window.document`是一个指向 [document](https://developer.mozilla.org/en/DOM/document) 对象的引用。
 
-### fullScreen
+### 1.2 fullScreen
 
 是一个布尔值：
 
@@ -15,25 +15,25 @@ window 就是指当前的浏览器窗口。JavaScript 的所有对象都存在�
 
 > 注：在常规窗口与全屏窗口之间切换会在相应的窗口中触发`resize`事件。
 
-### screenX 和 screenY
+### 1.3 screenX 和 screenY
 
 返回浏览器窗口左上角相对于当前屏幕左上角`(0, 0)`的水平距离和垂直距离，单位为像素。
 
-### innerWidth 和 innerHeight
+### 1.4 innerWidth 和 innerHeight
 
 返回网页在当前窗口中可见部分的宽度和高度，即“视口”（viewport），单位为像素。浏览器的视口，**不包括工具栏和滚动条**。
 
 > 对于 Internet Explorer 8、7、6、5 需要使用：`document.documentElement.clientHeight`、`document.documentElement.clientWidth`或者`document.body.clientHeight`、`document.body.clientWidth`。
 
-### outerWidth 和 outerHeight
+### 1.5 outerWidth 和 outerHeight
 
 返回浏览器窗口的宽度和高度，**包括浏览器菜单和边框**，单位为像素。
 
-### scrollX 和 scrollY
+### 1.6 scrollX 和 scrollY
 
 前者返回文档/页面水平方向滚动的像素值，后者返回文档/页面垂直方向滚动的像素值。
 
-### name
+### 1.7 name
 
 name 属性用于获取或设置当前浏览器窗口的名字。
 
@@ -44,7 +44,7 @@ string = window.name;
 window.name = string;
 ```
 
-### closed
+### 1.8 closed
 
 返回一个布尔值，是一个只读属性，表示窗口是否被关闭。
 
@@ -54,23 +54,23 @@ window.name = string;
 示例：
 
 ```javascript
-//检查当前窗口的父窗口存在并且没有关闭
+// 检查当前窗口的父窗口存在并且没有关闭
 if (window.opener && !window.opener.closed) {
     window.opener.location.href = "http://www.mozilla.org";
 }
 ```
 
-### opener
+### 1.9 opener
 
 opener 属性返回一个引用打开窗口的父窗口，从另一个窗口打开窗口时(使用`Window.open()`打开)，它维护一个参考`window.opener`作为第一个窗口。如果当前窗口没有父窗口，该方法返回 NULL。
 
 通过`opener`属性，可以获得父窗口的的全局变量和方法，比如`windowOp.window.propertyName`和`windowOp.window.functionName()`。 该属性只适用于两个窗口属于同源的情况，且其中一个窗口由另一个打开。
 
-### location
+### 1.10 location
 
 返回一个只读的位置对象与文档当前的位置信息，用于获取窗口当前的 URL 信息，等同于`document.location`。
 
-#### 属性
+#### 1.10.1 属性
 
 其属性如下：
 
@@ -90,7 +90,7 @@ opener 属性返回一个引用打开窗口的父窗口，从另一个窗口打�
 
 location 的这 9 个属性都是可读写的。其中，改变`location.href`会跳转到新的 URL 页面，而修改`location.hash`会跳到当前页面中锚点位置。每次修改`window.location`的属性（hash 除外），页面都会以新的 URL 重新加载，并在浏览器的历史纪录中生成一条新纪录。
 
-#### 方法
+#### 1.10.2 方法
 
 * `assign(url)` 打开新的 URL，并在浏览器的历史纪录中生成一条记录。
 * `replace(url)` 打开新的 URL，但是不会在浏览器的历史纪录中生成新纪录。
@@ -106,7 +106,7 @@ location.href = url;
 位于`location.reload()`调用之后的代码可能会也可能不会执行，这取决于网络延迟或系统资源等因素。因此，最好将`location.reload()`放在代码的最后一行。
 
 
-### history
+### 1.11 history
 
 只读的，返回一个引用对象。但是它提供了一个接口，可以来操纵浏览器会话历史(页面访问当前页面的选项卡或框架加载)。
 
@@ -117,7 +117,8 @@ history.go(1);   //相当于history.back();
 
 在顶级页面，你可以看到会话历史上的列表页面，通过历史对象，在浏览器旁边的后退和前进按钮。出于安全原因，历史对象不允许非特权的代码来访问会话历史上其他页面的 url，但它确实使它导航会话历史。没有办法清除会话历史或禁用后退/前进导航从无特权的代码。解决方案是可用的最友好的`location.replace()`方法,取代当前项的会话历史提供的 URL。
 
-### frames
+### 1.12 frames
+
 frames 属性返回窗口本身， 这是一个数组类对象，成员为所有框架的窗口，包括 frames 元素和 iframe 元素。
 
 `window.frames[0]`表示页面中第一个框架窗口，`window.frames['someName']`则是根据框架窗口的 name 属性的值（不是 id 属性），返回该窗口。另外，通过`document.getElementById()`方法也可以引用指定的框架窗口。
@@ -139,16 +140,18 @@ if (window.parent != window.self) {
 }
 ```
 
-### navigator
+### 1.13 navigator
+
 只读的，返回一个`navigator`对象，可以查询信息应用程序运行脚本。
 
-#### navigator.userAgent 属性
+#### 1.13.1 navigator.userAgent 属性
+
 返回浏览器的 User-Agent 字符串，用来标示浏览器的种类。
 
 ```javascript
 var sBrowser, sUsrAg = navigator.userAgent;
 
-if(sUsrAg.indexOf("Chrome") > -1) {
+if (sUsrAg.indexOf("Chrome") > -1) {
     sBrowser = "Google Chrome";
 } else if (sUsrAg.indexOf("Safari") > -1) {
     sBrowser = "Apple Safari";
@@ -167,10 +170,11 @@ console.log("You are using: " + sBrowser);
 
 不过，通过 userAgent 可以大致准确地识别手机浏览器，方法就是测试是否包含“mobi”字符串。
 
-#### navigator.plugins 属性
+#### 1.13.2 navigator.plugins 属性
+
 返回一个类似数组的对象，成员是浏览器安装的插件，比如 Flash、ActiveX 等。
 
-### screen
+### 1.14 screen
 返回一个屏幕与窗口相关的引用，包含了显示设备的信息。
 
 `screen.width`和`screen.height`两个属性，一般用来了解设备的分辨率。除非调整显示器的分辨率，否则这两个值可以看作常量，不会发生变化。显示器的分辨率与浏览器设置无关，缩放网页并不会改变分辨率。
@@ -180,9 +184,10 @@ console.log("You are using: " + sBrowser);
 `screen.colorDepth`属性返回屏幕的颜色深度，一般为16（表示16-bit）或24（表示24-bit）。
 
 
-## window 的方法
+## 二、window 的方法
 
-### close() 和 open()
+### 2.1 close() 和 open()
+
 `window.open`方法用于新建另一个浏览器窗口，并且返回该窗口对象。`window.close`方法用于关闭指定窗口，一般用来关闭`window.open`方法新建的窗口。
 
 语法：`var windowObjectReference = window.open(strUrl, strWindowName, [strWindowFeatures]);`
@@ -213,29 +218,34 @@ if ((popup !== null) && !popup.closed) {
 }
 ```
 
-### moveTo()
+### 2.2 moveTo()
+
 用于移动窗口到指定位置。语法为：`window.moveTo(x, y);`
 
 参数 x、y 分别是窗口左上角距离屏幕左上角的水平距离和垂直距离，单位为像素。
 
-### moveBy()
+### 2.3 moveBy()
+
 将窗口移动到一个相对当前位置偏移的位置。语法：`window.moveBy(deltaX, deltaY);`
 
 参数 x、y 分别是窗口左上角向右移动的水平距离和向下移动的垂直距离，单位为像素。
 
-### resizeTo()
+### 2.4 resizeTo()
+
 动态调整窗口到指定的宽高。语法：`window.resizeTo(oWidth, oHeight);`
 
 参数 oWidth、oHeight 分别是窗口 outerWidth 和 outerHeight 的整数(包括滚动条、标题栏等)，单位为像素。
 
-### resizeBy()
+### 2.5 resizeBy()
+
 根据当前窗口的宽高动态调整窗口的大小。语法：`window.resizeBy(xDelta, yDelta);`
 
 参数 xDelta、yDelta 分别是窗口水平增长、垂直增长的数量，单位为像素。
 
 比如，将创建宽高都减少 300px：`window.resizeBy(-300, -300);`
 
-### print()
+### 2.6 print()
+
 跳出打印对话框，与用户点击菜单里面的“打印”命令效果相同。
 
 ```javascript
@@ -250,13 +260,15 @@ if (typeof window.print === 'function') {
 }
 ```
 
-### focus() 和 blur()
+### 2.7 focus() 和 blur()
+
 `window.focus()`方法会激活指定当前窗口，使其获得焦点。
 `window.blur()`把键盘焦点从顶层窗口移开。
 
 > blur 方法好像并没有明显的效果。
 
-### matchMedia()
+### 2.8 matchMedia()
+
 返回一个新的 MediaQueryList 对象代表指定的媒体属性的解析结果。
 
 语法：`window.matchMedia(mediaQueryString);`
@@ -275,7 +287,8 @@ console.log(window.matchMedia("(min-width: 400px)"));
 
 > 我也不知道为什么这里 min-width 竟然不匹配。。。
 
-### MediaQueryList()
+### 2.9 MediaQueryList()
+
 该方法给出了所有元素的CSS属性的值在应用活动样式表和包含可能解决任何基本计算的值。
 
 语法：`var style = window.getComputedStyle(element[, pseudoElt]);`
@@ -299,7 +312,8 @@ console.log(window.matchMedia("(min-width: 400px)"));
 </script>
 ```
 
-### postMessage()
+### 2.10 postMessage()
+
 window.postMessage 方法能够安全地跨起源沟通。通常情况下，在不同的页面中的脚本可以访问对方，当且仅当执行他们的网页都在使用相同的协议，主机位置（通常都 HTTPS），端口号（443 是 HTTPS 的默认设置），以及（模文件,域由两个网页为相同的值）被设置。 window.postMessage 提供了一种控制机制，在某种程度上正确的使用是安全的绕过这个限制。该 window.postMessage 方法被调用时，会导致 MessageEvent 消息在目标窗口被分派时，任何未决的脚本，必须执行完毕后（例如，剩余的事件处理程序，如果 window.postMessage 是从事件处理函数调用，先前设置的挂起超时等）的 MessageEvent 有类型的消息，它被设置为提供给 window.postMessage，对应于窗口调用 window.postMessage 在主文档的原点的原点属性的第一个参数的值的数据属性时间 window.postMessage 被调用，并且它是从哪个 window.postMessage 称为窗口源属性。（事件的其他标准属性都存在与他们的预期值。）
 
 语法：`otherWindow.postMessage(message, targetOrigin, [transfer]);`
@@ -385,7 +399,8 @@ function receiveMessage (event) {
 window.addEventListener("message", receiveMessage, false)
 ```
 
-### alert()、confirm()、prompt()
+### 2.11 alert()、confirm()、prompt()
+
 alert()、prompt()、confirm() 都是浏览器与用户互动的全局方法。它们会弹出不同的对话框，要求用户做出回应。需要注意的是：这三个方法弹出的对话框，都是浏览器统一规定的式样，是无法定制的。
 
 **alert()**
@@ -406,9 +421,10 @@ prompt 方法弹出的对话框，在提示文字的下方，还有一个输入�
 
 prompt 方法的第二个参数是可选的，但是如果不提供的话，IE 浏览器会在输入框中显示undefined。因此，最好总是提供第二个参数，作为输入框的默认值。
 
+## 三、window 对象的事件
 
-## window 对象的事件
-### window.onerror
+### 3.1 window.onerror
+
 window.onerror 是一个针对错误事件的事件处理程序，错误事件是对不同类型的错误目标。当一个 JavaScript 运行时错误（包括语法错误）时，使用接口的 ErrorEvent 一个错误事件在窗口 window.onerror 被触发时被调用。当资源（如一个 <img> 或 <script>）未能加载，使用接口事件的错误事件的元素，发起负载被触发，并且该元素上的 onerror() 调用处理程序。这些错误事件不冒泡到窗口，但（至少在 Firefox）可以用一个捕获 window.addEventListener 处理。安装一个全球性的错误事件处理程序对错误报告自动收集有用的。
 
 语法：由于历史的原因，传递给`window.onerror`和`element.onerror`处理程序的参数不相同。

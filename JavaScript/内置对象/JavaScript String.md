@@ -1,7 +1,6 @@
-## 基础
-字符串 String 类型是 JavaScript 中的一个基本类型。
+## 一、基础
 
-JavaScript 中，字符串是由一对单引号或者一对双引号包裹的字符集合。
+字符串 String 类型是 JavaScript 中的一个基本类型。JavaScript 中，字符串是由一对单引号或者一对双引号包裹的字符集合。
 
 JavaScript 里的字符串类似于数组，都是一个一个字符拼凑在一起组成的，因此可以用`length`属性取得字符串的长度。也能够像使用数组一样，通过索引获取字符串指定位置的字符，比如：
 
@@ -11,12 +10,14 @@ console.log(string.length);   // 7
 console.log(string[2]);       // 'c'
 ```
 
-## 方法
+## 二、方法
+
 字符串上都很多方法，其实这些方法都是 String 对象上的，在字符串调用这些方法的时候，会隐式的先将字符串转成 String 对象，然后再调用对象上的方法。
 
 需要注意的是：**这些方法都不会改变源字符串自身，返回的结果都是源字符串的一个副本**。
 
-### 1. charAt()
+### 2.1 charAt()
+
 语法：`String.charAt(n)`
 
 返回字符串的第 n 个字符，如果 参数 n 不在 0~str.length-1之间，则返回一个空字符串。
@@ -30,7 +31,8 @@ str.charAt(12); // ''
 str[12];        // undefined
 ```
 
-### 2. indexOf()
+### 2.2 indexOf()
+
 语法：`String.indexOf(subString[, start])`
 
 返回 subString 在字符串 String 中首次出现的位置，从 start 位置开始查找，如果不存在，则返回 -1。 
@@ -45,7 +47,8 @@ str.indexOf('',11);  // 10
 str.indexOf('',8);   // 8
 ```
 
-### 3. lastIndexOf()
+### 2.3 lastIndexOf()
+
 语法：`String.lastIndexOf(subString[, start])`
 
 返回 subString 在字符串 String 中*最后出现的位置*，从 start 位置 向前开始查找，如果不存在，则返回 -1。和`String.indexOf()`方法类似。
@@ -54,7 +57,8 @@ str.indexOf('',8);   // 8
 'javascript'.lastIndexOf('a'); // 3
 ```
 
-### 4. substring()
+### 2.4 substring()
+
 语法：`String.substring(start[, end])`
 
 返回从 start 到 end（不包括）之间的字符(范围集合是`[start, end)`)，start、end 均为 非负整数。若结束参数 end 省略，则表示从 start 位置一直截取到最后。
@@ -72,7 +76,8 @@ str.substring(-1, 2);  // "ab"
 str.substring(-0, -1); // ''
 ```
 
-## 5. substr()
+### 2.5 substr()
+
 语法：`String.substr(start[, length])`
 
 返回字符串中从指定位置开始到指定长度的子字符串，start 可为负值，这是其和`substring()`不同的地方。start 为负值的时候，是从字符串的末尾开始计数，最后一个字符的索引是 -1。
@@ -83,7 +88,7 @@ str.substr(5, 10);  // "give me a "
 str.substr(-4, 2);  // "as"
 ```
 
-## 6. slice()
+### 2.6 slice()
 语法：`String.slice(start[, end])`
 
 返回从 start 到 end （不包括）之间的字符，可传负值。传负值的时候，表示从字符串末尾开始计数，最后一个字符的索引为 -1。
@@ -93,7 +98,7 @@ var str = 'this is awesome';
 str.slice(4, -1);  // " is awesom"
 ```
 
-## 7. replace()
+### 2.7 replace()
 语法：`String.replace(regexp|substr, newSubStr|function)`
 
 替换字符串中匹配第一个参数对应的子字符串，或者正则表达式匹配的子字符串为第二个参数 neSubStr。第二个参数可以是一个函数，从而动态的生成替换成的子字符串。
@@ -103,7 +108,7 @@ var str = "do you love me";
 str.replace('love','hate');  // "do you hate me"
 ```
 
-## 8. search()
+### 2.8 search()
 语法：`String.search(regexp)`
 
 查找字符串与一个正则表达式是否匹配。如果匹配成功，则返回正则表达式在字符串中首次匹配项的索引；否则，返回 -1。*如果参数传入的是一个非正则表达式对象，则会使用 new RegExp(obj) 隐式地将其转换为正则表达式对象。*
@@ -116,7 +121,7 @@ str.search(/java/i); // 7
 str.search('Java');  // 7
 ```
 
-## 9. match()
+### 2.9 match()
 语法：`String.match(regexp)`
 
 返回一个包含匹配结果的数组，如果没有匹配项，则返回 null。如果参数传入的是一个非正则表达式对象，则会使用 new RegExp(obj) 隐式地将其转换为正则表达式对象。
@@ -128,7 +133,7 @@ str.match(/Java/gi); // ["java", "Java"]
 str.match(/ab/g);    // null
 ```
 
-## 10. split()
+### 2.10 split()
 语法：`String.split([separator][, limit])`
 
 返回一个数组，使用分隔符 separator 来分割字符串，分割的生成的每个结果都作为返回数组的一部分。分隔符可以是一个字符串或正则表达式。如果设置了 limit 参数，那么返回的数组中，最多包含 limit 个元素。
@@ -141,7 +146,7 @@ str.split('?');  // ["Hello", "World!"]
 str.split('',5); // ["H", "e", "l", "l", "o"]
 ```
 
-## 11. trim()
+### 2.11 trim()
 语法：`String.trim()`
 
 去除字符串开头和结尾处的空白字符。
@@ -152,7 +157,7 @@ str.trim();        // 'abc'
 console.log(str);  // '   abc  '
 ```
 
-## 12. toLowerCase()
+### 2.12 toLowerCase()
 语法：`String.toLowerCase()`
 
 将字符串转换为小写，并返回一个副本，不影响字符串本身的值。
@@ -163,7 +168,7 @@ str.toLowerCase(); // 'javascript'
 console.log(str);  // 'JavaScript'
 ```
 
-## 13. toUpperCase()
+### 2.13 toUpperCase()
 语法：`String.toUpperCase()`
 
 将字符串转换为大写，并返回一个副本，不影响字符串本身的值。

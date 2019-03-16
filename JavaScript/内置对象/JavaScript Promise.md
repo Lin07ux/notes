@@ -1,5 +1,7 @@
 ## 基本内容
+
 ### Promise 是什么
+
 Promise 是对异步处理的一种抽象。
 
 在 JavaScript 中，我们通常使用回调函数来进行异步处理，这样就会导致代码出现“回调地狱”，而且如果出了问题，也很难进行捕获处理。
@@ -7,6 +9,7 @@ Promise 是对异步处理的一种抽象。
 Promise 将异步处理进行抽象，并形成规范化的接口，通过使用 Promise 的接口，能够将异步代码写成同步形式，而且还能方便的处理错误和异常。
 
 ### Promise 的状态
+
 Promise 有三种状态：
 
 * pending    暂停
@@ -21,6 +24,7 @@ Promise 有三种状态：
 一旦 Promise 对象的状态完成变化，就不会再改变了。
 
 ### 创建 Promise 对象
+
 标准的一个 Promise 对象可以使用如下语句进行创建：
 
 ```javascript
@@ -57,6 +61,7 @@ const later = function(timeout) {
 > 注意：**Promise 对象一旦创建，就会立即执行。**
 
 ### 使用
+
 创建得到一个 Promise 对象后，我们就可以为其添加后续的处理方法：
 
 * 当对象被`resolve`时的处理方法（onFulfilled）
@@ -92,7 +97,9 @@ later(1000)
 
 
 ## 方法
+
 ### resolve()
+
 `resolve()`方法就是创建 Promise 对象时传入的函数的第一个参数，其用来将 Promise 对象的状态置为成功(fulfilled)，并将异步操作结果 value 作为参数传给成功回调函数。
 
 简单来说，`resolve()`就是用来将 Promise 对象从 pending 状态转成 fulfilled 状态的。而且其有一个参数，表示将要传递给后续的成功处理方法的结果。
@@ -211,6 +218,7 @@ promise.catch(function(e) {
 ```
 
 ### reject()
+
 `reject()`用来将 Promise 对象的状态置为失败(rejected)，并将异步操作错误 error 作为参数传给失败回调函数。
 
 `reject()`方法和`resolve()`方法作用类似，只是其是将 Promise 对象从 pending 状态转成 rejected 状态的。而且其参数表示要传递给后续的失败处理的结果，一般是一个异常对象，当然也可以是不可变值。
@@ -238,6 +246,7 @@ Error: test
 ```
 
 ### then()
+
 `then()`方法是最常用的方法，可以用来给 Promise 对象添加后续的处理回调函数。其可以接受两个参数，分别对应 Promise 成功时的处理回调和失败时的处理回调。简单来说，`then()`就是定义 `resolve`和`reject`函数的。例如，其`resolve`参数相当于：
 
 ```javascript
@@ -296,8 +305,8 @@ resolved
 
 由于 resolve 指定的是异步操作成功后的回调函数，它需要等所有同步代码执行后才会执行，因此最后打印'resolved'。
 
-
 #### onFulfilled 参数
+
 当 Promise 对象的状态变成 fulfilled(也即是异步任务成功执行)时会被调用。这个函数的第一个参数会被设置为 Promise 对象的返回值。一般我们会在这个函数中对异步任务的结果进行处理。
 
 在这个方法中，我们可以有多种处理方式：
@@ -314,6 +323,7 @@ later(1000).then(function() {
 ```
 
 #### onRejected 参数
+
 这个参数在 Promise 实例状态变为 rejected 的时候会被调用，通常用于处理异步操作失败的情况。
 
 需要注意的是，onRejected 回调只会在**当前 Promise 实例**为 rejected 的时候被调用，也就是说，在链式调用中，当前`then()`方法的 onRejected 回调只会在上一个`then()`返回的 Promise 实例被 rejected 的时候调用；而对于当前`then()`自身返回的 Promise 实例的 rejected 状态时并不会被调用。
@@ -323,6 +333,7 @@ later(1000).then(function() {
 所以，一般推荐使用 Promise 实例的`catch()`方法进行异常处理。
 
 #### 返回值
+
 **`then()`方法返回的是一个新的 Promise 实例**。
 
 那么，`then()`绑定的回调方法 onFulfilled 和 onRejected 中，不同的返回值对后续链式有什么影响呢？
@@ -456,6 +467,7 @@ later(1000)
 ```
 
 ### all()
+
 `all()`方法用于将多个 Promise 实例，包装成一个新的 Promise 实例。
 
 该方法接受一个数组作为参数，数组里的元素都是 Promise 对象的实例，如果不是，就会先调用下面讲到的`Promise.resolve()`方法，将参数转为 Promise 实例，再进一步处理。（Promise.all方法的参数可以不是数组，但必须具有 Iterator 接口，且返回的每个成员都是 Promise 实例。）
@@ -514,6 +526,7 @@ two
 ```
 
 ### race()
+
 `race()`方法跟`Promise.all()`方法差不多。唯一的区别在于该方法返回的 Promise 实例并不会等待所有 Proimse 都跑完，而是只要有一个 Promise 实例改变状态，它就跟着改变状态。并使用第一个改变状态实例的返回值作为返回值。
 
 在第一个 Promise 实例变为 resolve 后，并不会取消其他 Promise 实例的执行。
@@ -547,6 +560,7 @@ slowPromise     //仍会执行
 ```
 
 ### catch()
+
 `Promise.prototype.catch`方法是`.then(null, rejection)`的别名，用于指定发生错误时的回调函数。
 
 ```javascript
@@ -676,14 +690,17 @@ promise.catch(function(e) {
 
 
 ## 最佳实践
+
 - 总是在`.then()`里面使用 return 来返回 Promise 对象或者同步值
 - 总是在`.then()`里面 throw 同步的 Error 对象
 - 总是使用`.catch()`来捕获错误
 
 
 ## 一些技巧
+
 ### 快速创建 Promise 对象
-我们主要通过`new Promise(fn)`的方式来创建 Promise 对象，实际上有一个快捷方法`Promise.resolve(value)`可以方便的创建 Promise 对象。
+
+主要通过`new Promise(fn)`的方式来创建 Promise 对象，实际上有一个快捷方法`Promise.resolve(value)`可以方便的创建 Promise 对象。
 
 Promise.resolve 的使用场景主要包括：
 
@@ -701,6 +718,7 @@ Promise.resolve('value').then(function(data) {});
 ```
 
 ### 解决 Promise 对象间的依赖
+
 实际编码中我们可能经常遇到一个 Promise 对象依赖另一个 Promise 对象的执行，并且我们两个 Promise 对象的结果都需要的情况。这时就需要我们在代码中做一些改变了：
 
 ```js
@@ -725,6 +743,7 @@ later(1000)
 ```
 
 ### 串行
+
 在`.then()`里面返回一个 Promise 对象就是一种串行。我们需要构造一个类似下面这样的 Promise 对象：
 
 ```js
@@ -768,6 +787,7 @@ Promise.resolve()
 
 
 ## 参考
+
 1. [你可能不知道的 Promise](http://kohpoll.github.io/blog/2016/05/02/the-promise-you-may-not-know/)
 2. [JavaScript Promise迷你书（中文版）](http://liubin.org/promises-book/)
 3. [打开Promise的正确姿势](http://imweb.io/topic/57a0760393d9938132cc8da9)
