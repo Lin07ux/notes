@@ -5,59 +5,39 @@ DOM 是面向 HTML 和 XML 文档的 API，为文档提供了结构化表示，�
 > 这个 Node 接口在 JavaScript 中是作为 Node 类型实现的，而在 IE8- 浏览器中的所有 DOM 对象都是以 COM 对象的形式实现的。
 > 在现代浏览器中，Node 对象具有一些基本的属性，常用的比如节点的类型值等。
 
-## 节点
+## 一、节点
 
 DOM 是由一个个的节点构成的。DOM 针对节点提供了大量的方法和属性，以便更好的处理节点。
 
-### 节点类型
+### 1.1 节点类型
 
 每个节点都有一个`nodeType`属性，用于表明节点的类型。节点类型在 Node 类型中定义下列 12 个数值常量来表示：
 
-* `Node.ELEMENT_NODE = 1`   元素节点
-
+* `Node.ELEMENT_NODE = 1` 元素节点
 * `Node.ATTRIBUTE_NODE = 2` 属性节点
-
-*	`Node.TEXT_NODE = 3` 	  文本节点
-
-* `Node.CDATA_SECTION_NODE = 4`    CDATA 区段(只出现在 XML 文档中，表示的是 CDATA 区域)
-
+*	`Node.TEXT_NODE = 3` 文本节点
+* `Node.CDATA_SECTION_NODE = 4` CDATA 区段(只出现在 XML 文档中，表示的是 CDATA 区域)
 * `Node.ENTITY_REFERENCE_NODE = 5` 实体引用
-
-* `Node.ENTITY_NODE = 6` 	  实体
-
+* `Node.ENTITY_NODE = 6` 实体
 * `Node.PROCESSING_INSTRUCTION_NODE = 7` 处理指令
-
-* `Node.COMMENT_NODE = 8`   注释节点
-
-* `Node.DOCUMENT_NODE = 9`  文档节点(在 HTML 中就是`document`对象的类型)
-
-* `Node.DOCUMENT_TYPE_NODE = 10`     文档类型节点(在 HTML 中就是顶部首行的文档类型声明语句的类型，如`<!DOCTYPE html>`，可以通过`document.firstChild`来访问)
-
+* `Node.COMMENT_NODE = 8` 注释节点
+* `Node.DOCUMENT_NODE = 9` 文档节点(在 HTML 中就是`document`对象的类型)
+* `Node.DOCUMENT_TYPE_NODE = 10` 文档类型节点(在 HTML 中就是顶部首行的文档类型声明语句的类型，如`<!DOCTYPE html>`，可以通过`document.firstChild`来访问)
 * `Node.DOCUMENT_FRAGMENT_NODE = 11` 文档片段节点(该类型在文档中没有对应的标记，是一种轻量级的文档)
-
 * `Node.NOTATION_NODE = 12` 标记节点(DTD 中声明的符号)
 
-常用的为前三个节点类型。
+> 常用的为前三个节点类型。
 
-
-### 节点属性
+### 1.2 节点属性
 
 * `nodeName` 节点的名称(元素节点返回元素标签名称的大写字符串，文本节点返回'#text'，属性节点返回属性名称，文档节点返回'#document')
-
 * `nodeValue` 节点的值(元素节点总是为 null 且只读，文本节点返回文本值且可读写，属性节点返回属性的值且可读写)
-
 * `nodeType`  节点的类型(12 种节点类型中的一种)
-
 * `parentNode` 返回节点的父节点。该属性返回的永远是一个元素节点。因为只有元素节点才可能有子节点，唯一例外的是`document`节点，它没有父节点。即`document.parentNode`属性将返回 null。
-
 * `childNodes` 返回当前节点所有子节点的数组(返回值类型为 NodeList，包含元素节点和文本节点)。只读属性。
-
 * `firstChild` 返回当前节点的第一个下级子节点。如果某个节点没有任何子节点，该属性将返回 null。只读属性。
-
 * `lastChild`  返回当前节点的最后一个子节点。如果某个节点没有任何子节点，该属性将返回 null。只读属性。
-
 * `nextSibling` 返回紧跟在当前节点后面的一个节点。如果给定节点的后面没有属于一个父节点的节点，该属性将返回 null。只读属性。
-
 * `previousSibling` 返回紧邻当前节点的前面的一个节点。如果给定节点的前面没有同属一个父节点的节点，该属性将返回 null。只读属性。
 
 还有一些其他的属性，这些属性和节点的类型有关，比如，文本节点具有`textContent`、`wholeText`属性，元素节点则没有；而元素节点具有很多的事件属性和位置属性等，文本元素就没有。
@@ -65,45 +45,36 @@ DOM 是由一个个的节点构成的。DOM 针对节点提供了大量的方法
 下面是一些 *元素节点* 中比较常用的属性：
 
 * `tagName` 返回的是对当前元素的标记名称，均为大写字母。
-
 * `innerHTML` 返回该节点中全部子节点的 HTML 代码。可读写，可用来改变该节点元素内的代码
-
 * `innerText` 返回全部子节点中的文本内容。可读写，赋值后，该元素内部的 HTML 代码奖杯清除，并用新的文本内容填充。赋值的文本内容中即便有 HTML 也会被转义，从而保证能显示成文本。
-
 * `attributes` 返回元素节点的全部属性节点组成的 NamedNodeMap 对象。可按照数组方式进行访问，每个子元素均为属性节点对象，其中也会包含节点的共有属性。
 
-
-### 节点方法
+### 1.3 节点方法
 
 * `hasChildNodes()` 返回一个布尔值，指示元素是否有子元素。
 
+## 二、节点管理
 
-### 获取元素节点
+### 2.1 获取元素节点
+
 可以通过如下的几个方法来获取元素节点：
 
 * `document.getElementById(id)` 获取有指定惟一 ID 属性值文档中的元素。
-
 * `<NodeElement>.getElementsByTagName(name)` 返回有指定标记名的元素的数组，返回值是一个即时的 HTMLCollection 类型。如果不存在指定标签的元素，该接口返回的不是 null，而是一个空的 HTMLCollection。可以传递一个星号`*`来获取元素中的所有子元素节点。
-
 * `<NodeElement>.getElementsByClassName(class)` 返回有指定类名的元素的数组，返回值是一个即时的 HTMLCollection 类型。如果不存在指定类的元素，该接口返回的不是 null，而是一个空的 HTMLCollection。可以传入多个类名(使用空格连接成字符串)，匹配的时候会忽略传入的类名的次序。
-
 * `<NodeElement>.querySelector()` w3c 规范新定义的方法，接受选择符(#id/.class/tagName)作为自己的参数，选中符合参数的第一个元素
-
 * `<NodeElement>.querySelectorAll()` w3c 规范新定义的方法，接受选择符(#id/.class/tagName)作为自己的参数，选中符合参数的所有元素。返回一个即时的 HTMLCollection。
 
 这里，**即时性**表示的是仅在进行选择的时候出现在文档中的复合条件的元素集合，在选择之后，通过 JavaScript 等方式新添加如文档中的元素不会出现在这个集合中。
 
 注意：上面的五个方法中，**`getElementById()`方法只存在于`document`对象中，不能由其他的元素节点进行调用**。
 
-
-### 获取、设置和删除元素的属性
+### 2.2 获取、设置和删除元素的属性
 
 这三个方法属于元素，不能被`document`调用。
 
 * `<NodeElement>.getAttribute(attribute)` 返回元素的属性值，属性由 attribute 参数指定。如果未设置对应的属性，则返回 null。
-
 * `<NodeElement>.setAttribute(attribute, value)` 设置元素对象的属性的值。如果元素中未设置过该属性，则会先创建该属性，再设置值；如果已经设置过，则会覆盖之前设置的值。
-
 * `<NodeElement>.removeAttribute(name)`  从元素中删除属性 name
 
 一般来说，元素节点中的属性都能像对象属性一样进行调用，但是`class`属性则不行。因为`class`是 JavaScript 中的一个关键字，不能用于变量名、属性名等，此时就需要使用`className`来获取元素的类名。
@@ -116,22 +87,15 @@ DOM 是由一个个的节点构成的。DOM 针对节点提供了大量的方法
 > 
 > IE 在`setAttribute()`上有很大的问题，最好尽可能使用属性赋值方式。
 
-### 动态更改节点
+### 2.3 动态更改节点
 
 * `document.createElement(tagName)`  创建由 tagName 指定的新的元素节点，返回值是一个指向新建元素节点的引用指针。
-
 * `document.createDocumentFragment()` 创建文档碎片节点，不需要参数
-
 * `document.createTextNode(text)`  创建一个包含静态文本的节点
-
 * `<elelemtn>.cloneNode(deep)` 为给定节点创建一个副本。返回值是一个指向新建克隆节点的引用指针。
-
 * `<element>.appendChild(childNode)`  将指定的节点增加到当前元素的子节点列表的最末处(作为一个新的子节点)。返回一个指向新增子节点的引用指针。
-
 * `<element>.insertBefore(newNode, targetNode)`  将节点 newNode 作为当前元素的子节点插到 targetNode 元素前面。返回一个指向新增子节点的引用指针。
-
 * `<element>.removeChild(childNode)`  从元素中删除子元素 childNode。返回一个指向被删除元素的指针。当某个元素节点被该方法删除时，其所有的子节点都被从原位置删除。
-
 * `<element>.replaceChild(newNode, oldNode)`  将节点 oldNode 替换为节点 newNode。被替换的节点必须属于给定的父节点。返回一个已被替换的那个节点的引用指针。
 
 新创建和复制的节点不会自动加入到文档中，没有`nodeParent`属性。如要要添加入文档，需要用`appendChild()`或`insertBefore()`或`replaceChild()`方法。
@@ -144,7 +108,7 @@ DOM 是由一个个的节点构成的。DOM 针对节点提供了大量的方法
 
 `removeChild()`删除节点的时候，并没有将该节点销毁，只是从原位置去除掉了。之后还可以将该节点加入到文档中，和调用`document.createDocumentFragment()`方法创建一个文档片段类似。
 
-#### insertAfter()
+#### 2.3.1 insertAfter()
 
 DOM 中并不存在`insertAfter()`方法，但是我们可以通过 DOM 提供的其他的 API 来自己实现这个方法。
 
@@ -160,7 +124,7 @@ function insertAfter (newElement, targetElement) {
 }
 ```
 
-### getBoundingClientRect 元素节点位置
+### 2.4 getBoundingClientRect 元素节点位置
 
 该方法用来返回元素的大小以及相对于浏览器可视窗口的位置。
 
@@ -181,37 +145,25 @@ function insertAfter (newElement, targetElement) {
 
 > 该方法除了 IE9 以下浏览器，都支持。
 
-### 元素节点的滚动
+### 2.5 元素节点的滚动
 
 DOM 规范中并没有规定各浏览器需要实现怎样的滚动页面区域，各浏览器实现了相应的方法，可以使用不同的方式控制页面区域的滚动。这些方法作为 HTMLElement 类型的扩展存在，所以它能在【所有元素】上使用。
 
 1. `scrollIntoView(alignWithTop)`
 
-    滚动浏览器窗口或容器元素，以便在当前视窗的可见范围看见当前元素。
-    
-    如果`alignWithTop`为 true，或者省略它，窗口会尽可能滚动到自身顶部与元素顶部平齐。
-    
-    目前各浏览器均支持。
+    滚动浏览器窗口或容器元素，以便在当前视窗的可见范围看见当前元素。如果`alignWithTop`为 true，或者省略它，窗口会尽可能滚动到自身顶部与元素顶部平齐。目前各浏览器均支持。
 
 2. `scrollIntoViewIfNeeded(alignCenter)`
 
-    只在当前元素在视窗的可见范围内不可见的情况下，才滚动浏览器窗口或容器元素，最终让当前元素可见。如果当前元素在视窗中可见，这个方法不做任何处理。
-
-    如果将可选参数`alignCenter`设置为 true，则表示尽量将元素显示在视窗中部（垂直方向）。
-
-    Safari、Chrome 实现了这个方法。
+    只在当前元素在视窗的可见范围内不可见的情况下，才滚动浏览器窗口或容器元素，最终让当前元素可见。如果当前元素在视窗中可见，这个方法不做任何处理。如果将可选参数`alignCenter`设置为 true，则表示尽量将元素显示在视窗中部（垂直方向）。Safari、Chrome 实现了这个方法。
 
 3. `scrollByLines(lineCount)`
 
-    将元素的内容滚动指定的行数的高度，`lineCount`的值可以为正值或是负值。
-
-    Safari、Chrome 实现了这个方法。
+    将元素的内容滚动指定的行数的高度，`lineCount`的值可以为正值或是负值。Safari、Chrome 实现了这个方法。
 
 4. `scrollByPages(pageCount)`
 
-    将元素的内容滚动指定的页面的高度，具体高度由元素的高度决定。
-
-    Safari、Chrome 实现了这个方法。
+    将元素的内容滚动指定的页面的高度，具体高度由元素的高度决定。Safari、Chrome 实现了这个方法。
 
 `scrollIntoView()`和`scrollIntoViewIfNeeded()`作用的是元素的窗口，而`scrollByLines()`、`scrollByPages()`影响元素自身。
 
@@ -233,11 +185,11 @@ document.getElementById(“test”).scrollIntoViewIfNeeded();
 document.body.scrollByPages(-1);
 ```
 
-### 特殊内容
+## 三、特殊内容
 
 除了上述的一些相对普遍适用的方法和属性，DOM 中针对不同的元素节点还存在一些特别的方法和属性。
 
-#### document
+### 3.1 document
 
 document 作为文档的根节点(对应于 html 元素)，还附带有很多的其他属性。
 
@@ -248,7 +200,7 @@ document 作为文档的根节点(对应于 html 元素)，还附带有很多的
 - `body` 取得文档中的 body 元素
 - `head` 取得文档中的 head 元素
 
-#### table
+### 3.2 table
 
 为了协助建立表格，HTML DOM 给`table`、`tbody`和`tr`等元素添加了一些特性和方法。 
 
@@ -281,11 +233,12 @@ document 作为文档的根节点(对应于 html 元素)，还附带有很多的
 - `insertCell(index)` 在 cells 集合的给点位置上插入一个新的单元格
 
 
-## DOM 助手对象
+## 四、DOM 助手对象
 
 除节点外，DOM 还定义了一些助手对象，它们可以和节点一起使用，但不是 DOM 文档必有的部分。
 
-### NodeList
+### 4.1 NodeList
+
 NodeList 是一个“节点的集合”（可以包含元素和其他节点）。
 
 该对象有一个`length`属性和一个`item()`方法：
@@ -343,11 +296,9 @@ NodeList 是一个“节点的集合”（可以包含元素和其他节点）�
 </script>
 ```
 
-### HTMLCollection
+### 4.2 HTMLCollection
 
-HTMLCollection 是一个元素集合。
-
-该对象和 NodeList 很像：有`length`属性来表示该对象的长度，也可以通过`elements.item(index)`来访问。
+HTMLCollection 是一个元素集合。该对象和 NodeList 很像：有`length`属性来表示该对象的长度，也可以通过`elements.item(index)`来访问。
 
 该对象还有一个`nameItem()`方法，可以返回集合中`name`属性或`id`属性值为指定值的元素。
 
@@ -372,7 +323,8 @@ HTMLCollection 对象也是动态的，获取的是元素集合的一个引用�
 > ```
 
 
-### NamedNodeMap
+### 4.3 NamedNodeMap
+
 NamedNodeMap 是一个同时使用数值和名字进行索引的节点表，用于表示元素特性。可以同时使用数组和对象的方式进行访问。
 
 当 NamedNodeMap 用于表示特性时，其中每个节点都是属性节点，其 nodeName 属性被设置为特性名称，而 nodeValue 属性被设置为特性的值。
