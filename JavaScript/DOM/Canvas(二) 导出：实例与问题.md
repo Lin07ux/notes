@@ -1,21 +1,53 @@
 ## 一、导出 canvas
 
-使用`toDataURL()`方法导出在 canvas 元素上绘制的图像。
+绘制好的 canvas 想存储为本地图片，可以使用`canvas.toDataURL()`方法，将其转成图片内容，然后保存即可。
+
+`toDataURL()`接收一个 MIME 类型的参数，表示保存为什么图片格式，一般可以保存为`image/png`、`image/jpg`、`image/jpeg`、`image/gif`。
+
+基本 HTML 结构如下：
+
+```html
+<canvas id="canvas"></canvas>
+<button class="button-balanced" id="save">save</button>
+<br />
+<a href="" download="canvas_love.png" id="save_href">
+    <img src="" id="save_img"/>
+</a>
+```
+
+对应的 JavaScript 代码如下：
 
 ```javascript
-var drawing = document.getElementById("drawing");
-
-// 确定浏览器是否支持canvas元素
-if (drawing.getContext) {
-    // 取得图像数据的URL
-    var imgURL = drawing.toDataURL("image/png");
-
-    // 显示图像
-    var image = document.createElement("img");
-    image.src = imgURL;
-    document.body.appendChild(image);
+function drawLove(canvas){
+    let ctx = canvas.getContext("2d");
+    ctx.beginPath();
+    ctx.fillStyle="#E992B9";
+    ctx.moveTo(75,40);
+    ctx.bezierCurveTo(75,37,70,25,50,25);
+    ctx.bezierCurveTo(20,25,20,62.5,20,62.5);
+    ctx.bezierCurveTo(20,80,40,102,75,120);
+    ctx.bezierCurveTo(110,102,130,80,130,62.5);
+    ctx.bezierCurveTo(130,62.5,130,25,100,25);
+    ctx.bezierCurveTo(85,25,75,37,75,40);
+    ctx.fill();
 }
+
+var canvas = document.getElementById('canvas');
+var button = document.getElementById('save');
+
+drawLove(canvas); 
+
+button.addEventListener('click', function(){
+    var img   = document.getElementById('save_img');
+    var aLink = document.getElementById('save_href');
+    var temp  = canvas.toDataURL('image/png');
+    
+    img.src = temp;
+    aLink.href = temp;
+})
 ```
+
+这样点击链接就能够下载得到图片了。[demo](http://codepen.io/Lin07ux/pen/RGkoxN)
 
 ## 二、问题
 
