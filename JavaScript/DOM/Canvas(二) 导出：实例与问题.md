@@ -1,4 +1,26 @@
-### canvas 转 base64/jpeg 时，透明区域变成黑色背景的解决方案
+## 一、导出 canvas
+
+使用`toDataURL()`方法导出在 canvas 元素上绘制的图像。
+
+```javascript
+var drawing = document.getElementById("drawing");
+
+// 确定浏览器是否支持canvas元素
+if (drawing.getContext) {
+    // 取得图像数据的URL
+    var imgURL = drawing.toDataURL("image/png");
+
+    // 显示图像
+    var image = document.createElement("img");
+    image.src = imgURL;
+    document.body.appendChild(image);
+}
+```
+
+## 二、问题
+
+### 2.1 canvas 转 base64/jpeg 时，透明区域变成黑色背景的解决方案
+
 在用 canvas 将 png 图片转 jpeg 时，会将透明区域填充成黑色。
 
 基本 HTML 代码如下：
