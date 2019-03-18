@@ -1,4 +1,6 @@
-我们平常在 Linux 中使用`cp`命令时,会发现将一个目录中文件复制到另一个目录具有相同文件名称时，即使添加了`-rf`参数强制覆盖复制时，系统仍然会提示让你一个个的手工输入`y`确认复制，所添加的`rf`参数是不起作用的。
+> 转摘：[Linux 使用 cp 命令强制覆盖功能](http://blog.csdn.net/xinluke/article/details/52229431)
+
+在 Linux 中使用`cp`命令时，会发现将一个目录中文件复制到另一个目录具有相同文件名称时，即使添加了`-rf`参数强制覆盖复制时，系统仍然会提示输入`y`确认复制，所添加的`rf`参数是不起作用的。
 
 ### 原因 
 `cp`命令被系统设置了别名，相当于`cp='cp -i'`。
@@ -53,9 +55,5 @@ alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-ti
     ```shell
     alias cp='cp -i'
     ```
-
-### 转摘
-
-[Linux 使用 cp 命令强制覆盖功能](http://blog.csdn.net/xinluke/article/details/52229431)
 
 
