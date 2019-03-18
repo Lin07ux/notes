@@ -17,4 +17,18 @@
 error_log /dev/null crit; 
 ```
 
+### 开启 http2
+
+Nginx 目前已经支持 http2，但是要开启 http2 必须要使用 https，也就是要先设置证书。对于已经开启 https 的情况下，可以通过如下配置来开启 http2：
+
+```conf
+server {
+   listen       443 ssl http2;
+   server_name  localhost;
+
+   ssl_certificate     server.crt;
+   ssl_certificate_key  server.key;
+}
+```
+
 
