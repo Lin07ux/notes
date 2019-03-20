@@ -7,6 +7,8 @@
 - `Command + B` 查看一个类的源码定义，需要光标在类的名称上，和按住`Command`后点击类名的效果一样。
 - `Command + D` 快速选中当前文件中与当前选中的单词相同的下一个单词。(原始快捷键是`Ctrl + G`)
 - `Ctrl + Command + D` 快速选中当前文件中与当前选中的单词相同的所有单词。(原始快捷键是`Ctrl + Command + G`)
+- `Command + Shift + -` 折叠全部代码
+- `Command + Shift + +` 打开全部代码，取消折叠
 
 ### Tips
 
@@ -40,4 +42,12 @@ PHPStorm 可以直接运行一个 PHP 文件，并在浏览器中打开页面，
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1481686914470.png)
 
 虽然 MacOS 中默认是安装了 PHP 的，不过由于 PHPStorm 需要使用 CGI 的方式解析 PHP，直接使用 MacOS 自带的 PHP 解析器的时候，打开预览页面会出现 502 错误。所以我们需要自行安装 PHP 和 PHP-fpm，并将自己安装的解析器设置为 PHPStorm 默认的解析器。
+
+## 问题
+
+### 无法对类、方法等进行提示
+
+PHPStorm 突然对类名、方法、变量等不再提示，可能是由于缓存导致的，可以尝试清除缓存并重启：`File --> Invalidate Caches/Restart`。
+
+还有可能是开启了省电模式，可以查看是否开启：`File --> Power Save Mode`，如果开启了(前面有勾号)则关闭即可。
 
