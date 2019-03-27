@@ -1,6 +1,7 @@
 在 CSS 中，`before/after`伪元素选择器中，有一个`content`属性，能够实现页面中的内容插入。
 
-### 插入纯文字
+### 1. 插入纯文字
+
 `content: "插入的文章"`，或者`content: none`不插入内容。
 
 ```html
@@ -22,7 +23,8 @@ h2::after{
 显示效果：![插入纯文字](http://cnd.qiniu.lin07ux.cn/markdown/1470995058170.png)
 
  
-### 嵌入文字符号
+### 2. 嵌入文字符号
+
 可以使用`content`属性的`open-quote`属性值和`close-quote`属性值在字符串两边添加诸如括号、单引号、双引号之类的嵌套文字符号。`open-quote`用于添加开始的文字符号，`close-quote`用于添加结束的文字符号。 
 
 ```css
@@ -56,7 +58,8 @@ h2::after{
 > ![quotes 引号字符](http://cnd.qiniu.lin07ux.cn/markdown/1471009833718.png)
 
 
-### 插入图片
+### 3. 插入图片
+
 `content`属性也可以通过 url 来引入图片。
 
 ```html
@@ -72,7 +75,8 @@ h3::after{
 ![插入图片](http://cnd.qiniu.lin07ux.cn/markdown/1471010185632.png)
 
 
-### 插入元素的属性值
+### 4. 插入元素的属性值
+
 `content`属性最强大的功能是可以直接利用 attr 获取元素的属性，将其插入到对应位置。
 
 ```html
@@ -88,8 +92,11 @@ a:after{
 ![插入元素属性值](http://cnd.qiniu.lin07ux.cn/markdown/1471010281150.png)
 
 
-### 插入项目编号
-利用`content`的`counter`属性可以针对多个项目追加连续编号.
+### 5. 插入项目编号
+
+#### 5.1 基本编号
+
+利用`content`的`counter`属性可以针对多个项目追加连续编号。
 
 ```html
 <h1>大标题</h1>
@@ -115,7 +122,9 @@ h1:before{
 
 > `counter-increment`默认情况下，会将其第一个参数对应的计数器加1，但是还可以指定第二个参数，表示计数器变化的值，比如：`counter-increment: my 10;`表示计数器 my 的值在这一步加 10；`counter-increment: my -2;`表示计数器 my 的值在这一步减2。
 
-当然，我们还可以修饰项目的编号：
+#### 5.2 编号修饰
+
+还可以修饰项目的编号：
 
 ```css
 h1{
@@ -129,6 +138,8 @@ h1:before{
 ```
 
 ![修饰编号](http://cnd.qiniu.lin07ux.cn/markdown/1471010457174.png)
+
+#### 5.3 编号样式
 
 项目的编号可以不仅仅是数字编号，还可以参考 ul 元素的`list-style-type`属性的值。
 
@@ -144,6 +155,8 @@ h1:before{
 ```
 
 ![其他类型的编号](http://cnd.qiniu.lin07ux.cn/markdown/1471010542048.png)
+
+#### 5.4 嵌套编号
 
 编号还能进行嵌套使用，每种类型的元素都可以有其独立的编号，而不互相影响：
 
@@ -180,7 +193,9 @@ p{
 
 ![嵌套编号](http://cnd.qiniu.lin07ux.cn/markdown/1471010665514.png)
 
-对于上面的例子，p 元素的编号是连续的。如果我们想对于每一个 h1 元素后的三个 p 重新编号的话，可以使用`counter-reset`属性重置：
+#### 5.5 重置编号
+
+对于上面的例子，p 元素的编号是连续的。如果想对于每一个 h1 元素后的三个 p 重新编号的话，可以使用`counter-reset`属性重置：
 
 ```css
 h1{
@@ -190,6 +205,8 @@ h1{
 ```
 
 ![重置编号](http://cnd.qiniu.lin07ux.cn/markdown/1471010777041.png)
+
+#### 5.6 复杂编号
 
 每一类元素的编号不仅仅能在其上使用，还可以在其他元素上被使用，这样就可以实现更复杂的编号：
 
@@ -238,7 +255,8 @@ h3{
 ![嵌套编号](http://cnd.qiniu.lin07ux.cn/markdown/1471011090223.png)
 
 
-## 参考
+### 6. 参考
+
 1. [CSS3的content属性详解](https://github.com/dwqs/blog/issues/28)
 2. [小tip:CSS计数器+伪类实现数值动态计算与呈现](http://www.zhangxinxu.com/wordpress/2014/12/css-counters-pseudo-class-checked-numbers/)
 
