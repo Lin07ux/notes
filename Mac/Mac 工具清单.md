@@ -69,6 +69,24 @@ GIMP，PS该有的，它基本都有。
 
 [官网](https://giphy.com/apps/giphycapture)
 
+### 7. Pap.er
+
+简洁、易用的 Mac 免费壁纸软件，可以查看很多的高清(4k/5k)壁纸，并能允许直接设置不同显示器的壁纸。
+
+[Pap.er 官网](http://paper.meiyuan.in/)
+
+<img src="http://cnd.qiniu.lin07ux.cn/markdown/1553584297590.png" width="176"/>
+
+### 8. Lunar
+
+Lunar 最基础的功能就是可以在不影响笔记本屏幕的情况下对单个显示器的亮度进行调节，而且一切操作都是在桌面上完成的。
+
+还能在 Lunar 上对特定的软件预设特定的亮度，例如工作用的软件可以适当暗一点，看电影玩游戏的时候可以适当亮一点。除此之外，还可以在 Lunar 上选择随时间改变亮度，这样 Lunar 就会根据时间的变化推荐并更改屏幕亮度。
+
+[Lunar 官网](https://lunarapp.site/)
+
+<img src="http://cnd.qiniu.lin07ux.cn/Lunar.gif"/>
+
 ## 四、编程开发
 
 ### 1. Sequel Pro
