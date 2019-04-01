@@ -60,6 +60,18 @@ composer self-update
 
 > 如果通过自身的命令更新失败，那么可以尝试重新执行安装过程。比如，在 Mac 中，可以从官网上下载最新版本，然后移动下载的文件为`/usr/local/bin/composer`即可。
 
+### 5. 配置镜像源
+
+在国内使用 Composer 安装依赖在没有代理的时候，会比较慢，可以将 Composer 的安装源改为国内的镜像源。目前有两个比较好的选择，分别是 Larave-china 和 phpcomposer 源：
+
+```shell
+# phpcomposer
+composer config -g repo.packagist composer https://packagist.phpcomposer.com
+# Larave-china
+composer config -g repo.packagist composer https://packagist.laravel-china.org
+```
+
+当然，也可以不这样全局修改，也可以修改特定项目的安装源，只需将上面命令中的`-g`选项去掉即可。
 
 ## 二、使用
 
