@@ -29,28 +29,42 @@ use Illuminate\Support\Str;
 trait UsesUuidAsPrimaryKey
 {
     /**
-     * The primary key for the model.
+     * Boot all of traits on the model.
      *
-     * @var string
+     * @return void
      */
-    // protected $primaryKey = 'uuid';
-    
-    protected $keyType = 'string';
-
-    public $incrementing = false;
-    
-    protect static function bootUsesUuidAsPrimaryKey()
+    protected static function bootUsesUuidAsPrimaryKey ()
     {
-        static::creating(function ($model) {
+        static::creating(function (Model $model) {
             if (! $model->getKey()) {
                 $model->{$model->getKeyName()} = (string) Str::uuid();
             }
         });
     }
+    
+    /**
+     * Get the primary key for the model.
+     *
+     * @return string
+     */
+    public function getKeyName()
+    {
+        return 'uuid';
+    }
+    
+    /**
+     * Get the value indicating whether the IDs are incrementing.
+     *
+     * @return bool
+     */
+    public function getIncrementing()
+    {
+        return false;
+    }
 }
 ```
 
-> 如果 Model 的 UUID 主键名称不是默认的`id`，而是`uuid`，可以在这个 trait 中设置主键名。
+> 由于 Trait 中定义的属性不能和其他类中定义的类的可见性、初始化值不同，所以必须要通过定义方法的方式来改变值，否则会硬错误。
 
 然后就可以在 Model 中使用：
 
