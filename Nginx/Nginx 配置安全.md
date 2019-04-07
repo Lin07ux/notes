@@ -44,36 +44,6 @@ location /files {
 
 解决这个漏洞只需要保证`location`和`alias`的值都有或都没有后缀`/`。
 
-### add_header 覆盖漏洞
-
-Nginx 的配置文件分为 Server、Location、If 等一些配置块，并且存在包含关系，和编程语言比较类似。如果在外层配置的一些选项，是可以被继承到内层的。
-
-但这里的继承也有一些特性，比如`add_header`，子块中配置后将会**覆盖**父块中的`add_header`添加的**所有 HTTP 头**，造成一些安全隐患。
-
-如下列代码：
-
-```conf
-server {
-    ...
-    add_header Content-Security-Policy "default-src 'self'";
-    add_header X-Frame-Options DENY;
-
-    location = /test1 {
-        rewrite ^(.*)$ /xss.html break;
-    }
-
-    location = /test2 {
-        add_header X-Content-Type-Options nosniff;
-        rewrite ^(.*)$ /xss.html break;
-    }
-}
-```
-
-Server 块添加了 CSP 头，但`/test2`的`location`中又添加了`X-Content-Type-Options`头，导致父块中的`add_header`全部失效。
-
-要解决这个漏洞就需要注意不要在父子块中分别配置`add_header`头。
-
-
 ### 转摘
 
 [三个案例看Nginx配置安全](https://www.leavesongs.com/PENETRATION/nginx-insecure-configuration.html)
