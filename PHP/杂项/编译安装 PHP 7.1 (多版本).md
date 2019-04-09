@@ -11,7 +11,7 @@ cd ~
 wget http://cn2.php.net/distributions/php-7.1.25.tar.gz
 
 # 解压
-tar -xzxvf php-7.0.2.tar.gz
+tar -zxvf php-7.0.2.tar.gz
 ```
 
 ### 2. 编译安装
@@ -26,7 +26,7 @@ tar -xzxvf php-7.0.2.tar.gz
 cd ~/php-7.1.25
 
 # 编译
-./configure --prefix=/usr/local/php71 --exec-prefix=/usr/local/php71 --bindir=/usr/local/php71/bin --sbindir=/usr/local/php71/sbin --includedir=/usr/local/php71/include --libdir=/usr/local/php71/lib/php --mandir=/usr/local/php71/php/man --with-config-file-path=/usr/local/php71/etc --with-mcrypt --with-mhash --with-openssl --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --enable-pdo --with-gd --with-iconv --with-zlib --enable-zip --enable-inline-optimization --enable-intl --disable-rpath --enable-shared --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-sysvshm --enable-mbregex --enable-mbstring --enable-ftp --enable-gd-native-ttf --enable-pcntl --enable-sockets --with-xmlrpc --enable-phar  --enable-posix --enable-soap --without-pear --with-gettext --enable-session --with-curl --with-jpeg-dir --with-png-dir --with-freetype-dir --with-freetype-dir --enable-opcache --enable-fpm --with-fpm-user=nginx --with-fpm-group=nginx --without-gdbm --enable-fast-install --disable-fileinfo --with-xpm-dir --with-bz2
+./configure --prefix=/usr/local/php71 --exec-prefix=/usr/local/php71 --bindir=/usr/local/php71/bin --sbindir=/usr/local/php71/sbin --includedir=/usr/local/php71/include --libdir=/usr/local/php71/lib/php --mandir=/usr/local/php71/php/man --with-config-file-path=/usr/local/php71/etc --with-mhash --with-openssl --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --enable-pdo --with-gd --with-iconv --with-zlib --enable-zip --enable-inline-optimization --enable-intl --disable-rpath --enable-shared --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-sysvshm --enable-mbregex --enable-mbstring --enable-ftp --enable-gd-native-ttf --enable-pcntl --enable-sockets --with-xmlrpc --enable-phar  --enable-posix --enable-soap --without-pear --with-gettext --enable-session --with-curl --with-jpeg-dir --with-png-dir --with-freetype-dir --with-freetype-dir --enable-opcache --enable-fpm --with-fpm-user=nginx --with-fpm-group=nginx --without-gdbm --enable-fast-install --disable-fileinfo --with-xpm-dir --with-bz2
 
 # 安装
 make clean && make && make install
@@ -109,20 +109,37 @@ ln -s /usr/local/php71/bin/phpize /usr/bin/phpize71
 
 ### 7. 编译错误
 
-如果编译过程有报错，提示缺失依赖，则需要安装相应的依赖：
+如果编译过程有报错，提示缺失依赖，则需要安装相应的依赖。
+
+#### 7.1 常见错误
+
+常见错误对应要安装的依赖如下：
 
 ```
 报错 Cannot find OpenSSL's <evp.h>
 执行 yum -y install openssl openssl-devel
 
+报错 configure: error: cURL version 7.15.5 or later is required to compile php with cURL support
 报错 Please reinstall the libcurl distribution
 执行 yum -y install curl-devel
 
-错误 jpeglib.h not found
-执行 yum -y install libjpeg.x86_64 libpng.x86_64 freetype.x86_64 libjpeg-devel.x86_64 libpng-devel.x86_64 freetype-devel.x86_64 libjpeg-devel
+报错 configure: error: libxml2 not found. Please check your libxml2 installation.
+执行 yum install -y libxml2-devel
+
+错误 configure: error: jpeglib.h not found.
+执行 yum -y install libjpeg-devel
+
+报错 configure: error: png.h not found.
+执行 yum install -y libpng-devel
+
+报错 configure: error: freetype-config not found.
+执行 yum install -y freetype-devel
+
+报错 configure: error: Please reinstall the libzip distribution
+执行 yum install -y libzip-devel
 
 错误 checking for BZip2 in default path... not found configure: error: Please reinstall the BZip2 distribution
-执行 yum -y install bzip2-devel.x86_64
+执行 yum -y install bzip2-devel
 
 错误 configure: error: xpm.h not found.
 执行 yum -y install libXpm-devel
@@ -143,4 +160,46 @@ ln -s /usr/local/php71/bin/phpize /usr/bin/phpize71
 执行 yum -y install libxslt-devel
 ```
 
+#### 7.2 libzip 版本过低
+
+当 libzip 的版本过低时，可能会有类似如下的错误：
+
+```
+checking for libzip... configure: error: system libzip must be upgraded to version >= 0.11
+```
+
+此时需要将原先安装的低版本的 libzip 卸载掉，然后再下载新版本的 libzip 源码进行编译安装：
+
+```shell
+yum remove -y libzip
+wget https://libzip.org/download/libzip-1.5.2.tar.gz
+tar -zxvf libzip-1.5.2.tar.gz
+cd libzip-1.5.2
+mkdir build && cd build
+cmake ..
+make && make test && makte install
+```
+
+> [libzip - github](https://github.com/nih-at/libzip/blob/master/INSTALL.md)
+
+#### 7.3 off_t 未定义
+
+报错如下：
+
+```
+configure: error: off_t undefined; check your library configuration
+```
+
+`off_t`类型是在头文件`unistd.h`中定义的，在 32 位系统编译成`long int`，64 位系统则编译成`long long int`。在进行编译的时候是默认查找 64 位的动态链接库，但是默认情况下 CentOS 的动态链接库配置文件`/etc/ld.so.conf`里并没有加入搜索路径，这个时候需要将`/usr/local/lib64`、`/usr/lib64`这些针对 64 位的库文件路径加进去。
+
+```shell
+#添加搜索路径到配置文件
+echo '/usr/local/lib64
+/usr/local/lib
+/usr/lib
+/usr/lib64'>>/etc/ld.so.conf
+
+#然后 更新配置
+ldconfig -v
+```
 
