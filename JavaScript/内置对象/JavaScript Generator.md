@@ -23,13 +23,26 @@ Generator 有两个最基本的概念：
 
 ```JavaScript
 function *simple() {
+  console.log('start');
+  
   yield 1;
   yield 2;
   yield 3;
 }
 ```
 
-生成器函数可以和一般的函数一样执行，只是执行生成器函数只是返回一个生成器对象，而不是真正的执行其内部代码。
+生成器函数可以和一般的函数一样执行，只是执行生成器函数只是返回一个生成器对象，而不是真正的执行其内部代码。也就是说，在调用生成器函数时，生成器函数定义内的代码其实是没有执行的，而是返回了一个可以控制生成器函数内的代码的执行状态的生成器对象，通过生成器对象中的`next()`来让生成器函数中的代码一步步的执行。
+
+比如，对于上面的生成器函数示例，进行如下的调用，输出如下：
+
+```shell
+let gen = simple(); // 无输出
+
+gen.next(); // 先输出字符串 start，再输出对象 { value: 1, done: false }
+gen.next(); // 输出对象 { value: 2, done: false }
+gen.next(); // 输出对象 { value: 3, done: false }
+gen.next(); // 输出对象 { value: undefined, done: true }
+```
 
 ## 三、生成器对象
 
