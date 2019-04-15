@@ -1,9 +1,6 @@
 ### 1、分流代理
-效果：
-	将不同的访问方式分配给不同的服务。
-	输入http://192.168.0.101, http://localhost会看到不同的结果
 
-配置：
+将不同的访问方式分配给不同的服务。如下例所示，输入`http://192.168.0.101`和`http://localhost`会看到不同的结果：
 
 ```conf
 server {
@@ -21,16 +18,15 @@ server {
     server_name  192.168.0.101;
 
     location / {
-        root   D:\GitHub\areu\web;
+        root   /usr/local/web/public;
         index  home.html;
     }
 }
 ```
 
 ### 2、静态文件拦截器
-效果：静态文件拦截器，将以`images/js/img/css...`开头的地址映射到网站目录，由 ngnix 直接提供服务。
 
-配置：
+将以`images/js/img/css...`开头的地址映射到网站目录，由 ngnix 直接提供服务：
 
 ```conf
 http {
@@ -38,7 +34,7 @@ http {
     server {
         ...
         location ~ ^/(images/|img/|javascript/|js/|css/|stylesheets/|flash/|media/|static/|robots.txt|humans.txt|favicon.ico) {
-          root /usr/local/silly_face_society/node/public;
+          root /usr/local/web/public;
           access_log off;
           expires max;
         }
@@ -48,7 +44,6 @@ http {
 ```
 
 ### 3、设置缓存
-配置：
 
 ```conf
 http {
@@ -59,8 +54,7 @@ http {
 }
 ```
 
-### 4、设置Gzip压缩
-配置：
+### 4、设置 Gzip 压缩
 
 ```conf
 http {
@@ -76,12 +70,16 @@ http {
 }
 ```
 
-### 5、返回 404
-如果对某个文件或者文件夹禁止访问，可以使用`deny all;`返回 403 禁止访问状态码，也可以使用`return 404;`返回 404 文件不存在状态码。
+### 5、返回状态码
+
+可以在一些情况下，直接返回状态码，从而表示立即结束请求，并返回指定状态码的响应。
+
+比如，对某个文件或者文件夹禁止访问，可以使用`deny all;`返回 403 禁止访问状态码，也可以使用`return 404;`返回 404 文件不存在状态码。
 
 > 更好的建议是，将这个文件或者文件夹放在网站目录之外。
 
 ### 6、代理转发
+
 下面的配置可以将`domain.com/app`的访问转发到`http://192.168.10.38:3000/app`进行处理。
 
 ```conf
@@ -103,6 +101,7 @@ server
 ```
 
 ### 7、部署 ThinkPHP
+
 fastcgi 模块自带了一个`fastcgi_split_path_info`指令，这个指令根据给定的正则表达式来分割 URL，从而提取出脚本名和 path info 信息。
 
 另外，`try_files`指令可以用来判断请求的文件是否存在于服务器上。在`try_files`指令中使用的是`$request_uri`而不是`$uri`，是因为前者可以将请求的 uri 中`?`后的查询字段也都传递过去，后者则不行。
@@ -138,6 +137,7 @@ server {
 ```
 
 ### 8、rewrite 重写访问
+
 比如，网站的 Api 放在根目录下，但是需要将对 Api 的访问转向到统一的入口文件上进行处理。
 
 ```conf
@@ -151,56 +151,8 @@ location ^~ /api/ {
 }
 ```
 
-### 9、跨域配置
+### 9. 将无 www 的访问跳转到 www 子域名
 
-```conf
-upstream service {
-    server 127.0.0.1:8080;
-}
-
-# 将需要跨域的域名或者IP解析出来，方便后面的配置处理。
-map $http_origin $cors_header {
-    default "";
-    "~^https?://localhost(:[0-9]+)?$" "$http_origin";
-}
-
-server {
-    listen 80;
-    server_name 127.0.0.1;
-
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
-
-    location = /favicon.ico {
-        deny all;
-        error_log off;
-        access_log off;
-        log_not_found off;
-    }
-
-    location /api/ {
-        add_header 'Access-Control-Allow-Origin' '$cors_header' always;
-        add_header 'Access-Control-Allow-Credentials' 'true' always;
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
-        # X-AUTH-USER, X-AUTH-TOKEN，是API中传递的自定义 HEADER
-        add_header 'Access-Control-Allow-Headers' 'Origin,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Accept,Cookie,Set-Cookie, X-AUTH-USER, X-AUTH-TOKEN' always;
-        
-        if ($request_method = 'OPTIONS') {
-            add_header 'Content-Length' 0 always;
-            add_header 'Content-Type' 'text/plain charset=UTF-8' always;
-
-            return 200;
-        }
-
-        uwsgi_pass service;
-        include uwsgi_params;
-    }
-}
-```
-
-参考：[CORS on Nginx](https://enable-cors.org/server_nginx.html)
-
-### 10. 将无 www 的访问跳转到 www 子域名
 当需要将无子域名的访问都跳转到 www 子域名上时，可以在 server 块中使用如下的配置：
 
 ```conf
@@ -208,5 +160,19 @@ if ($host = 'domain.com') {
    return 301 http://www.$host$request_uri;
 }
 ```
+
+### 10. 按天生成日志文件
+
+可以使用`map`定义一个时间结构，并且在`access_log`的配置名中加上这个结构，类似下面这样：
+
+```conf
+# nginx.conf
+map $time_iso8601 $logdate {
+    '~^(?\d{4}-\d{2}-\d{2})' $ymd; default 'nodate'; 
+}
+
+accesslog '/var/log/nginx/access${logdate}.log'
+```
+
 
 
