@@ -1,6 +1,26 @@
 
 Vagrant 的安装见文件《使用 Vagrant 打造跨平台开发环境.pdf》
 
+### Vagrant box 无法启动
+
+在更新系统之后，在启动虚拟机的时候，可能会出现类似如下的错误：
+
+```
+There was an error while executing `VBoxManage`, a CLI used by Vagrant
+for controlling VirtualBox. The command and stderr is shown below.
+
+Command: ["hostonlyif", "create"]
+
+Stderr: 0%...
+Progress state: NS_ERROR_FAILURE
+VBoxManage: error: Failed to create the host-only adapter
+VBoxManage: error: VBoxNetAdpCtl: Error while adding new interface: failed to open /dev/vboxnetctl: No such file or directory
+VBoxManage: error: Details: code NS_ERROR_FAILURE (0x80004005), component HostNetworkInterfaceWrap, interface IHostNetworkInterface
+VBoxManage: error: Context: "RTEXITCODE handleCreate(HandlerArg *)" at line 94 of file VBoxManageHostonly.cpp
+```
+
+这一般是由于 VirtualBox 的版本不支持当前操作系统导致的，需要下载新版的 [VirtualBox](https://www.virtualbox.org/wiki/Downloads)，重新安装来解决。
+
 ### 在 host 文件中设置的域名无法通过浏览器访问到虚拟机
 
 **问题**
