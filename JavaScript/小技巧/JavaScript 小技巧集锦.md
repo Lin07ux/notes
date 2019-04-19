@@ -7,20 +7,22 @@ this.value = this.value.replace(/[^\d]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ");
 
 ### 2. ~~ 的作用
 
-`~~`会将其后面的表达式的值转换为整数。如下：
+`~~`会将其后面的表达式的值转换为整数，而且可以去除小数部分。如下：
 
 ```JavaScript
-~~true == 1
-~~false == 0
-~~"" == 0
-~~[] == 0
+~~true === 1
+~~false === 0
+~~"" === 0
+~~[] === 0
 
-~~undefined ==0
-~~!undefined == 1
-~~null == 0
-~~!null == 1
+~~undefined === 0
+~~!undefined === 1
+~~null === 0
+~~!null === 1
 
-~~("1nd") == 0
+~~("1nd") === 0
+
+~~1.21 === 1
 ```
 
 ### 3. 滚动到最底部
@@ -124,7 +126,6 @@ if (top.location != self.location)top.location=self.location;
 
 `<input onkeydown='if(event.keyCode==13) event.keyCode=9'>`
 
-
 ### 10. 自定义异常
 
 ```javascript
@@ -134,7 +135,7 @@ function UserException(message) {
     this.name = "UserException";
 }
 
-//重写 toString 方法，在抛出异常时能直接获取有用信息
+// 重写 toString 方法，在抛出异常时能直接获取有用信息
 UserException.prototype.toString = function() {
     return this.name + ': "' + this.message + '"';
 }
@@ -173,22 +174,26 @@ $('a').on('touchend', function (e) {
 })
 ```
 
-### 14. 向下取整
+### 14. 取整(去除小数部分)
 
 ```JavaScript
-var a = ~~3.14;   // 3
-var b = 3.14 >> 0;   // 3
-var c = 3.14 | 0;  // 3
+~~3.14 === 3;
+3.14 >> 0 === 3;
+3.14 | 0 === 3;
+'3.14' | 0 === 3;
+'3.14' ^ 0 === 3;
+
+~~-3.14 === -3;
+-3.14 >> 0 === -3;
+-3.14 | 0 === -3;
+
+'-3.14' | 0 === -3;
+'-3.14' ^ 0 === -3;
 ```
 
-### 15. 字符串转换为数值并取整
+当使用上面的方式取整时，对正数是向下取整，对负数是向上取整。
 
-```JavaScript 
-var a = '3.14' | 0;  // 3
-var b = '3.14' ^ 0;  // 3
-```
-
-### 16. 变量值交换
+### 15. 变量值交换
 
 ```JavaScript
 var a = 1, b =2;
@@ -196,7 +201,9 @@ var a = 1, b =2;
 a = [b, b = a][0];
 ```
 
-### 17. 截断数组
+### 16. 截断数组
+
+直接设置数组的`length`值可以对数组进行截断处理，也就是将超出该长度的值去除：
 
 ```JavaScript
 var arr = [1, 2, 3, 4, 5, 6];
@@ -205,4 +212,43 @@ arr.length = 3;
 console.log(arr);  // [1, 2, 3]
 ```
 
+这样并没有调用`Array.slice()`方法的效率高，所以可以尽量使用该方法：
+
+```JavaScript
+var arr = [1, 2, 3, 4, 5, 6];
+
+arr = arr.slice(0, 3);
+```
+
+> `Array.slice()`方法不会修改原数组。
+
+### 17. 幂运算
+
+从 ES7 开始，可以使用`**`进行幂运算，比使用`Math.power(2,3)`要快得多。
+
+```JavaScript
+console.log(2**3);   // Result: 8
+```
+
+可以使用位左移运算符`<<`来表示以 2 为底的幂运算：
+
+```JavaScript
+// 以下表达式是等效的:
+Math.pow(2, n)；
+2 << (n -1);
+2**n;
+```
+
+### 18. 序列化 JSON 时增加空格
+
+`JSON.stringify()`方法可以接受两个额外的参数，一个是函数（形参为`replacer`），用于过滤要显示的 JSON，另一个是空格个数（形参为`space`），可以是一个整数，表示空格的个数，也可以是一个字符串（比如`\t`表示制表符），这样得到的 JSON 更容易阅读。
+
+```JavaScript
+console.log(JSON.stringify({ alpha: 'A', beta: 'B' },null, '\t'));
+// Result:
+// '{
+//     "alpha": A,
+//     "beta": B
+// }'
+```
 
