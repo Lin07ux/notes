@@ -16,6 +16,8 @@ ES6 中，通过迭代器机制为 Map、Array、String 等对象提供了统一
 
 * `Symbol.iterator` 对象中的一个特殊的属性，对象被迭代时需要使用该属性中定义的方法来实现。
 
+* `Symbol.asyncIterator` 对象的一个特殊属性，对象被`for...await..of`遍历的时候会被调用。这是 ECMAScript 2018 引入的一个新的语法。它与`Symbol.iterator`的区别在于：后者在遍历的时候每次会返回一个包含有`{ value, done }`的对象，而它则需要返回一个 Promise 对象。
+
 另外，`Generator`生成器和`Generator Function`生成器函数与迭代器也是息息相关的。
 
 ## 二、示例
@@ -76,7 +78,48 @@ for (let i of obj) {
 }
 ```
 
-### 2.3 Generator
+### 2.3 Async Iterable
+
+如要异步迭代对象，需要实现对象的`Symbol.asyncIterator`属性，使其变成一个异步迭代器：
+
+```JavaScript
+const ai = {
+    [Symbol.asyncIterator]() {
+        return {
+            next: function() {
+                if (this.index > 0) {
+                    this.index--
+                    return new Promise(res => res({ value: this.index, done: false }))
+                }
+                
+                return new Promise(res => res({ value: 0, done: true }))
+            },
+            index: 3
+        }
+    }
+}
+```
+
+此时要迭代`ai`，不能使用`for..of`而是要使用新的`for...await...of`，它看起来会是这样：
+
+```JavaScript
+async function fAsyncLoop(){
+    for await (const _f of f) {
+        log(_f)
+    }
+}
+fAsyncLoop()
+
+// 执行结果如下：
+// 2
+// 1
+// 0
+// Promise {<resolved>: undefined}
+```
+
+> `for...await...of`当然也可以循环一般的迭代器，如包含基本类型数据的数组等，但在迭代的时候会将数据使用 Promise 包裹之后进行处理，与一般的`async...await`异步函数中的处理一样。
+
+### 2.4 Generator
 
 ES6 中可以增加了 Generator 语法，使用 Generator 语法编写的函数被称为 Generator Function(生成器函数)。由于生成器函数运行后返回的就是一个实现了 Iterator Protocol 的迭代器对象，所以借助生成器函数能够更加方便的实现自定义的可迭代对象。
 
