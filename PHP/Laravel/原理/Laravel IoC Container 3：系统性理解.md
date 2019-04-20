@@ -1,6 +1,9 @@
+> 转摘：[[Laravel] 从 1 行代码开始，带你系统性的理解 Laravel Service Container 的核心概念](http://blog.qiji.tech/archives/15626)
+
 在前面已经了解了上面是 IoC，以及如何构造一个简单的 IoC，下面就来看下 Laravel 中的 IoC 是如何构建和使用的。
 
 ### 为什么理解 IOC Container 对于理解 Laravel 架构是如此的重要？
+
 在 Laravel 中，你所能使用到的 Laravel 的特性和功能几乎全部是由 IOC Container 实现的。比如：
 
 ```php
@@ -18,6 +21,7 @@ Cache 和 Route 都是通过把他们各自的实现类 bind 到 Laravel 的某�
 
 
 ### 使用 Laravel 的 IOC Container(Service Container)
+
 如果想要使用 Laravel 的 IOC Container，也就是说想要用 IOC 的机制去 make 某种对象，那么你就必须先 bind 这个对象的类到 Laravel 的 IOC Container 中。这就需要我们去了解 Service Provider 了。
 
 为啥 Service Provider 突然蹦出来了呢？因为在 Laravel 中，我们大体可以上有2种方式去使用 IOC Container：
@@ -28,6 +32,7 @@ Cache 和 Route 都是通过把他们各自的实现类 bind 到 Laravel 的某�
 而大多数情况下，我们使用第一种方式。我们先从第二种开始说起，再来解释这是为什么。
 
 #### 如何不通过 Service Provider 直接使用 IOC Container？
+
 Laravel 有一个核心类，叫做 Application，这个继承了 Container，所以很显然，这个类是一个 IOC Container：
 
 ```php
@@ -84,6 +89,7 @@ return $post->d; //将会返回 "123"
 > 这里为什么直接用了`App`而不是`$app`，这是因为 Larave 使用了 Facades 的特性，来让你在程序的各处都能方便的得到`$app`，或者说 Application 类的这个实例。
 
 #### 为何大多数情况都通过 Service Provider 来使用 IOC Container？
+
 有时候我们的类、模块会有需要其他类和组件的情况，为了保证初始化阶段不会出现所需要的模块和组件没有注册的情况，Laravel 将注册和初始化行为进行拆分，注册的时候就只能注册，初始化的时候就是初始化。拆分后的产物就是现在的**服务提供者**。
 
 可以想象这样一个场景，你要绑定3个类 A、B、C 到 IOC Container 中。 A，B，C 都是非常复杂的类。在`bind A`时，引用了一个类 B 的实例，那么想要获得类 B 的实例，就需要 B 已经被 bind，只有这样，我们的 IOC Container 才有能力 make 出一个 B 的实例。 而在 bind B 时, 恰好又需要 C 的实例。
@@ -91,6 +97,7 @@ return $post->d; //将会返回 "123"
 如果是这样的逻辑，那么在`bind A B C`时，就必须手动的严格安排 bind 的次序, 而且这只是3个类的情况, 如果有几十个类的话, 人工已经无法完成了。而这时就需要 Service Provider 的作用了。
 
 ### 如何通过 Service Provider 来使用 IOC Container？
+
 我通过下面的例子来说明 Laravel 的发明者是如何通过 Service Provider 来使用 IOC Container 为 Laravel 框架添加特性和功能的。
 
 我们从这行代码说起：
@@ -171,6 +178,7 @@ Facade 的作用是用一个简单易记的语法，让你从 Laravel 的 IOC Co
 之前我们看到`class Route extends Facade`，说明 Route 也是一个 Facade，那这个 Route 的作用就是：让我们通过`Route::get(…)`这种简单的语法，去 Laravel 的 IOC Container 中方便的 make 出上面的 Route 的真实身份 Router。
 
 ### Facade 是如何使用的？
+
 Facade 是如何做到上面所描述的事情的呢？下面进行讲解。
 
 首先，Route 继承自 Facade 类，Route 类又调用了静态的 get 方法，我们在 Route 类，或者是他的父类 Facade 中都是无法找到这个 get 方法的。 但是在 Facade 类中，我们可以发现有一个`__callStatic()`魔术方法，这个方法的作用就是：如果你想要调用的静态方法在类的定义中并没有声明，那么就会执行`__callStatic()`。在我们当前的情景中，静态方法`get`并没有被声明，那么当然，我们的类就会转而调用`__callStatic()`。
@@ -256,6 +264,7 @@ case 2:
 到这里，我们的`$instance`就是我们的 IOC Container make 出的具有实际功能的实例，这个实例将会执行这个实例的类所声明过的 get 方法，并使用这两个参数：`'/'`和`'HomeController@index'`。
 
 ### 如何将某个类通过 Service Provider 的方式， bind 到 Laravel 的 IOC Container 中
+
 上面通过`Route::get('/', 'HomeController@index');`这行代码背后的故事，让我们知道了 Facade 是用来帮我们从 IOC Container 中 make 实例的。
 
 文章一开始就讲了，既然你要 make， 必定要先 bind。上面还讲过，为什么通常情况下都是通过 Service Provider 来 bind。那么我们现在就还是以 Route 为例子，来看看 Laravel 的开发者是如何通过 Service Provider 来 bind 类的。
@@ -342,15 +351,12 @@ interface Registrar
 
 
 ### 总结
+
 从整体上来看，Laravel 中的 IOC 的整体流程如下：
 
 * 实例化一个容器，并绑定对应的 Service Provider；
 * 通过`class_alias()`方法注册一些类的 alias；
 * 通过 Facade 方式找到并通过前面实例化的 IoC 容器 make 出真正的类对象。
-
-
-### 转摘
-[[Laravel] 从 1 行代码开始，带你系统性的理解 Laravel Service Container 的核心概念](http://blog.qiji.tech/archives/15626)
 
 
 
