@@ -1,4 +1,4 @@
-转摘：[搞清clientHeight、offsetHeight、scrollHeight、offsetTop、scrollTop](http://imweb.io/topic/57c5409e808fd2fb204eef52)
+> 转摘：[搞清clientHeight、offsetHeight、scrollHeight、offsetTop、scrollTop](http://imweb.io/topic/57c5409e808fd2fb204eef52)
 
 每个 HTML 元素都具有`clientHeight`、`offsetHeight`、`scrollHeight`、`offsetTop`、`scrollTop`这 5 个和元素高度、滚动、位置相关的属性，单凭单词很难搞清楚分别代表什么意思之间有什么区别。通过阅读它们的文档总结出规律如下：
 

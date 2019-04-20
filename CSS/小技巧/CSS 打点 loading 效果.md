@@ -4,7 +4,8 @@
 
 有多种实现方法：
 
-### CSS3 animation
+### 1. CSS3 animation
+
 HTML 代码如下：
 
 ```html
@@ -45,11 +46,12 @@ dot::before {
 * 使用自定义 dot 元素，对于低版本的 IE，由于不认识，则会将其对应的 css 样式都忽略掉，只显示默认的三个点，从而避免了兼容性问题。
 * 使用`::before`伪元素，而且设置`display`为 block，可以将 dot 元素中的三个点挤到隐藏区域中，仅显示伪元素 content 中的内容。
 
-转摘：[CSS content换行技术实现字符animation loading效果](http://www.zhangxinxu.com/wordpress/2016/11/css-content-pre-animation-character-loading/)
-参考：[tawian/text-spinners](https://github.com/tawian/text-spinners)
-更多示例：[text-spinners](http://tawian.io/text-spinners/)
+> 转摘：[CSS content换行技术实现字符animation loading效果](http://www.zhangxinxu.com/wordpress/2016/11/css-content-pre-animation-character-loading/)
+> 参考：[tawian/text-spinners](https://github.com/tawian/text-spinners)
+> 更多示例：[text-spinners](http://tawian.io/text-spinners/)
 
-### 基于 border + background 实现的打点效果
+### 2. 基于 border + background 实现的打点效果
+
 HTML：
 
 ```html
@@ -98,9 +100,10 @@ CSS：
 * currentColor 关键字可以让图形字符化，必不可少；
 * background-clip 属性可以让 IE9+ 浏览器下左右 padding 没有背景色，于是形成了等分打点效果。
 
-转摘：[再说CSS3 animation实现点点点loading动画](http://www.zhangxinxu.com/wordpress/2014/12/css3-animation-dotting-loading/)
+> 转摘：[再说CSS3 animation实现点点点loading动画](http://www.zhangxinxu.com/wordpress/2014/12/css3-animation-dotting-loading/)
 
-### 等宽字体
+### 3. 等宽字体
+
 另外，还可以考虑使用等宽字体和 CSS 中的 ch 单位来控制显示的内容。
 
 HTML：
@@ -131,5 +134,5 @@ dot {
 
 但是这种方式的兼容性并不太好。
 
-转摘：[等宽字体在web布局中应用以及CSS3 ch单位嘿嘿](http://www.zhangxinxu.com/wordpress/2016/07/monospaced-font-css3-ch-unit/)
+> 转摘：[等宽字体在web布局中应用以及CSS3 ch单位嘿嘿](http://www.zhangxinxu.com/wordpress/2016/07/monospaced-font-css3-ch-unit/)
 

@@ -1,6 +1,7 @@
 `background`属性是 CSS 中最常见的属性之一，它是一个简写属性，其包含`background-color`、`background-image`、`background-repeat`、`background-attachment`、 `background-position`、`background-clip`、`background-origin`和`background-size`。
 
-### background-position
+### 1. background-position
+
 `background-position`是用来控制元素背景图片的位置。它接受三种值：
 
 - 关键词，比如`top`、`right`、`bottom`、`left`和`center`
@@ -46,7 +47,8 @@ background-position: left 10px top    ;   /* 10px,  0px */
 
 > 转摘：[你真的了解background-position](http://www.w3cplus.com/css/background-position-with-percent.html)
 
-### background-clip 背景剪裁
+### 2. background-clip 背景剪裁
+
 背景裁剪确定了背景画布的区域。可应用于所有元素。无继承性。
 
 可选值有：
@@ -55,7 +57,8 @@ background-position: left 10px top    ;   /* 10px,  0px */
 - `padding-box`：背景图片或者颜色描绘区域只能在盒子 padding 区域
 - `content-box`：背景图片或者颜色描绘只能在内容区域起作用。
 
-### background-origin 背景图片原点
+### 3. background-origin 背景图片原点
+
 背景图片原点原点属性严格意义上来说是针对 css 中使用图片属性`background-image`的情况下使用的，因为只有引用了背景图片之后才能发挥其原点的微妙区别。
 
 可选值：

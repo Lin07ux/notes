@@ -16,14 +16,14 @@ h1::after{
     color: red;
 }
 h2::after{
-    content:none
+    content: none
 }
 ```
 
 显示效果：![插入纯文字](http://cnd.qiniu.lin07ux.cn/markdown/1470995058170.png)
 
  
-### 2. 嵌入文字符号
+### 2. quote 嵌入文字符号
 
 可以使用`content`属性的`open-quote`属性值和`close-quote`属性值在字符串两边添加诸如括号、单引号、双引号之类的嵌套文字符号。`open-quote`用于添加开始的文字符号，`close-quote`用于添加结束的文字符号。 
 
@@ -41,10 +41,10 @@ h2{
     quotes:"\"" "\"";  /*添加双引号要转义*/
 }
 h2::before{
-    content:open-quote;
+    content: open-quote;
 }
 h2::after{
-    content:close-quote;
+    content: close-quote;
 }
 ```
 
@@ -58,7 +58,7 @@ h2::after{
 > ![quotes 引号字符](http://cnd.qiniu.lin07ux.cn/markdown/1471009833718.png)
 
 
-### 3. 插入图片
+### 3. url 插入图片
 
 `content`属性也可以通过 url 来引入图片。
 
@@ -68,16 +68,15 @@ h2::after{
 
 ```css
 h3::after{
-    content:url(http://ido321.qiniudn.com/wp-content/themes/yusi1.0/img/new.gif)
+    content: url(http://ido321.qiniudn.com/wp-content/themes/yusi1.0/img/new.gif)
 }
 ```
 
 ![插入图片](http://cnd.qiniu.lin07ux.cn/markdown/1471010185632.png)
 
+### 4. attr 插入元素的属性值
 
-### 4. 插入元素的属性值
-
-`content`属性最强大的功能是可以直接利用 attr 获取元素的属性，将其插入到对应位置。
+`content`属性最强大的功能是可以直接利用`attr`获取元素的属性，将其插入到对应位置。
 
 ```html
 <a href="http:///www.ido321.com">这是链接</a>
@@ -85,14 +84,14 @@ h3::after{
 
 ```css
 a:after{
-    content:attr(href);
+    content: attr(href);
 }
 ```
 
 ![插入元素属性值](http://cnd.qiniu.lin07ux.cn/markdown/1471010281150.png)
 
 
-### 5. 插入项目编号
+### 5. counter 插入项目编号
 
 #### 5.1 基本编号
 
@@ -114,7 +113,7 @@ h1{
     counter-increment:my;
 }
 h1:before{
-    content:counter(my)'.';
+    content: counter(my)'.';
 }
 ```
 

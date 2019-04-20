@@ -1,7 +1,4 @@
-## Flex 布局是什么
-Flex 是 Flexible Box 的缩写，意为"弹性布局"，用来为盒状模型提供最大的灵活性。
-
-Flex 是为了解决传统 CSS 布局中难以解决的问题，比如让子元素自适应的扩展或者收缩宽度/高度，可以简便、完整、响应式地实现各种页面布局等。
+Flex 是 Flexible Box 的缩写，意为"弹性布局"，用来为盒状模型提供最大的灵活性。Flex 是为了解决传统 CSS 布局中难以解决的问题，比如让子元素自适应的扩展或者收缩宽度/高度，可以简便、完整、响应式地实现各种页面布局等。
 
 Flex 布局可以方便的实现以下的功能：
 
@@ -11,15 +8,15 @@ Flex 布局可以方便的实现以下的功能：
 - 无需修改结构就可以改变他们的显示顺序；
 - 如果元素容器设置百分比和视窗大小改变，不用提心未指定元素的确切宽度而破坏布局，因为容器中的每个子元素都可以自动分配容器的宽度或高度的比例。
 
-注意，设为 Flex 布局以后，其子元素的`float`、`clear`和`vertical-align`属性将失效。
+> 注意：设为 Flex 布局以后，其子元素的`float`、`clear`和`vertical-align`属性将失效。
 
-## Flex 属性设置
+## 一、成员级别
+
 Flex 布局中，分为容器和容器成员(flex item)两个级别。这两个级别分别对应不同的设置，从而展示不同的结果。
 
 其中，Flex 容器一般是用来设置 flex 属性，使其成为 flex 盒子，还可以设置其他属性来控制其内子元素的布局方式、宽高对齐方式等；在容器成员级别中，可以设置子元素的宽高伸缩度等。下面是 Flex 的属性图：
 
 ![Flex 属性图](http://cnd.qiniu.lin07ux.cn/markdown/1466860693911.png)
-
 
 容器默认存在两根轴：水平的主轴(`main axis`)和垂直的交叉轴(`cross axis`)。主轴的开始位置（与边框的交叉点）叫做`main start`，结束位置叫做`main end`；交叉轴的开始位置叫做`cross start`，结束位置叫做`cross end`。
 
@@ -27,12 +24,12 @@ Flex 布局中，分为容器和容器成员(flex item)两个级别。这两个�
 
 ![Flex 轴线](http://cnd.qiniu.lin07ux.cn/markdown/1466784316721.png)
 
+## 二、Flex 容器属性
 
-### Flex 容器属性
 flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-content`、`align-items`、`align-content`这 6 个方面进行设置
 
+### 2.1 定义 Flex 盒子
 
-#### 定义 Flex 盒子
 任何一个容器都可以指定为 Flex 布局：
 
 ```css
@@ -71,7 +68,8 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 }
 ```
 
-#### flex-direction 属性
+### 2.2 flex-direction
+
 该属性设置 flex 的主轴方向。可选值如下：
 
 * column-reverse  主轴在垂直方向，起点在下沿。
@@ -83,8 +81,8 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 ![fle-direction](http://cnd.qiniu.lin07ux.cn/markdown/1466837517430.png)
 
+### 2.3 flex-wrap
 
-#### flex-wrap 属性
 默认情况下，容器项目都排在一条线（又称"轴线"）上。
 
 `flex-wrap`属性定义：如果一条轴线排不下，如何换行。可选值有：
@@ -104,10 +102,12 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 ![flex-wrap](http://cnd.qiniu.lin07ux.cn/markdown/1466841487572.png)
 
 
-#### flex-flow 属性
+### 2.4 flex-flow
+
 这个属性是`flex-direction`和`flex-wrap`两个属性的简写方式。默认值是`row nowrap`。
 
-#### justify-content 属性
+### 2.5 justify-content
+
 定义了容器成员在主轴上的对齐方式。可选值有：
 
 * flex-start  默认值。主轴起始端对齐。
@@ -118,7 +118,8 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 ![justify-content](http://cnd.qiniu.lin07ux.cn/markdown/1466842047964.png)
 
-#### align-items 属性
+### 2.6 align-items
+
 定义容器成员在交叉轴上如何对齐。可选值有：
 
 * flex-start  交叉轴的起始点对齐。
@@ -129,7 +130,8 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 ![align-items](http://cnd.qiniu.lin07ux.cn/markdown/1466842633692.png)
 
-#### align-content 属性
+### 2.7 align-content
+
 该属性定义了多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用。
 
 > Flex 容器中，每一沿主轴方向排列的行或列都属于一根轴线。所以如果换行(列)了，那就会有多根轴线。
@@ -145,13 +147,14 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 ![align-content](http://cnd.qiniu.lin07ux.cn/markdown/1466844908229.png)
 
+## 三、Flex 成员属性
 
-### Flex 成员属性
 容器盒子的成员也有 6 个属性来设置成员的一些布局状态等：`order`、`flex-grow`、`flex-shrink`、`flex-basis`、`flex`、`align-self`。
 
 > 容器盒子的成员只是其内的一级子元素，而不包含子元素的子元素等。
 
-#### order 属性
+### 3.1 order
+
 定义项目的排列顺序。其值为数值。数值越小，排列越靠前，默认为0。也可以取负值。
 
 ```css
@@ -162,7 +165,8 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 ![order](http://cnd.qiniu.lin07ux.cn/markdown/1466845429220.png)
 
-#### flex-grow 属性
+### 3.2 flex-grow
+
 定义容器成员的放大比例，默认为 0，即：如果存在剩余空间，也不放大。
 
 ```css
@@ -181,7 +185,8 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 ![flex-grow 计算](http://cnd.qiniu.lin07ux.cn/markdown/1466852134445.png)
 
-#### flex-shrink 属性
+### 3.3 flex-shrink
+
 定义了项目的缩小比例，默认为 1，即：如果空间不足，该项目将缩小。
 
 ```css
@@ -204,8 +209,8 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 ![flex-shrink 计算](http://cnd.qiniu.lin07ux.cn/markdown/1466857530766.png)
 
+### 3.4 flex-basis
 
-#### flex-basis 属性
 定义了在分配多余空间之前，项目占据的主轴空间(`main size`)。浏览器根据这个属性，计算主轴是否有多余空间。它的默认值为`auto`，即项目的本来大小。
 
 ```css
@@ -218,7 +223,8 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 另外，容器成员设置`flex-basis`为具体值的时候，如果还设置`width`(主轴水平)或者`height`(主轴垂直)时，会以`flex-basis`的值为准。
 
-#### flex 属性
+### 3.5 flex
+
 `flex`属性是`flex-grow`、`flex-shrink`和`flex-basis`的简写，默认值为`0 1 auto`。后两个属性可选。
 
 ```css
@@ -227,14 +233,11 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 }
 ```
 
-该属性有两个快捷值：`auto`(`1 1 auto`) 和 `none`(`0 0 auto`)。
+该属性有两个快捷值：`auto`(`1 1 auto`) 和 `none`(`0 0 auto`)。建议优先使用这个属性，而不是单独写三个分离的属性，因为浏览器会推算相关值。
 
-建议优先使用这个属性，而不是单独写三个分离的属性，因为浏览器会推算相关值。
+### 3.6 align-self
 
-#### align-self 属性
-`align-self`属性允许单个项目有与其他项目不一样的对齐方式，可覆盖`align-items`属性。
-
-默认值为`auto`，表示继承父元素的`align-items`属性，如果没有父元素，则等同于`stretch`。
+`align-self`属性允许单个项目有与其他项目不一样的对齐方式，可覆盖`align-items`属性。默认值为`auto`，表示继承父元素的`align-items`属性，如果没有父元素，则等同于`stretch`。
 
 该属性可能取 6 个值，除了`auto`，其他都与`align-items`属性完全一致。
 
@@ -246,8 +249,8 @@ flex 容器可以从`flex-direction`、`flex-wrap`、`flex-flow`、`justify-cont
 
 ![align-self](http://cnd.qiniu.lin07ux.cn/markdown/1466846264126.png)
 
+## 四、参考
 
-## 参考
 1. [Flex 布局教程：语法篇 -- 阮一峰](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)
 
 
