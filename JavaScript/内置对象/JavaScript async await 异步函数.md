@@ -1,4 +1,4 @@
-Async 异步函数是 ES8 标准中定义的，可以用于实现可控的异步执行函数。实际上，`async/await`是 Promise 的语法糖。
+Async 异步函数是 ES8 标准中定义的，可以用于实现可控的异步执行函数。实际上，`async/await`是 Generator 函数的语法糖。
 
 异步函数与普通函数的区别如下：
 
