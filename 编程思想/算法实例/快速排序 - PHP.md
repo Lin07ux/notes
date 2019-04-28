@@ -42,7 +42,7 @@ function quickSort($arr)
 }
 ```
 
-### 4. 示例
+### 4. 测试示例
 
 ```php
 $startTime = microtime(1);
