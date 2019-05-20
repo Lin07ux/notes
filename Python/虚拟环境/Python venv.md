@@ -43,7 +43,7 @@ cd python-venv
 python3 -m venv venv
 ```
 
-这样就在项目目录中创建了一个`.env`文件夹，里面包含有基本的 Python3 和 pip、setuptools 库。
+这样就在项目目录中创建了一个`venv`文件夹，里面包含有基本的 Python3 和 pip、setuptools 库。
 
 ### 激活虚拟环境
 
@@ -67,11 +67,27 @@ source venv/bin/activate
 
 ### 退出虚拟环境
 
-退出虚拟环境可以通过直接`exit`或`logout`方式退出终端的方式，可以通过下面的命令来实现：
+退出虚拟环境可以通过直接`exit`或`logout`方式退出终端的方式，也可以通过下面的命令来实现：
 
 ```shell
 deactivate
 ```
+
+### 原理
+
+虚拟环境是一个隔离的环境，这个环境的特点有两个：
+
+* Python 版本固定。即使系统的 Python 升级了，虚拟环境中的仍然不受影响，保留开发状态。
+* 所有 Python 软件包，都只在这个环境生效。一旦退出，则回到用户+系统的默认环境中。
+
+这两个特点，由两个小手段实现：
+
+* 改变当前 Shell 的`PATH`。
+* 改变 Python 运行时的`sys.path`。
+
+激活虚拟环境时，会将当前 Shell 的 PATH 最前面加上当前虚拟环境的路径，由于优先级最高，所以环境里的 python、pip 等，包括后来用 pip 安装的可执行文件，都使用的是 venv 下的。从而使得虚拟环境中的 Python 和系统中的 Python 互相隔离。
+
+同时，在虚拟环境中，Python 中的`sys.path`发生了翻天覆地的变化。除了当前路径和标准库路径(如`/usr/local/lib/python3.7`)被保留以外，其它位置都换成了 venv 下的。 这就是为什么`pip list`看不见系统安装的软件包的原因，也是环境隔离的最大秘密。
 
 ### 资料
 
