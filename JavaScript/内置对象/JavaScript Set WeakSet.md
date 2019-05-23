@@ -1,4 +1,6 @@
-Set 和 WeakSet 是一个值集合，与数组类似，和 Map 也有点像，只是其没有键，只有值。Set 和 WeakSet 一般用来判断某个值是否存在其中，而且不会逐一遍历其中的元素。
+Set 和 WeakSet 是一个值集合，与数组类似，和 Map 也有点像，但其没有键只有值，而且**`Set`和`WeakSet`中的值总是唯一的**。Set 和 WeakSet 一般用来判断某个值是否存在其中，而且不会逐一遍历其中的元素。
+
+> `0`(包括`+0`和`-0`)、`undefined`、`NaN`都不能重复，只可有一个。
 
 Set 和 WeakSet 是有序的，即元素被添加进去的顺序就是在内部保存的顺序。对于用数组来初始化的情况也一样，会按照在数组中的位置依次添加进集合中。
 
@@ -39,5 +41,7 @@ set.forEach(function(value, key, ownerSet){
 ### 4. Set 和 WeakSet 的区别
 
 WeakSet 只有`add`、`has`、`delete`和 Object 中的方法可以使用，比 Set 少了很多方法，没有`forEach`方法，也不能使用`for...in`语句对其中的值遍历。
+
+
 
 

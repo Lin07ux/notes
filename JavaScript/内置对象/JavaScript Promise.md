@@ -1,14 +1,12 @@
-## 基本内容
+## 一、基本内容
 
-### Promise 是什么
+### 1.1 Promise 是什么
 
 Promise 是对异步处理的一种抽象。
 
-在 JavaScript 中，我们通常使用回调函数来进行异步处理，这样就会导致代码出现“回调地狱”，而且如果出了问题，也很难进行捕获处理。
+在 JavaScript 中，通常使用回调函数来进行异步处理，这样就会导致代码出现“回调地狱”，而且如果出了问题，也很难进行捕获处理。Promise 将异步处理进行抽象，并形成规范化的接口，通过使用 Promise 的接口，能够将异步代码写成同步形式，而且还能方便的处理错误和异常。
 
-Promise 将异步处理进行抽象，并形成规范化的接口，通过使用 Promise 的接口，能够将异步代码写成同步形式，而且还能方便的处理错误和异常。
-
-### Promise 的状态
+### 1.2 Promise 的状态
 
 Promise 有三种状态：
 
@@ -23,7 +21,7 @@ Promise 有三种状态：
 
 一旦 Promise 对象的状态完成变化，就不会再改变了。
 
-### 创建 Promise 对象
+### 1.3 创建 Promise 对象
 
 标准的一个 Promise 对象可以使用如下语句进行创建：
 
@@ -35,12 +33,12 @@ new Promise(function fn(resolve, reject) {});
 
 这里传入了一个函数参数`fn`，并且有两个参数，`resolve`和`reject`，分别是 Promise 中的两个方法，均由 JavaScript 引擎提供，不需要自行部署。
 
-我们一般会在 fn 中指定需要的处理逻辑，并根据处理结果更改 Promise 对象的状态：
+一般会在 fn 中指定需要的处理逻辑，并根据处理结果更改 Promise 对象的状态：
 
 * 任务处理成功时，调用`resolve([data])`方法，Promise 对象状态变更为`fulfilled`；
 * 任务处理失败时，调用`reject([Error Obj])`，Promise 对象状态变更为`rejected`。
 
-如下，我们通过 Promise 封装`setTimeout()`方法，得到了一个延时函数：
+如下，通过 Promise 封装`setTimeout()`方法，得到了一个延时函数：
 
 ```js
 const later = function(timeout) {
@@ -60,14 +58,14 @@ const later = function(timeout) {
 
 > 注意：**Promise 对象一旦创建，就会立即执行。**
 
-### 使用
+### 1.4 使用
 
-创建得到一个 Promise 对象后，我们就可以为其添加后续的处理方法：
+创建得到一个 Promise 对象后，就可以为其添加后续的处理方法：
 
 * 当对象被`resolve`时的处理方法（onFulfilled）
 * 当对象被`reject`时的处理方法（onRejected）
 
-这其实就相当于之前的回调方法，他们都是在异步任务完成之后，会被自动的调用：如果成功了，则调用 成功回调，否则调用失败回调。当然，我们也可以只指定一个后续的处理方法：只处理成功、或者只处理失败。
+这其实就相当于之前的回调方法，它们都是在异步任务完成之后，会被自动的调用：如果成功了，则调用成功回调，否则调用失败回调。当然，也可以只指定一个后续的处理方法：只处理成功、或者只处理失败。
 
 ```javascript
 // 处理成功和失败
@@ -95,10 +93,9 @@ later(1000)
 
 当然，Promise 并不是只有`then()`方法可以调用，后面还会介绍其他的方法。
 
+## 二、方法
 
-## 方法
-
-### resolve()
+### 2.1 resolve()
 
 `resolve()`方法就是创建 Promise 对象时传入的函数的第一个参数，其用来将 Promise 对象的状态置为成功(fulfilled)，并将异步操作结果 value 作为参数传给成功回调函数。
 
@@ -158,13 +155,13 @@ p4.then(function(value) {
 
 可以看下面的两个例子来理解：
 
-示例1：传递基本类型值
+**示例1：传递基本类型值**
 
 ```javascript
 var d = new Date();
 
 var promise = new Promise(function(resolve, reject) {
-    // 一秒后进入resolve，并传递值
+    // 一秒后进入 resolve，并传递值
     setTimeout(resolve, 1000, 'resolve from promise');
 });
 
@@ -179,17 +176,17 @@ promise.then(
 
 这个的结果很容易理解：因为传递给`resolve()`方法的值是一个字符串`resolve from promise`，所以匹配规范中的 2.3.4 从而直接将这个字符串作为最终的不可变值传递给了后续的成功回调函数。
 
-示例2：传递 Promise 实例
+**示例2：传递 Promise 实例**
 
 ```javascript
 var d=new Date();
 
-// 创建一个promise实例，该实例在2秒后进入fulfilled状态
+// 创建一个 promise 实例，该实例在 2 秒后进入 fulfilled 状态
 var promise1 = new Promise(function(resolve, reject) {
     setTimeout(resolve, 2000, 'resolve from promise 1');
 });
 
-// 创建一个promise实例，该实例在1秒后进入fulfilled状态
+// 创建一个 promise 实例，该实例在 1 秒后进入 fulfilled 状态
 var promise2 = new Promise(function(resolve, reject) {
     setTimeout(resolve, 1000, promise1); // resolve(promise1)
 });
@@ -202,7 +199,7 @@ promise2.then(
 
 这里的最终输出的结果是`result: resolve from promise 1 2002`。这是因为：promise2 中调用了`resolve(promise1)`，此时 promise1 的状态会传递给 promise2，或者说 promise1 的状态决定了 promise2 的状态。所以当 promise1 进入 fulfilled 状态，promise2 的状态也变为 fulfilled，同时将 promise1 自己的不可变值作为 promise2 的不可变值，所以 promise2 的回调函数打印出了上述结果。
 
-另外，通过这里例子我们也可以发现。运行时间是 2 秒而不是 3 秒。也就是说 **Promise 新建后就会立即执行**。
+另外，通过这里例子也可以发现。运行时间是 2 秒而不是 3 秒。也就是说 **Promise 新建后就会立即执行**。
 
 前面提到过，Promise 状态一旦改变就会凝固，就不会再改变。因此 Promise 一旦 fulfilled 了，再抛错，也不会变为 rejected，就不会被 catch 了。
 
@@ -213,11 +210,11 @@ var promise = new Promise(function(resolve, reject) {
 });
 
 promise.catch(function(e) {
-   console.log(e);      //This is never called
+   console.log(e);      // This is never called
 });
 ```
 
-### reject()
+### 2.2 reject()
 
 `reject()`用来将 Promise 对象的状态置为失败(rejected)，并将异步操作错误 error 作为参数传给失败回调函数。
 
@@ -234,18 +231,15 @@ var promise = new Promise(function (resolve, reject) {
     reject(new Error('test'));
 });
 
-//用catch捕获
+// 用 catch 捕获
 promise.catch(function (error) {
     console.log(error);
 });
 
-/*
--------output-------
-Error: test
-*/
+// Error: test
 ```
 
-### then()
+### 2.3 then()
 
 `then()`方法是最常用的方法，可以用来给 Promise 对象添加后续的处理回调函数。其可以接受两个参数，分别对应 Promise 成功时的处理回调和失败时的处理回调。简单来说，`then()`就是定义 `resolve`和`reject`函数的。例如，其`resolve`参数相当于：
 
@@ -259,7 +253,7 @@ promise.then(function resolveFun(data) {
 
 而新建 Promise 实例中的`resolve(data)`则相当于执行这个`resolveFun`函数，同理，`rejected(err)`则相当于执行这个`rejectedFun`函数。
 
-虽然一般我们会给`then()`方法传入函数，但是其实它也可以接收非函数值。**给`.then()`传递非函数值时，实际上会被解析成`then(null)`，从而导致上一个 Promise 对象的结果被“穿透”**。所以，为了避免不必要的麻烦，建议总是给`then()`传递函数。
+虽然一般会给`then()`方法传入函数，但是其实它也可以接收非函数值。**给`.then()`传递非函数值时，实际上会被解析成`then(null)`，从而导致上一个 Promise 对象的结果被“穿透”**。所以，为了避免不必要的麻烦，建议总是给`then()`传递函数。
 
 > 注意：**`then()`方法会返回一个新的 Promise 对象，这个对象和调用`then()`方法的对象不是同一个。**
 
@@ -305,16 +299,16 @@ resolved
 
 由于 resolve 指定的是异步操作成功后的回调函数，它需要等所有同步代码执行后才会执行，因此最后打印'resolved'。
 
-#### onFulfilled 参数
+#### 2.3.1 onFulfilled 参数
 
-当 Promise 对象的状态变成 fulfilled(也即是异步任务成功执行)时会被调用。这个函数的第一个参数会被设置为 Promise 对象的返回值。一般我们会在这个函数中对异步任务的结果进行处理。
+当 Promise 对象的状态变成 fulfilled(也即是异步任务成功执行)时会被调用。这个函数的第一个参数会被设置为 Promise 对象的返回值。一般会在这个函数中对异步任务的结果进行处理。
 
-在这个方法中，我们可以有多种处理方式：
+在这个方法中可以有多种处理方式：
 
 ```js
 later(1000).then(function() {
   /**
-   * 在这里，我们能做以下几种处理
+   * 在这里，能做以下几种处理
    * 1. 返回一个 promise 对象
    * 2. 返回一个同步值（什么也不返回，那就是返回 undefined）
    * 3. throw 一个 Error 对象
@@ -322,7 +316,7 @@ later(1000).then(function() {
 });
 ```
 
-#### onRejected 参数
+#### 2.3.2 onRejected 参数
 
 这个参数在 Promise 实例状态变为 rejected 的时候会被调用，通常用于处理异步操作失败的情况。
 
@@ -332,7 +326,7 @@ later(1000).then(function() {
 
 所以，一般推荐使用 Promise 实例的`catch()`方法进行异常处理。
 
-#### 返回值
+#### 2.3.3 返回值
 
 **`then()`方法返回的是一个新的 Promise 实例**。
 
@@ -385,7 +379,7 @@ later(1000)
   });
 ```
 
-上面的代码保证最后获得的结果总是`later_1000`（只是等 1 秒还是 2 秒的区别）。更实用的例子是异步获取某个数据（查询 db），我们可以先从本地 cache 查询，查到直接返回同步值，否则返回一个查询 db 的 Promise 对象，最终都会获得正确的数据。
+上面的代码保证最后获得的结果总是`later_1000`（只是等 1 秒还是 2 秒的区别）。更实用的例子是异步获取某个数据（查询 db），可以先从本地 cache 查询，查到直接返回同步值，否则返回一个查询 db 的 Promise 对象，最终都会获得正确的数据。
 
 如果在 onFulfilled() 方法中，什么也不返回，则等于返回了 undefined ，所以小心下面的写法：
 
@@ -425,7 +419,7 @@ later(1000)
   });
 ```
 
-只要我们调用`.catch()`添加`onRejected`回调处理，在`.then()`里面`throw`出的任何**同步**错误都会在`.catch()`里面被捕捉到（比如：不小心访问了未定义值啊、JSON.parse 错误啊等等），这让问题定位非常方便。
+只要调用`.catch()`添加`onRejected`回调处理，在`.then()`里面`throw`出的任何**同步**错误都会在`.catch()`里面被捕捉到（比如：不小心访问了未定义值啊、JSON.parse 错误啊等等），这让问题定位非常方便。
 
 需要注意的是，`.catch()`能捕获的是同步错误，请小心下面的代码：
 
@@ -466,11 +460,13 @@ later(1000)
   );
 ```
 
-### all()
+### 2.4 all()
 
 `all()`方法用于将多个 Promise 实例，包装成一个新的 Promise 实例。
 
-该方法接受一个数组作为参数，数组里的元素都是 Promise 对象的实例，如果不是，就会先调用下面讲到的`Promise.resolve()`方法，将参数转为 Promise 实例，再进一步处理。（Promise.all方法的参数可以不是数组，但必须具有 Iterator 接口，且返回的每个成员都是 Promise 实例。）
+该方法接受一个数组作为参数，数组里的元素都是 Promise 对象的实例，如果不是，就会先调用`Promise.resolve()`方法将参数转为 Promise 实例，再进一步处理。
+
+> `Promise.all`方法的参数可以不是数组，但必须具有 Iterator 接口，且返回的每个成员都是 Promise 实例。
 
 `all()`方法返回的新的 Promise 实例具有如下的特性：
 
@@ -490,7 +486,7 @@ Promise.all(promises)
 });
 ```
 
-数组内 Promise 对象所表示的异步操作是同时执行的，并且最后的结果和传递给 Promise.all 的数组的顺序是一致的。所以，3 秒钟后我们取得的结果是一个值为`['later_1000', 'later_2000', 'later_3000']`的数组。
+数组内 Promise 对象所表示的异步操作是同时执行的，并且最后的结果和传递给`Promise.all`的数组的顺序是一致的。所以 3 秒钟后取得的结果是一个值为`['later_1000', 'later_2000', 'later_3000']`的数组。
 
 ```javascript
 var p1 = new Promise((resolve, reject) => { 
@@ -525,9 +521,9 @@ two
 */
 ```
 
-### race()
+### 2.5 race()
 
-`race()`方法跟`Promise.all()`方法差不多。唯一的区别在于该方法返回的 Promise 实例并不会等待所有 Proimse 都跑完，而是只要有一个 Promise 实例改变状态，它就跟着改变状态。并使用第一个改变状态实例的返回值作为返回值。
+`race()`方法跟`Promise.all()`方法差不多，唯一的区别在于该方法返回的 Promise 实例并不会等待所有 Proimse 都跑完，而是只要有一个 Promise 实例改变状态，它就跟着改变状态。并使用第一个改变状态实例的返回值作为返回值。
 
 在第一个 Promise 实例变为 resolve 后，并不会取消其他 Promise 实例的执行。
 
@@ -559,7 +555,7 @@ slowPromise     //仍会执行
 */
 ```
 
-### catch()
+### 2.6 catch()
 
 `Promise.prototype.catch`方法是`.then(null, rejection)`的别名，用于指定发生错误时的回调函数。
 
@@ -587,7 +583,9 @@ somePromise.then(function() {
 })
 ```
 
-所以推荐大家都是用`catch()`来处理失败情况，而不是`then()`的第二个参数。可以在 promise 最后都加上一个 catch，以处理可能没有察觉到的错误情况。
+所以推荐都是用`catch()`来处理失败情况，而不是`then()`的第二个参数。可以在 promise 最后都加上一个 catch，以处理可能没有察觉到的错误情况。
+
+#### 2.6.1 异常穿透
 
 Promise 对象的错误，会一直向后传递，直到被捕获。即错误总会被下一个 catch 所捕获(或被下一个 then 方法中的 onRejectedFun 捕获)。then 方法指定的回调函数，若抛出错误，也会被下一个 catch 捕获。catch 中也能抛错，但需要更后面的 catch 来捕获。
 
@@ -597,7 +595,7 @@ somePromise.then(function(data1) {
 }).then(function (data2) {
     // do something
 }).catch(function (error) {
-    //处理前面三个Promise产生的错误
+    //处理前面三个 Promise 产生的错误
 });
 ```
 
@@ -673,6 +671,8 @@ Final Task
 
 如果最终没有使用 catch 方法指定处理错误的回调函数，Promise 对象抛出的错误不会传递到外层代码，即不会有任何反应（Chrome 会抛错），这也是 Promise 的一个缺点。
 
+#### 2.6.2 不捕获异步抛错
+
 需要注意的是：**在异步回调中抛错，不会被 catch 到**。
 
 ```javascript
@@ -684,21 +684,19 @@ var promise = new Promise(function(resolve, reject) {
 });
 
 promise.catch(function(e) {
-  console.log(e);       //This is never called
+  console.log(e);       // This is never called
 });
 ```
 
+## 三、一些技巧
 
-## 最佳实践
+### 3.1 最佳实践
 
 - 总是在`.then()`里面使用 return 来返回 Promise 对象或者同步值
 - 总是在`.then()`里面 throw 同步的 Error 对象
 - 总是使用`.catch()`来捕获错误
 
-
-## 一些技巧
-
-### 快速创建 Promise 对象
+### 3.2 快速创建 Promise 对象
 
 主要通过`new Promise(fn)`的方式来创建 Promise 对象，实际上有一个快捷方法`Promise.resolve(value)`可以方便的创建 Promise 对象。
 
@@ -717,9 +715,9 @@ new Promise(function(resolve, reject) {
 Promise.resolve('value').then(function(data) {});
 ```
 
-### 解决 Promise 对象间的依赖
+### 3.3 解决 Promise 对象间的依赖
 
-实际编码中我们可能经常遇到一个 Promise 对象依赖另一个 Promise 对象的执行，并且我们两个 Promise 对象的结果都需要的情况。这时就需要我们在代码中做一些改变了：
+实际编码中可能经常遇到一个 Promise 对象依赖另一个 Promise 对象的执行，并且两个 Promise 对象的结果都需要的情况。这时就需要在代码中做一些改变了：
 
 ```js
 later(1000)
@@ -727,7 +725,7 @@ later(1000)
     return later(2000);
   })
   .then(function(dataB) {
-    // 我们同时需要 dataA 和 dataB
+    // 同时需要 dataA 和 dataB
   });
   
 // 可以在 onFulfilled 中返回一个新的 Promise 对象
@@ -742,9 +740,9 @@ later(1000)
   });
 ```
 
-### 串行
+### 3.4 串行
 
-在`.then()`里面返回一个 Promise 对象就是一种串行。我们需要构造一个类似下面这样的 Promise 对象：
+在`.then()`里面返回一个 Promise 对象就是一种串行。需要构造一个类似下面这样的 Promise 对象：
 
 ```js
 promise1
@@ -753,7 +751,7 @@ promise1
   .then(...);
 ```
 
-我们也可以将一个数组转换为一个值，使用 reduce 可以实现：
+也可以将一个数组转换为一个值，使用 reduce 可以实现：
 
 ```js
 [1000, 2000, 3000]
@@ -785,8 +783,7 @@ Promise.resolve()
 
 每个 Promise 对象表示的异步操作依次执行，最终结果将会在 6 秒后取得（只能取到最后一个 Promise 对象的结果，如果都需要的话，需要单独进行处理存储）。
 
-
-## 参考
+## 四、参考
 
 1. [你可能不知道的 Promise](http://kohpoll.github.io/blog/2016/05/02/the-promise-you-may-not-know/)
 2. [JavaScript Promise迷你书（中文版）](http://liubin.org/promises-book/)
