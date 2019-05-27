@@ -34,12 +34,31 @@ Redis 支持多种数据类型，但采用的是 Key-Value 型的基本数据结
 * **不要使用过长的 Key**。例如使用一个 1024 字节的 key 就不是一个好主意，不仅会消耗更多的内存，还会导致查找的效率降低；
 * **Key 应保证一定的可读性**，例如`u1000flw`比起`user:1000:followers`来说，节省了寥寥的存储空间，却引发了可读性和可维护性上的麻烦；
 * **最好使用统一的规范来设计 Key**，比如`"object-type:id:attr"`，以这一规范设计出的 Key 可能是`"user:1000"`或`"comment:1234:reply-to"`；
-* Redis 允许的**最大 Key 长度是 512MB**（对 Value 的长度限制也是 512MB）。 
-而 Value 则有多种数据结构可以选择。
+* Redis 允许的**最大 Key 长度是 512MB**（对 Value 的长度限制也是 512MB）。
+
+Redis 中的数据类型有多种实现方式：
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1558875364139.png)
 
 ### String
 
 String 是 Redis 的基础数据类型，Redis 没有 Int、Float、Boolean 等数据类型的概念，所有的基本类型在 Redis 中都以 String 体现。
+
+String 有三种编码格式：
+
+* `int` 整数值，这个整数值可以使用`long`类型来表示
+* `embstr` 字符串值，这个字符串值的长度小于 39 字节，也可以用于存储 float 浮点数。
+* `raw` 字符串值，这个字符串值的长度大于 39 字节，也可以用于存储 float 浮点数。
+
+`embstr`和`raw`的区别在于：
+
+* `raw`分配内存和释放内存的次数是两次，`embstr`是一次；
+* `embstr`编码的数据保存在一块连续的内存里面。
+
+编码之间的转换：
+
+* `int`类型如果存的不再是一个整数值，则会从`int`转成`raw`；
+* `embstr`是只读的，在修改的时候回从`embstr`转成`raw`。
 
 与 String 相关的常用命令：
 
@@ -62,6 +81,11 @@ String 是 Redis 的基础数据类型，Redis 没有 Int、Float、Boolean 等�
 Redis 的 List 是双向链表型的数据结构，可以使用`LPUSH/RPUSH/LPOP/RPOP`等命令在 List 的两端执行插入元素和弹出元素的操作。虽然 List 也支持在特定 index 上插入和读取元素的功能，但其时间复杂度较高（`O(N)`），应小心使用。
 
 **如果不是想要实现一个双端出入的队列，那么尽量不要使用 Redis 的 List 数据结构。**
+
+List 类型有两种编码格式：
+
+* `ziplist` 字符串元素的长度都小于 64 个字节并且总数量少于 512 个，如果保存的数据长度太大或者元素数量过多，会转换成linkedlist 编码
+* `linkedlist` 字符串元素的长度大于 64 个字节或者总数量大于 512 个
 
 与 List 相关的常用命令：
 
@@ -91,6 +115,11 @@ Hash 即哈希表，Redis 的 Hash 和传统的哈希表一样，是一种`field
 
 **Hash 非常适合用于表现对象类型的数据**，用 Hash 中的 field 对应对象的 field 即可。
 
+在上面的图我们知道hash类型有两种编码格式：
+
+* `ziplist` key 和 value 的字符串长度都小于 64 字节且键值对总数量小于 512，否则会转化为 hashtable
+* `hashtable` key 和 value 的字符串长度大于 64 字节或者键值对总数量大于 512
+
 Hash 的优点包括：
 
 * 可以实现二元查找，如"查找 ID 为 1000 的用户的年龄"；
@@ -118,6 +147,12 @@ Hash 的优点包括：
 
 Redis **Set 是无序的、不可重复的 String 集合**。
 
+Set 类型有两种编码格式：
+
+* `intset` 保存的元素全都是整数且总数量小于 512，否则转化成 hashtable
+* `hashtable` 保存的元素不是整数或总数量大于 512
+
+
 与 Set 相关的常用命令：
 
 * `SADD`：向指定 Set 中添加 1 个或多个 member，如果指定 Set 不存在，会自动创建一个。时间复杂度`O(N)`，N 为添加的 member 个数。
@@ -142,6 +177,11 @@ Redis **Sorted Set 是有序的、不可重复的 String 集合**。
 Sorted Set 中的每个元素都需要指派一个分数(score)，Sorted Set 会根据 score 对元素进行升序排序。如果多个 member 拥有相同的 score，则以字典序进行升序排序。
 
 **Sorted Set 非常适合用于实现排名**。
+
+SortSet 类型有两种编码格式：
+
+* `ziplist` 元素长度小于 64 且总数量小于 128，否则转化成 skiplist
+* `skiplist` 元素长度大于 64 或总数量大于 128
 
 Sorted Set 的主要命令：
 
