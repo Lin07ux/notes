@@ -1,12 +1,10 @@
 > 转摘：[面试问烂的MySQL四种隔离级别，看完吊打面试官！](http://database.51cto.com/art/201904/595641.htm?utm_source=tuicool&utm_medium=referral)
 
-## 介绍
+## 一、介绍
 
 事务是应用程序中一系列严密的操作，所有操作必须成功完成，否则在每个操作中所作的所有更改都会被撤消。也就是事务具有原子性，一个事务中的一系列的操作要么全部成功，要么一个都不做。
 
 事务的结束有两种：当事务中的所以步骤全部成功执行时事务提交；如果其中一个步骤失败，将发生回滚操作，撤消撤消之前到事务开始时的所以操作。
-
-## ACID
 
 事务具有四个特征：原子性( Atomicity )、一致性( Consistency )、隔离性( Isolation )和持续性( Durability )。这四个特性简称为 ACID 特性。
 
@@ -17,7 +15,7 @@
 
 SQL 定义了隔离级别来确保不同程度的隔离性。
 
-### 隔离级别
+### 1.1 隔离级别
 
 SQL 标准定义了 4 类隔离级别，包括了一些具体规则，用来限定事务内外的哪些改变是可见的，哪些是不可见的。低级别的隔离级一般支持更高的并发处理，并拥有更低的系统开销。
 
@@ -37,7 +35,7 @@ SQL 标准定义了 4 类隔离级别，包括了一些具体规则，用来限�
 
 这是最高的隔离级别，它通过强制事务排序，使之不可能相互冲突，从而解决幻读问题。简言之，它是在每个读的数据行上加上共享锁。在这个级别，可能导致大量的超时现象和锁竞争。
 
-### 隔离问题
+### 1.2 隔离问题
 
 不同的隔离级别采取不同的锁类型来实现，对同一个读取语句，可能会出现不同的问题。
 
@@ -54,7 +52,7 @@ MySQL 中不同隔离级别可能产生的问题如下表所示：
  Repeatable read  | No   | No       | Yes
  Serializable     | No   | No       | No
 
-### 测试
+## 二、测试
 
 数据表如下：
 
@@ -63,7 +61,7 @@ create table `test` (
   `id` int(11) unsigned not null auto_increment,
   `num` int(11) not null default 0,
   primary key(`id`)
-) engine=InnoDB auto_increment=4 default charset=utf-8;
+) engine=InnoDB auto_increment=1 default charset=utf8;
 ```
 
 填充数据如下：
@@ -83,7 +81,7 @@ mysql> select * from test;
 
 然后开两个命令行终端，称为 A 和 B，分别在其中进行 sql 语句的执行。
 
-#### Read uncommitted
+### 2.1 Read uncommitted
 
 1. A 隔离级别设置为 Read uncommitted，然后查看数据：
 
@@ -181,7 +179,7 @@ mysql> select * from test;
 
 经过上面的实验可以得出结论，事务 B 更新了一条记录，但是没有提交，此时事务 A 可以查询出未提交记录，造成脏读现象。未提交读是最低的隔离级别。
 
-#### Read committed
+### 2.2 Read committed
 
 1. A 将隔离级别设置为 Read committed，并开启事务：
 
@@ -269,7 +267,7 @@ mysql> select * from test;
 
 经过上面的实验可以得出结论，已提交读隔离级别解决了脏读的问题，但是出现了不可重复读的问题，即事务 A 在两次查询的数据不一致，因为在两次查询之间事务 B 更新了一条数据。已提交读只允许读取已提交的记录，但不要求可重复读。
 
-#### Repeatable read
+### 2.3 Repeatable read
 
 1. A 设置隔离级别为 Repeatable read，并开启事务：
 
@@ -417,7 +415,7 @@ mysql> select * from test;
 
 由以上的实验可以得出结论，可重复读隔离级别只允许读取已提交记录，而且在一个事务两次读取一个记录期间，其他事务部对该记录的更新不会被看到。虽然可重复读的隔离界别会出现幻读现象，但是 MySQL 的 InnoDB 引擎避免了幻读问题。
 
-#### Serializable
+### 2.4 Serializable
 
 1. A 设置隔离级别为 Serializable，并查看初始数据：
 
@@ -488,4 +486,112 @@ mysql> select * from test;
     ```
 
 Serializable 完全锁定字段，若一个事务来查询同一份数据就必须等待，直到前一个事务完成并解除锁定为止。是完整的隔离级别，会锁定对应的数据表格，因而会有效率的问题。
+
+## 三、问题
+
+### 3.1 MySQL 是如何解决幻读的
+
+在上面的 Repeatable Read 测试中，如果使用如下的测试流程则会有不同的结果：
+
+1. A 事务开启并查询数据：
+
+    ```
+    mysql> start transaction;
+    Query OK, 0 rows affected (0.00 sec)
+   
+    mysql> select * from test;
+    +----+-----+
+    | id | num |
+    +----+-----+
+    |  1 |   1 |
+    |  2 |   2 |
+    |  3 |   3 |
+    +----+-----+
+    3 rows in set (0.00 sec)
+    ```
+
+2. B 中插入新数据：
+
+    ```    
+    mysql> insert into test (`num`) value (4);
+    Query OK, 1 row affected (0.01 sec)
+        
+    mysql> select * from test;
+    +----+-----+
+    | id | num |
+    +----+-----+
+    |  1 |   1 |
+    |  2 |   2 |
+    |  3 |   3 |
+    |  4 |   4 |
+    +----+-----+
+    ```
+
+3. A 事务查看数据，依旧是只有三条，但如果使用范围更新，然后再查询，B 中插入的数据就会出现了：
+
+    ```
+    mysql> select * from test;
+    +----+-----+
+    | id | num |
+    +----+-----+
+    |  1 |   1 |
+    |  2 |   2 |
+    |  3 |   3 |
+    +----+-----+
+    3 rows in set (0.00 sec)
+    
+    mysql> update test set num = num + 1;
+    Query OK, 4 row affected (0.01 sec)
+    
+    mysql> select * from test;
+    +----+-----+
+    | id | num |
+    +----+-----+
+    |  1 |   2 |
+    |  2 |   3 |
+    |  3 |   4 |
+    |  4 |   5 |
+    +----+-----+
+    4 rows in set (0.00 sec)
+    ```
+
+这样看，好像 MySQL 并没有真正的防止幻读，其实问题的根源在于在 A 事务中，更新前后的 SELECT 查询时加的锁是不一样的。
+
+MySQL 中的读其实是分为快照读(一致性读)和当前读两种类别，这两种读的方式和结果都不同，也会因此而造成不一样的效果。
+
+1. 快照读
+
+    **在快照读读情况下，MySQL 通过 MVCC 来避免幻读。**
+    
+    多数数据库都实现了 MVCC 多版本并发控制，并且都是靠保存数据快照来实现的。以 InnoDB 为例，每一行中都冗余了两个字段：一个是行的创建版本，一个是行的删除（过期）版本。具体的版本号(`trx_id`)存在`information_schema.INNODB_TRX`表中。版本号(`trx_id`随着每次事务的开启自增。
+    
+    事务每次取数据的时候都会取创建版本小于当前事务版本的数据，以及过期版本大于当前版本的数据，并将读取历史数据存一份快照，所以其他事务增加与删除数据，对于当前事务来说是不可见的。
+    
+    普通的`select`就是快照读：
+    
+    ```mysql
+    select * from test;
+    ```
+
+2. 当前读
+
+    **在当前读读情况下，MySQL 通过`next-key`来避免幻读。**
+    
+    当前读是将当前数据行与上一条数据和下一条数据之间的间隙锁定，保证此范围内读取的数据是一致的。
+    
+    当前读是通过添加`next-key`锁来实现的，`next-key`锁包含两部分：记录锁（行锁）和间隙锁。记录锁是加在索引上的锁，间隙锁是加在索引之间的。
+    
+    显式的指定读取结果后要进行增改查或指定共享锁，那就当前读：
+    
+    ```mysql
+    select * from test for insert;
+    select * from test for update;
+    select * from test for delete;
+    select * from test lock in share mode;
+    ```
+    
+    `next-key`虽然很好的解决了幻读问题，但是其所加的锁会导致并发性能较低。
+
+所以，对于上面的示例，由于 A 事务 update 前后的 select 分别是快照读和当前读，所以读取的结果就是不同的。如果一开始 A 事务使用共享锁方式读取，就会添加`next-key`锁，此时 B 事务是没有办法插入新的数据的，只能等到 A 事务提交之后 B 事务才能完成插入。
+
 
