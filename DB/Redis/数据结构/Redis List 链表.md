@@ -21,7 +21,7 @@ typedef struct list{
 
     // 节点值对比函数
     int (*match) (void *ptr, void *key);
-}
+} list;
 ```
 
 而每个节点使用 listNode 结构来表示：
@@ -36,7 +36,7 @@ typedef strcut listNode{
 
     // 节点的值
     void *value;
-}
+} listNode;
 ```
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1558864804133.png)
