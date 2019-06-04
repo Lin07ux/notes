@@ -2,7 +2,7 @@ Audio 元素可以设置`autoplay`属性来自动播放，但是并不是所有�
 
 关于音乐自动播放的问题，现在可以分为三种：
 
-1. 支持 audio 的`autoplay`，大部分安卓机子的自带浏览器和微信，大部分的 iOS 微信（无需特殊解决）；
+1. 支持 audio 的`autoplay`，大部分安卓机自带浏览器和微信，大部分的 iOS 微信（无需特殊解决）；
 2. 不支持 audio 的`autoplay`，部分的 iOS 微信（本文提供的解决方案）；
 3. 不支持 audio 的`autoplay`，部分的安卓机子的自带浏览器（比如小米，开始模仿 Safari）和全部的 iOS Safari（这种只能做用户触屏时就触发播放了）。
 
@@ -29,6 +29,8 @@ function audioAutoPlay(id){
 
 audioAutoPlay('Jaudio');
 ```
+
+> Video 元素也是类似处理，具体可以参考：[视频播放--踩坑小计](https://zhuanlan.zhihu.com/p/37793384)
 
 
 
