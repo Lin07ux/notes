@@ -26,7 +26,27 @@
 
 8. 在使用索引字段作为条件时，如果该索引是复合索引，那么必须使用到该索引中的第一个字段作为条件时才能保证系统使用该索引，否则该索引将不会被使用，并且应尽可能的让字段顺序与索引顺序相一致。
 
-### 三、临时表
+### 三、JOIN 优化
+
+MySQL 中有三种 JOIN 类别：LEFT JOIN、INNER JOIN、RIGHT JOIN：
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1559622428902.png)
+
+* `LEFT JOIN`中 A 表为驱动表
+* `INNER JOIN` 中 MySQL 会自动找出那个数据少的表作用驱动表
+* `RIGHT JOIN` 中 B 表为驱动表
+
+1. MySQL 中没有 FULL JOIN，可以用以下方式来解决：`select * from A left join B on B.name = A.name where B.name is null union all select * from B;`。
+
+2. 合理利用索引：使用被驱动表的索引字段作为`on`的限制字段。
+
+3. 利用小表去驱动大表：小表驱动大表可以减少嵌套循环中的循环次数，从而减少 IO 总量及 CPU 运算的次数。一般建议使用 INNER JOIN 而非 LEFT JOIN，因为前者会由 MySQL 自动选择小表做为驱动表，后者则是遵循最左驱动的原则，可能会出现大表驱动小表的情况。
+
+4. 巧用`STRAIGHT_JOIN`：INNER JOIN 是由 MySQL 选择驱动表，但是有些特殊情况需要选择另个表作为驱动表。`STRAIGHT_JOIN`可以用来强制指定连接顺序，在`STRAIGHT_JOIN`左边的表名就是驱动表，右边则是被驱动表。
+
+> 使用`STRAIGHT_JOIN`的前提条件是该查询是内连接，也就 INNER JOIN，其他连接不推荐使用`STRAIGHT_JOIN`，因为可能造成查询结果不准确。
+
+### 四、临时表
 
 1. 避免频繁创建和删除临时表，以减少系统表资源的消耗。临时表并不是不可使用，适当地使用它们可以使某些例程更有效，例如，当需要重复引用大型表或常用表中的某个数据集时。但是，对于一次性事件，最好使用导出表。
 
@@ -36,7 +56,7 @@
 
 4. 尽量使用表变量来代替临时表。如果表变量包含大量数据，请注意索引非常有限（只有主键索引）。
 
-### 四、游标
+### 五、游标
 
 1. 尽量避免使用游标，因为游标的效率较差，如果游标操作的数据超过 1 万行，那么就应该考虑改写。
 
@@ -44,13 +64,13 @@
 
 3. 与临时表一样，游标并不是不可使用。对小型数据集使用 FAST_FORWARD 游标通常要优于其他逐行处理方法，尤其是在必须引用几个表才能获得所需的数据时。在结果集中包括“合计”的例程通常要比使用游标执行的速度快。如果开发时间允许，基于游标的方法和基于集的方法都可以尝试一下，看哪一种方法的效果更好。
 
-### 五、其他
+### 六、其他
 
 1. 不要写一些没有意义的查询，如需要生成一个空表结构：`select col1, col2 into #t from t where 1=0`。这类代码不会返回任何结果集，但是会消耗系统资源的，应改成这样：`create table #t(…)`。
 
-2. 很多时候用`exists`代替`in`是一个好的选择：`select num from a where num in(select num from b);`。用下面的语句替换：`select num from a where exists(select 1 from b where num=a.num);`。
+2. 合理使用`exists`和`in`：前者适用于外表小而内表大的情况，后者适用于外表大而内表小的情况。`exists`以外层表为驱动表，先被访问外表；`in`以内表为驱动表，先执行子查询。很多时候用`exists`代替`in`是一个好的选择：`select num from a where num in (select num from b);`。用下面的语句替换：`select num from a where exists(select 1 from b where num = a.num);`。
 
-3. 任何地方都不要使用`select * from t;`，用具体的字段列表代替“*”，不要返回用不到的任何字段。
+3. 不要使用`select * from t;`，用具体的字段列表代替“*”，不要返回用不到的任何字段。
 
 4. 尽量使用数字型字段，若只含数值信息的字段尽量不要设计为字符型，这会降低查询和连接的性能，并会增加存储开销。这是因为引擎在处理查询和连接时会逐个比较字符串中每一个字符，而对于数字型而言只需要比较一次就够了。
 
@@ -60,10 +80,15 @@
 
 7. 尽量避免大事务操作，提高系统并发能力。
 
+8. 尽量用`union all`代替`union`，前提条件是两个结果集没有重复数据。`union`要将结果集合并后再进行唯一性过滤操作，这就会涉及到排序，增加大量的 CPU 运算，加大资源消耗及延迟。
+
+9. 不使用`ORDER BY RAND()`，比如可以将`select id from `dynamic` order by rand() limit 1000;`改成`select id from `dynamic` t1 join (select rand() * (select max(id) from `dynamic`) as nid) t2 on t1.id > t2.nidlimit 1000;`。
+
 
 ### 六、转摘
 
-[MySQL SQL语句优化技巧](http://www.uml.org.cn/sjjm/201610184.asp)
+* [MySQL SQL语句优化技巧](http://www.uml.org.cn/sjjm/201610184.asp)
+* [19 条立竿见影的 MySQL 优化技巧！](https://mp.weixin.qq.com/s/xqGL_oM8lsPV2mFcslkGCA)
 
 
 
