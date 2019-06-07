@@ -1,4 +1,5 @@
 ### 隐藏 Mustache 标签(避免页面闪烁)
+
 问题：Vue 还未实例化前， HTML 模板中的`{{ }}`( Mustache 标签) 会暴露在用户界面上，也就是说页面有那么一瞬间会将所有的`{{ }}`都显示出来，如何解决？
 
 解决：
@@ -26,6 +27,7 @@
 ```
 
 ### 同步新增的数据
+
 问题：新增的 data 数据没法同步响应到页面？
 
 解决：这涉及到 Vue 的响应式原理，可以先看下官方文档中的 [深入响应式原理](http://vuejs.org.cn/guide/reactivity.html)。
@@ -34,17 +36,35 @@
 
 * 对于 Vue 实例，可以使用`$set(key, value)`实例方法。
 
-```javascript
-vm.$set('b', 2)
-// `vm.b` 和 `data.b` 现在是响应的
-```
+    ```javascript
+    vm.$set('b', 2)
+    // `vm.b` 和 `data.b` 现在是响应的
+    ```
 
 * 对于普通数据对象，可以使用全局方法`Vue.set(object, key, value)`。
 
-```javascript
-Vue.set(data, 'c', 3)
-// `vm.c` 和 `data.c` 现在是响应的
-```
+    ```javascript
+    Vue.set(data, 'c', 3)
+    // `vm.c` 和 `data.c` 现在是响应的
+    ```
+
+* 还可以在设置一个不存在的变量时，设置一个已存在的变量的值，这样就会自动更新了：
+
+    ```JavaScript
+    let app = new Vue({
+        el: '#app',
+        data: {
+            obj: { a: 'a' }
+        }
+    })
+    
+    app.obj.a = 'a2'
+    app.obj.b = 'b'
+    ```
+    
+    这样用到`obj.b`的地方也会自动更新。
+    
+    > 参考：[《Vue 自测题》中答错率最高的题的解释](https://www.tuicool.com/articles/eieuIra)
 
 ### JavaScript 更改 input 值不引起响应
 
