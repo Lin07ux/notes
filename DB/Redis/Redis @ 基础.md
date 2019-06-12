@@ -32,6 +32,15 @@ Redis 是基于内存的、单线程服务器，而且采用了非阻塞式 IO�
 * 选择合适的数据持久化策略；
 * 考虑引入读写分离机制。
 
+### 1.4 与 Memcached 的区别
+
+* Memcached 只支持简单的字符串 key-value，而 Redis 支持更多的数据类型；
+* Memcached 的键最大只能有 1M，而 Redis 的键最大可以为 512M；
+* Memcached 只能将数据存放在内存中，而 Redis 可以将部分数据交换到磁盘中，从而可以存放更多的数据；
+* Redis 支持数据的持久化，Memcached 不支持；
+* Memcached 是多线程的，而 Redis 是单线程的，在存储小数据时 Redis 性能更高，而在 100k 以上的数据时，Memcached 的性能会更高；
+* 使用简单的 key-value 存储时 Memcached 的利用率更高，但如果 Redis 采用 hash 存储，由于其组合式的压缩，内存利用率会高于 Memcached；
+
 ## 二、数据结构
 
 Redis 采用的是 Key-Value 型的基本数据结构，任何二进制序列都可以作为 Redis 的 Key 使用（例如普通的字符串或一张 JPEG 图片），但都是会被当做 String 数据对象来对待。关于 Key 的一些注意事项：
