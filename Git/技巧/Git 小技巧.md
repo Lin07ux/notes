@@ -16,6 +16,13 @@
 git clone --mirror <origin_url>
 ```
 
+### 查看已合并的分支
+
+* `git branch --merged` 可以得到已经被合并到当前分支的分支列表
+* `git branch --no-merged` 找出被合并到其它分支的分支。
+
+默认情况下这会列出本地工作副本的分支，但是如果在命令行包括`--remote`或`-r`参数，它也会列出仅存于远程仓库的已合并分支。
+
 ### 追加 Commit
 
 如果想对刚才做的 commit 做适当修改，可以紧接着写修改的操作，然后执行命令`git commit --amend`即可将暂存区中的内容补充到最近的一次 commit 中。
