@@ -1,3 +1,11 @@
+### 表格列中有 v-if 或者 v-show 时渲染会错位
+
+在`el-table-column`列上使用`v-if`或者`v-show`时，当条件变化而使得一些列显示或隐藏，此时会导致渲染出来的数据是错位的。
+
+这个问题是由于`el-table`在条件渲染的时候 diff 会有点问题，可以通过在`el-table-column`中加上`key`属性，并设置不同的值就好了。
+
+[Element Issue#15427](https://github.com/ElemeFE/element/issues/15427)
+
 ### 表单验证
 
 表单验证使用的是一个第三方插件 [async-validator](https://github.com/yiminghe/async-validator)，基本上参考这个插件的说明，就可以生成对应的表单自动验证。
