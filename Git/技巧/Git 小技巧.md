@@ -23,27 +23,47 @@ git clone --mirror <origin_url>
 
 默认情况下这会列出本地工作副本的分支，但是如果在命令行包括`--remote`或`-r`参数，它也会列出仅存于远程仓库的已合并分支。
 
-### 追加 Commit
+### 查看指定文件的改动记录
 
-如果想对刚才做的 commit 做适当修改，可以紧接着写修改的操作，然后执行命令`git commit --amend`即可将暂存区中的内容补充到最近的一次 commit 中。
+`git blame <file>`可以查看文件最后一次修改的记录信息，而且可以具体到指定的行：
 
-如果刚才提交完没有作任何改动，直接运行此命令的话，相当于有机会重新编辑提交说明，但将要提交的文件快照和之前的一样。
-
-如果刚才提交时忘了暂存某些修改，可以先补上暂存操作，然后再运行`--amend`提交：
-
-```git
-# 做一次提交
-git commit -m 'initial commit' 
-
-# 将漏掉的文件添加到暂存区
-git add forgotten_file
-# 将这个漏掉的文件追加到刚才的提交中
-git commit --amend
-# 追加文件，而且不修改提交信息
-git commit --amend --no-edit
+```shell
+git blame -L 10,12 package.json
 ```
 
-上面的这三条命令最终只是产生一个提交，第二个提交命令修正了第一个的提交内容。
+上面的命令只能看到最后一次的修改，而如果要看到全部的修改，则可以使用`git log <file>`命令，它可以看到该文件的全部修改记录，而且也可以具体到行：
+
+```shell
+git log -p -L 10,12:package.json
+```
+
+### - 指代上一个分支
+
+在 Shell 中，`-`可以表示上一个目录，比如`cd -`表示返回到前一次的目录。同样的，Git 中`-`则是表示上一个分支。
+
+比如，经常工作于 A 与 B 两个分支，需要来回切，一般会用`git checkout A`这样进行切换，更简单的则可以使用`git checkout -`进行切换，表示切到最近的一次分支。
+
+如果要合并上一个分支，可以使用`git merge -`。
+
+### 统计项目
+
+统计项目各个成员 commit 的情况，比如可以查看项目的 commit 数以及他人对项目的贡献数：
+
+```shell
+git shortlog -sn
+git shortlog -sn --no-merges      # 不包含 merge commit
+```
+
+### 快速定位提交
+
+Git 可以根据 commit 的 message、author、time 等进行过滤定位：
+
+```shell
+git log --since="0 am" 　　　      # 查看今日的提交
+git log --author="shfshanyue"     # 查看 shfshanyue 的提交
+git log --grep="#12"              # 查找提交信息中包换关键字的提交
+git log -S "setTimeout"           # 查看提交内容中包换 setTimeout 的提交
+```
 
 ### 放弃本地修改，强制更新
 
