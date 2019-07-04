@@ -138,24 +138,50 @@ body {
 
 可以通过如下的方式来解决：
 
-* 创建一个隐藏的 input 框
+* 创建一个隐藏的 input 框，最好设置为只读`readonly`，避免被编辑
 * 点击的时候，将要复制的内容放进 input 框中
 * 选择文本内容`input.select()`（这里只能用 input 或者 textarea 才能选择文本）
 * 使用`document.execCommand("copy")`执行浏览器的复制命令
 
 ```JavaScript
 function copyText() {
-  var text = document.getElementById('text').innerText; // 获取要复制的内容也可以传进来
-  var input = document.getElementById('input'); // 获取隐藏 input 的 dom
+    var text = document.getElementById('text').innerText; // 获取要复制的内容
+    var input = document.getElementById('input'); // 获取隐藏 input 的 dom
   
-  input.value = text; // 修改文本框的内容
-  input.select(); // 选中文本
+    input.value = text; // 修改文本框的内容
+    input.select(); // 选中文本
   
-  document.execCommand('copy'); // 执行浏览器复制命令
-  alert('复制成功');
+    document.execCommand('copy'); // 执行浏览器复制命令
+    alert('复制成功');
 }
 ```
 
 > 也可以使用第三方库 [clipboard](https://github.com/zenorocha/clipboard.js)
+
+#### 3.4 点击复制增强
+
+上面一种点击复制方式在 iOS 上是无效的，为了兼容，可以使用如下的方式：
+
+* 创建一个隐藏的文本元素，如`p`、`span`等
+* 点击的时候将该元素的内容设置为要复制的内容
+* 使用系统的`selection`功能选择文本元素
+* 执行复制命令
+
+```JavaScript
+function selectionCopyText() {
+    var element = document.getElementById('element'); // 获取隐藏的文本元素
+    element.innerText = document.getElementById('text').innerText; // 修改文本框的内容
+  
+    var selection = window.getSelection();
+    var range = document.createRange();
+   
+    selection.removeAllRanges(); // 清空选择
+    range.selectNode(element); // 选中文本元素
+    selection.addRange(range); // 将选中的元素加入到选择中
+    
+    document.execCommand('Copy'); // 执行浏览器复制命令
+    alert('复制成功');
+}
+```
 
 
