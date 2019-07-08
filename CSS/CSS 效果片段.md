@@ -6,11 +6,30 @@
 }
 ```
 
-### 省略号
+### 单行文本溢出省略号
 
 ```css
-p {text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+p {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 ```
+
+### 多行文本溢出省略号
+
+在一个段落中，文本要保留多行，此时就不能用上一种方法了。对于`-webkit`内核的浏览器，可以使用下面的代码，其中，`-webkit-line-clamp`属性是来设置显示行数的。
+    
+```css
+.multi-ellipsis {
+   overflow: hidden;
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: 3;  /* 行数 */
+}
+``` 
+
+对于非`-webkit`核心的浏览器，就没有直接的 CSS 属性来设置了，需要变通方法：设置文本行高，然后设置高度为：显示的行数 * 行高。但是这样则不好设置最后的省略号了，需要借助 js 代码来实现。
 
 ### hover 浮动效果
 
@@ -72,11 +91,11 @@ HTML 结构如下：
 ```css
 * { margin: 0; }
 
-/* .footer的每一级父元素都为100%高 */
+/* .footer 的每一级父元素都为 100% 高 */
 html, body { height: 100%; }
 
 .page-wrap {
-  /* 页面内容至少撑满100%的屏幕 */
+  /* 页面内容至少撑满 100% 的屏幕 */
   min-height: 100%;
   /* 负边距大小即为页脚高度 */
   margin-bottom: -60px; 
@@ -92,35 +111,7 @@ html, body { height: 100%; }
 .footer, .page-wrap:after {
   height: 60px; 
 }
-```
-
-### 单行、多行文本溢出显示省略号
-
-1. 单行文本
-    单行情况下，是最简单的，直接使用 CSS 代码解决，而且兼容性很好：
-    
-    ```css
-    .ellipsis {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    ```
-
-2. 多行文本
-    在一个段落中，文本要保留多行，此时就不能用上一种方法了。对于`-webkit`内核的浏览器，可以使用下面的代码，其中，`-webkit-line-clamp`属性是来设置显示行数的。
-    
-    ```css
-    .multi-ellipsis {
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;  /* 行数 */
-    }
-    ``` 
-
-    对于非`-webkit`核心的浏览器，就没有直接的 CSS 属性来设置了，需要变通方法：设置文本行高，然后设置高度为：显示的行数 * 行高。但是这样则不好设置最后的省略号了，需要借助 js 代码来实现。
-    
+``` 
 
 ### 感知子元素的个数
 
@@ -139,6 +130,15 @@ html, body { height: 100%; }
 * 如果元素总数不足 4，则不会存在符合`:nth-last-child(n+4)`的元素（一共没有四个，也就不存在倒数第四个），那么`li:nth-last-child(n+4) ~ li`就不会选择任何的元素了。
 * 但是如果只用`~ li`，是不会匹配到第一个 li 的，所以又加上了`li:nth-last-child(n+4):first-child`。
 
+### 设置光标颜色
+
+在文本框中`input/textarea`中如果要改变光标的颜色，可以通过设置文本的颜色来搞定。但是假如只想改变光标的颜色，而不想改变文本的颜色的话，`caret-color`属性是一个实现方案：
+
+```css
+input, textarea, [contenteditable] {
+  caret-color: red;
+}
+```
 
 ### 隐藏鼠标
 
@@ -151,7 +151,7 @@ html, body { height: 100%; }
 ### 禁止用户选中文本
 
 ```css
-div {
+.can-not-select {
     user-select: none;
 }
 ```
@@ -206,4 +206,18 @@ div {
 }
 ```
 
+### 控制单元格宽度
+
+在给表格设置宽度时，经常会遇到宽度不起作用的问题。这是因为单元格的宽度是根据其内容进行调整的。
+
+表格有个`table-layout`属性，其浏览器默认值是`auto`，也就是单元格的宽度是根据内容展示来自动调整布局，而不会严格遵守宽度设置。当设置为`fixed`的时候，给`th/td`标签设置的宽度就起作用了：
+
+```css
+table {
+ table-layout: fixed;
+ width: 100%;
+}
+```
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1562386994698.png")
 
