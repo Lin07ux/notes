@@ -519,3 +519,21 @@ if (! $job->isDeleted() && ! $job->isReleased() && ! $job->hasFailed()) {
 * `{$queue}:delayed` 存储延迟任务
 * `{$queue}:notify` 作为任务处理的标识通知
 
+## 四、其他
+
+Diving 文章：
+
+1. [Introduction To The Queue System](https://divinglaravel.com/introduction-to-the-queue-system)
+2. [Preparing Jobs For Queue](https://divinglaravel.com/preparing-jobs-for-queue)
+3. [Pushing Jobs To Queue](https://divinglaravel.com/pushing-jobs-to-queue)
+4. [Queue Workers: How they work](https://divinglaravel.com/queue-workers-how-they-work)
+5. [Conditionally pushing event listeners to queue](https://divinglaravel.com/conditionally-pushing-event-listeners-to-queue)
+
+译文：
+
+1. [Before The Dive](https://github.com/yuansir/diving-laravel-zh/blob/master/The%20Queue%20System/Before%20The%20Dive.md)
+2. [Preparing Jobs For Queue](https://github.com/yuansir/diving-laravel-zh/blob/master/The%20Queue%20System/Preparing%20Jobs%20For%20Queue.md)
+3. [Pushing Jobs To Queue](https://github.com/yuansir/diving-laravel-zh/blob/master/The%20Queue%20System/Pushing%20Jobs%20To%20Queue.md)
+4. [Worker](https://github.com/yuansir/diving-laravel-zh/blob/master/The%20Queue%20System/Worker.md)
+
+
