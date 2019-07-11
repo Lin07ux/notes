@@ -1,7 +1,3 @@
-官方文档：[vuejs-template-webpack - GitBook](http://vuejs-templates.github.io/webpack/)
-
-## 问题
-
 ### 资源路径
 
 在项目中，默认会生成两个存放资源素材的文件夹：`static/`和`src/assets`。其中，前者是真正的静态文件目录，该目录下的所有文件在 build 的时候都会直接拷贝到 dist 目录中；后者则是需要先在项目中被引用，build 的时候才会处理到 dist 目录中。
