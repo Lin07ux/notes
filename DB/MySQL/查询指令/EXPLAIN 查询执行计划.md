@@ -1,12 +1,12 @@
 ## 一、简介
 
-MySQL 的`EXPLAIN`命令用于 SQL 语句的查询执行计划(QEP)。这条命令的输出结果能够让我们了解 MySQL 优化器是如何执行 SQL 语句的。这条命令并没有提供任何调整建议，但它能够提供重要的信息帮助你做出调优决策。它仅对`SELECT`语句或者特定表有效，可以帮助我们**选择更好的索引**和**写出更优化的查询语句**。
+MySQL 的`EXPLAIN`命令用于 SQL 语句的查询执行计划(QEP)。这条命令的输出结果能够展示 MySQL 优化器是如何执行 SQL 语句的。这条命令并没有提供任何调整建议，但它能够提供重要的信息帮助做出调优决策。它仅对`SELECT`语句或者特定表有效，可以帮助**选择更好的索引**和**写出更优化的查询语句**。
 
 > 如果`EXPLAIN`作用在表上，那么其等同于`DESC`表命令。
 
 > 在 5.6.10 版本里面，是可以直接对 DML(增删改查等) 语句进行`EXPLAIN`分析操作的。
 
-`UPDATE`和`DELETE`命令也需要进行性能改进，需要把它们改写成 SELECT 语句(以便对它们执行 EXPLAIN 命令)。如：
+`UPDATE`和`DELETE`命令也需要进行性能改进，需要把它们改写成 SELECT 语句(以便对它们执行`EXPLAIN`命令)。如：
 
 ```sql
 -- UPDATE 语句
@@ -28,32 +28,35 @@ EXPLAIN SELECT * FROM user WHERE id = 1;
 
 <img src="http://cnd.qiniu.lin07ux.cn/markdown/1473954724661.png" width="817"/>
 
-### 2.1 结果参数解释
+结果中各个参数解释如下：
 
-#### 2.1.1 id
+### 2.1 id
 
 这个是 SELECT 查询序列号，即为 SQL 语句执行的顺序。这个一般不重要。
 
-#### 2.1.2 select_type
+### 2.2 select_type
 
 SELECT 操作的类型，主要有以下几个值：
 
-* `simple`  它表示简单的 SELECT，没有 UNION 和子查询。
+* `simple` 它表示简单的 SELECT，没有 UNION 和子查询。
 * `primary` 最外面的 SELECT。在有子查询的语句中，最外面的 SELECT 查询就是 primary。这个类型通常可以在 DERIVED 和 UNION 类型混合使用时见到。
 * `derived` 当一个表不是一个物理表时，那么就被叫做 DERIVED。
 * `dependent subquery` 这个值是为使用子查询而定义的。
-* `union`   UNION 语句的第二个或者说是后面那一个。
+* `union` UNION 语句的第二个或者说是后面那一个。
 * `dependent union` UNION 中的第二个或后面的 SELECT 语句，取决于外面的查询。
-* `union result`    UNION 的结果。
+* `union result` UNION 的结果。
 
-#### 2.1.3 table
+### 2.3 table
 
 输出的行所用的表。也就是当前 SELECT 语句操作的表。这个值可能是表名、表的别名或者一个为查询产生临时表的标识符，如派生表、子查询或集合。
 
-#### 2.1.4 type
+### 2.4 type
 
-显示连接使用了何种类型。从最好到最差的连接类型为`const`、`eq_reg`、`ref`、`range`、`indexhe`和`all`。
+显示连接使用了何种类型。从最好到最差的连接类型为`system`、`const`、`eq_reg`、`ref`、`range`、`index`和`all`。
 
+> 可以参见：[](../知识点/EXPLAIN%20type%20各值的含义.md)
+
+* `system`：系统表，少量数据，往往不需要进行磁盘 IO；
 * `const`：表最多有一个匹配行，`const`用于比较 primary key 或者 unique 索引。因为只匹配一行数据，所以很快。记住一定是用到 primary key 或者 unique。
 * `eq_reg`：对于每个来自于前面的表的行组合，从该表中读取一行。这可能是最好的联接类型，除了 const 类型。它用在一个索引的所有部分被联接使用并且索引是 UNIQUE 或 PRIMARY KEY。eq_ref 可以用于使用`=`比较带索引的列。
 * `ref`：对于每个来自于前面的表的行组合，所有有匹配索引值的行将从这张表中读取。如果联接只使用键的最左边的前缀，或如果键不是 UNIQUE 或 PRIMARY KEY（换句话说，如果联接不能基于关键字选择单个行的话），则使用 ref。如果使用的键仅仅匹配少量行，该联接类型是不错的。
@@ -61,27 +64,27 @@ SELECT 操作的类型，主要有以下几个值：
 * `index`：该联接类型与 ALL 相同，除了只有索引树被扫描。这通常比 ALL 快，因为索引文件通常比数据文件小。（也就是说虽然 ALL 和 Index 都是读全表，但 Index 是从索引中读取的，而 ALL 是从硬盘中读的）
 * `ALL`：对于每个来自于先前的表的行组合，进行完整的表扫描。如果表是第一个没标记 const 的表，这通常不好，并且通常在它情况下很差。通常可以增加更多的索引而不要使用 ALL，使得行能基于前面的表中的常数值或列值被检索出。
 
-#### 2.1.5 possible_keys
+### 2.5 possible_keys
 
 显示可能应用在这张表中的索引。如果为空，没有可能的索引。可以为相关的域从 WHERE 语句中选择一个合适的语句。
 
-#### 2.1.6 key
+### 2.6 key
 
 实际使用的索引。如果为 null，则没有使用索引。很少的情况下，mysql 会选择优化不足的索引。这种情况下，可以在 SELECT 语句中使用`use index(indexname)`来强制使用一个索引或者用`ignore index indexname`来强制 mysql 忽略索引。
 
-#### 2.1.7 key_len
+### 2.7 key_len
 
 使用的索引的长度。在不损失精确性的情况下，长度越短越好。
 
-#### 2.1.8 ref
+### 2.8 ref
 
 显示索引的哪一列被使用了，如果可能的话，是一个常数。
 
-#### 2.1.9 rows
+### 2.9 rows
 
 mysql 认为必须检查的用来返回请求数据的行数，数值越大越不好，说明没有用好索引。
 
-#### 2.1.10 Extra
+### 2.10 Extra
 
 关于 mysql 如何解析查询的额外信息。`using temporary`和`using filesort`是最差的情况，意思 mysql 根本不能使用索引，结果是检索会很慢。
 
