@@ -8,7 +8,13 @@ JavaScript 中函数的调用有以下几种方式：作为对象方法调用、
 
 ![JavaScript this 决策树](http://cnd.qiniu.lin07ux.cn/2015-10-29%20this-in-javascript.png)
 
-上图我称之为"JavaScript this决策树"（非严格模式下）。这里没有考虑 ES6 中的箭头函数，因为箭头函数是一个特例：**箭头函数永远不会绑定属于自己的 this，它们的 this 总是绑定在定义时所在的作用域上。**也就是说，箭头函数的 this 是固定不可变的，永远是定义时的 this，哪怕使用了`apply`、`call`、`bind`方法。
+上图可以称之为"JavaScript this决策树"（非严格模式下）。这里没有考虑 ES6 中的箭头函数，因为箭头函数是一个特例：**箭头函数永远不会绑定属于自己的 this，它们的 this 总是绑定在定义时所在的作用域上。**也就是说，箭头函数的 this 是固定不可变的，永远是定义时的 this，哪怕使用了`apply`、`call`、`bind`方法。
+
+MDN 中关于箭头函数的`this`有如下的描述：
+
+> An arrow function does not have its own this. The this value of the enclosing lexical scope is used; arrow functions follow the normal variable lookup rules.
+> 
+> 意思就是说：箭头函数没有自己的 this 值，箭头函数中所使用的 this 都是来自函数作用域链，它的取值遵循普通普通变量一样的规则，在函数作用域链中一层一层往上找。
 
 下面通过例子来说明这个图如何对 this 进行判断。
 
