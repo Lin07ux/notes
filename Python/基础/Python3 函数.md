@@ -1,6 +1,8 @@
-函数将一个代码块作为整体，调用函数的时候就可以通过函数名来执行该代码块。
+函数将一个代码块作为整体，调用函数的时候就可以通过函数名来执行该代码块。Python 中函数是第一类对象(first-class object)，可作为参数和返回值传递。
 
 ## 一、基础
+
+> 转摘：[Python 学习笔记 - 函数 - 定义](https://mp.weixin.qq.com/s/x5qXXBvJMokyiB0GhjxXyQ)
 
 ### 1.1 定义函数
 
@@ -24,21 +26,114 @@ fib(2000)
 
 函数体的第一行可以（可选的）是字符串文字注释，表示函数的文档字符串或 docstring。有些工具使用文档字符串自动生成在线或印刷文档，或者让用户以交互式的形式浏览代码；在编写的代码中包含文档字符串是一种很好的做法。
 
-### 1.2 返回值
+### 1.2 主要属性
 
-函数中可以使用`return`语句返回一个值，表示该函数执行的结果。执行`return`语句之后，其后的代码将不会执行了。
+函数也是一种对象，Python 为函数对象添加了一些隐藏属性：
 
-事实上，即使没有`return`语句的函数也会返回一个值，尽管它是一个相当无聊的值。这个值称为`None`（它是内置名称）。一般来说解释器不会打印出单独的返回值`None`，如果想看到它，可以使用`print()`。
+* `__code__.co_varnames` 参数及变量名列表
+* `__code__.co_consts` 指令常量
+* `__defaults__` 参数默认值字典
+* `__dict__` 函数实例属性
+* `__name__` 函数名称，编译期静态绑定，与运行期变量名引用无关
+* `__qualname__` 函数在模块中的完整定义路径
 
-比如，对于上面的 Fibonacci 数列的函数，传入参数 0 时的结果：
+```Python
+def test(x, y = 10):
+    x += 100
+    print(x, y)
 
+print(test) # <function test>
+print(test.__code__) # <code object>
+print(test.__code__.co_varnames) # ('x', 'y')
+print(test.__code__.co_consts) # (None, 100)
+print(test.__defaults__) # (10,)
+print(test.__name__) # test
+
+print(test(1)) # 101 10
+test.__defaults__ = (1234,) # 修改默认值
+print(test(1)) # 101 1234
+
+print(test.__dict__) # {}
+test.abc = "hello, world" # 为函数实例添加属性
+print(test.__dict__) # {'abc': 'hello, world'}
 ```
->>> fib(0)
->>> print(fib(0))
-None
+
+### 1.3 内部原理
+
+事实上，`def`是运行期指令。以代码对象为参数，创建函数实例，并在当前上下文与指定名字相关联。
+
+> 可以理解为：`def`指令会将代码块作为一个只读变量与函数名称变量进行绑定关联。
+
+正因如此，可用`def`指令以单个代码对象为模版创建多个函数实例，比如：
+
+> 但需要区别的是，多个实例和多个名字引用同一实例并非一回事。
+
+```Python
+def make(n):
+    ret = []
+
+    for i in range(n):
+        def test(): print("hello")  # test = make_function(code)
+
+        print(id(test), id(test.__code__)) 
+        ret.append(test)
+
+    return ret
+
+make(3)
+# 输出类似如下，不同实例，相同代码
+# 4428346232 4425999248
+# 4430389456 4425999248
+# 4430390136 4425999248
 ```
 
-一个函数只能返回一个值，这个值可以是原始数据(Integer、Float、Boolean)，也可以是一个对象(List、Set、Object)。所以如果有多个值需要返回，可以将这些值都放在一个数组中然后返回。
+同一名字空间，名字只能与单个目标关联。如此，就不能实现函数重载(overload)。而另一方面，如果不在同一个命名空间中，则可以出现相同名称的函数，比如下面的嵌套示例中，内外函数名字虽相同，但分属不同层次名字空间，依优先级而定，并不冲突：
+
+```Python
+def test():
+    print("outer test")
+
+    def test():
+        print("inner test")
+
+    return test
+
+x = test() # outer test
+print(x) # <function __main__.test.<locals>.test>
+x() # inner test
+```
+
+### 1.4 lambda 匿名函数
+
+lambda 表达式也称为匿名函数，相比普通函数，其内容只能是单个表达式（函数调用也属表达式），不能使用语句，而且不能提供函数名。除此之外，其使用方法与普通函数并无差异。
+
+lambda 表达式可以接受参数，在参数后面用`:`分隔的就是表示式。调用 lambda 的时候，会运行表达式的值，并将其作为结果返回。
+
+```Python
+add = lambda x, y: x + y
+print(add) # <function __main__.<lambda>>
+add(1, 2) # 3
+```
+
+另外需要注意的是，lambda 表达式的`__name__`属性值总是`<lambda>`。这意味着，如果没有将 lambda 赋值给变量，那么其在当前语句被执行完成之后，将无法再次被调用。这也使得 lambda 在某些场合远比普通函数更加灵活和自由。
+
+```Python
+map(lambda x: x ** 2, range(3)) # 直接作为参数
+
+[lambda: print("hello") for i in range(3)] # 作为推导式输出结果
+
+(lambda x: print(x))("hello") # 直接运行
+
+test = lambda x: (lambda y: x + y) # 将另一个 lambda 作为返回值，支持闭包
+add = test(2)
+add(3) # 5
+
+ops = { # 构建方法表
+    "add": lambda x, y: x + y,
+    "sub": lambda x, y: x - y,
+}
+ops["add"](2, 3) # 5
+```
 
 ## 二、参数
 
@@ -179,7 +274,20 @@ TypeError: test() takes 0 positional arguments but 1 was given
 
 参数默认值允许省略实参传值，让函数调用更加灵活。尤其是那些参数众多，或具有缺省设定的函数。
 
-但需注意，**默认值**在函数创建时生成，**保存到函数的特定属性`__defaults__`，为每次调用所共享**。如此，其行为**类似静态局部变量**，会“记住”以往调用状态。这也就意味着：如果默认值为可变类型，且在函数内做了修改，那么后续调用会观察到本次改动，导致默认值失去原本含义。
+默认值是在*定义过程*中在函数定义处计算的，所以可以设置函数的默认值为某个变量。如：
+
+```Python
+i = 5
+
+def f(arg=i):
+    print(arg)
+
+i = 6
+f()
+# 输出：5
+```
+
+另外需要注意的是，**默认值**在函数创建时**保存到函数的特定属性`__defaults__`，为每次调用所共享**。如此，其行为**类似静态局部变量**，会“记住”以往调用状态。这也就意味着：如果默认值为可变类型，且在函数内做了修改，那么后续调用会观察到本次改动，导致默认值失去原本含义。
 
 比如，对于如下的函数定义：
 
@@ -215,7 +323,7 @@ def test(a, x = [1, 2]):
 
 ```Python
 def test(a, x = None):
-    x = x or []                # 忽略时，主动新建。
+    x = x or [] # 忽略时，主动新建。
     x.append(a)
     return x
 ```
@@ -258,6 +366,22 @@ def test():
 * 键值参数总是以命名方式传入。
 * 不能对同一参数重复传值。 
 > 无论是以位置和命名两种不同方式，还是多个星号展开里有重复主键，都不能导致对同一参数重复传值。
+
+## 三、返回值
+
+函数中可以使用`return`语句返回一个值，表示该函数执行的结果。执行`return`语句之后，其后的代码将不会执行了。
+
+事实上，即使没有`return`语句的函数也会返回一个值，尽管它是一个相当无聊的值。这个值称为`None`（它是内置名称）。一般来说解释器不会打印出单独的返回值`None`，如果想看到它，可以使用`print()`。
+
+比如，对于上面的 Fibonacci 数列的函数，传入参数 0 时的结果：
+
+```
+>>> fib(0)
+>>> print(fib(0))
+None
+```
+
+一个函数只能返回一个值，这个值可以是原始数据(Integer、Float、Boolean)，也可以是一个对象(List、Set、Object)。所以如果有多个值需要返回，可以将这些值都放在一个数组中然后返回。
 
 ## 三、作用域
 
