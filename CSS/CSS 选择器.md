@@ -124,4 +124,32 @@
 
 伪元素应该使用`::`两个冒号来表示，以和伪类进行区别，但是使用一个冒号也是能正常工作的。
 
+### 4.3 :not 伪类注意事项
+
+CSS 选择器都会有相应的优先级，而逻辑伪类(如`:not()`)本身是没有优先级的，整个逻辑伪类选择器的优先级是由括号里面内容决定的。比如：
+
+```css
+:not(.disabled) {}    /* 优先级等同于.disabled选择器 */
+:not(a) {}    /* 优先级等同于a选择器 */
+```
+
+`:not()`逻辑伪类出身很早，早到 IE9 浏览器都支持，但其括号里面并不支持复杂的选择器。例如，`:not()`伪类括号里面不能多个选择器：
+
+```css
+:not(.disabled, .read-only) {}    /* 无效，不支持 */
+:not(.disabled), :not(.read-only) {} /* 需写成这样 */
+
+:not(a.disabled) {}    /* 无效，不支持 */
+:not(a):not(.disabled) {} /* 需写成这样 */
+```
+
+`:not()`伪类直接的逻辑关系为：连接在一起表示“与”(`&&`)，分割开来表示“或”(`||`)。比如：
+
+```css
+/* 不包含 .disabled 或 .read-only 类名 input 元素 */
+input:not(.disabled), input:not(.read-only) {}
+
+/* 不包含 .disabled 类名而且不包含 .read-only 类名 input 元素*/
+input:not(.disabled):not(.read-only) {}
+```
 
