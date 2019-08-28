@@ -89,3 +89,82 @@ function descCompare2 (x, y) {
 
 > 参考：[关于javaScript sort()方法的理解](https://segmentfault.com/a/1190000009338122)
 
+### concat()
+
+`concat()`方法可以基于当前数组创建一个新的数组。该方法可以接收任意的参数：
+
+* 如果没有传入参数，则相当于复制当前数组创建并返回这个一个副本；
+* 如果传入了一个或多个参数，则会依次将这些参数追加在当前数组副本的后面。
+* 如果传入的参数有数组，则会将该数组中的每一项依次追加到当前数组副本的后面，但不会将数组的更多层次进行展开。
+
+**该方法不会修改原数组**。
+
+```JavaScript
+let colors = ['red', 'green', 'blue']
+let colors2 = colors.concat('yellow', ['black', ['brown']])
+
+console.log(colors)  // ["red", "green", "blue"]
+console.log(colors2) // ["red", "green", "blue", "yellow", "black", ['brown']]
+```
+
+### slice()
+
+`slice()`方法能够基于当前数组中的一个或多个项创建新数组。可以接收一个或两个参数，分别表示返回项的起始和结束位置，该方法会返回从起始和结束位置之间的项——包括起始位置但不包括结束位置。
+
+* 第一个参数的默认值为 0，第二个参数的默认值为数组的长度。
+* 参数如果为负值，则会将其参数值加上数组长度之后再进行计算，比如，对于一个长度为 5 的数组，`slice(-2, -1)`和`slice(3, 1)`的结果相同。
+* 如果第二个参数不比第一个参数大，那么会返回一个空数组。
+
+**该方法不会修改原数组**。
+
+```JavaScript
+let colors = ['red', 'green', 'blue']
+
+console.log(colors.slice(1))      // ["green", "blue"]
+console.log(colors.slice(1, 4))   // ["green", "blue"]
+console.log(colors.slice(3, 3))   // []
+console.log(colors.slice(-2, -1)) // ["green"]
+console.log(colors)               // ["red", "green", "blue"]
+```
+
+### splice()
+
+`splice()`方法也可以从数组中获取一个副本，但比`slice()`方法的功能更多、更复杂。`splice()`方法的主要用途是替换数组中的部分项，可以实现如下功能：
+
+* 删除：可以删除任意数量的项，只需要指定 2 个参数：要删除的第一项的位置和要删除的项数。例如`splice(0, 2)`会删除数组中的前两项。
+* 插入：可以向指定位置插入任意数量的项，只需要提供 3 个参数：起始位置、要删除的项数(0)和要插入的项。如果要插入多个项，可以继续传入参数。例如`splice(2, 0, 'red', 'green')`会从当前数组的位置 2 处开始插入两个字符串，插入后，这两个字符串在当前数组的索引分别为 2、3。
+* 替换：可以从指定位置处开始删除指定数量的项，并从指定位置处插入任意数量的项，从而完成替换。该功能和插入功能类似，但此时要删除的项数(也就是第二个参数)不为 0。例如`splice(2, 1, 'red', 'green')`会先删除当前数组中索引为 2 的项，然后再从索引 2 开始插入两个字符串。
+
+`splice()`方法始终都会返回一个数组，该数组中包含从原数组中删除的项。如果没有删除任何项，则返回一个空数组。
+
+* 如果前两个参数为负值，则会将其加上当前数组的长度之和进行操作。
+* 如果第一个参数(起始位置参数)大于或等于数组长度，则不会删除任何项。
+* 如果要删除的项超过从起始位置开始的总项数，则会将从起始位置开始处的每一项都删除。
+
+**该方法会修改原数组**。
+
+```JavaScript
+let colors = ['red', 'green', 'blue']
+
+console.log(colors)                // ["red", "green", "blue"]
+
+console.log(colors.splice(0, 1))   // ["red"]
+console.log(colors)                // ["green", "blue"]
+
+console.log(colors.splice(1, 0, 'yellow', 'orange'))   // []
+console.log(colors)                // ["green", "yellow", "orange", "blue"]
+
+console.log(colors.splice(1, 1, 'red', 'purple'))   // ["yellow"]
+console.log(colors)                // ["green", "red", "purple", "orange", "blue"]
+
+console.log(colors.splice(5, 2))   // []
+console.log(colors)                // ["green", "red", "purple", "orange", "blue"]
+
+console.log(colors.splice(-2, -1)) // []
+console.log(colors)                // ["green", "red", "purple", "orange", "blue"]
+
+console.log(colors.splice(-2, 1))  // ["orange"]
+console.log(colors)                // ["green", "red", "purple", "blue"]
+```
+
+
