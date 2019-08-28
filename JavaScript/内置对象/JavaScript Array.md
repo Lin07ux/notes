@@ -1,5 +1,35 @@
 ## 方法
 
+### pop()/push()
+
+`pop()`方法从数组末尾弹出一个元素，并返回该元素；`push()`方法在数组末尾压入一个或多个元素，并返回压入元素后的数组长度。
+
+```JavaScript
+let arr = []
+arr.push('red', 'black') // 2
+arr.push('blue') // 3
+
+arr.pop() // 'blue'
+arr.pop() // 'black'
+arr.pop() // 'red'
+arr.pop() // undefined
+```
+
+### shift()/unshift()
+
+`shift()`从数组头部弹出一个元素，并返回该元素；`unshift()`方法在数组头部压入一个或多个元素，并返回压入元素后的数组长度。
+
+```JavaScript
+let arr = []
+arr.unshift('red', 'black') // 2
+arr.unshift('blue') // 3
+
+arr.shift() // 'blue'
+arr.shift() // 'black'
+arr.shift() // 'red'
+arr.shift() // undefined
+```
+
 ### sort()
 
 对数组排序可以使用`sort()`方法，需要注意的是：
