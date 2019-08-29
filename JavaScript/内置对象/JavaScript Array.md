@@ -1,6 +1,8 @@
-## 方法
+### 1. 栈方法
 
-### pop()/push()
+JavaScript 中的数组可以作为一个栈使用，通过以下的方法实现先进先出或先进后出栈。
+
+#### 1.1 pop()/push()
 
 `pop()`方法从数组末尾弹出一个元素，并返回该元素；`push()`方法在数组末尾压入一个或多个元素，并返回压入元素后的数组长度。
 
@@ -15,7 +17,7 @@ arr.pop() // 'red'
 arr.pop() // undefined
 ```
 
-### shift()/unshift()
+#### 1.2 shift()/unshift()
 
 `shift()`从数组头部弹出一个元素，并返回该元素；`unshift()`方法在数组头部压入一个或多个元素，并返回压入元素后的数组长度。
 
@@ -30,7 +32,7 @@ arr.shift() // 'red'
 arr.shift() // undefined
 ```
 
-### sort()
+### 2. 排序方法
 
 对数组排序可以使用`sort()`方法，需要注意的是：
 
@@ -89,7 +91,11 @@ function descCompare2 (x, y) {
 
 > 参考：[关于javaScript sort()方法的理解](https://segmentfault.com/a/1190000009338122)
 
-### concat()
+### 3. 操作方法
+
+数组还支持进行合并、切片、替换等功能。
+
+#### 3.1 concat()
 
 `concat()`方法可以基于当前数组创建一个新的数组。该方法可以接收任意的参数：
 
@@ -107,7 +113,7 @@ console.log(colors)  // ["red", "green", "blue"]
 console.log(colors2) // ["red", "green", "blue", "yellow", "black", ['brown']]
 ```
 
-### slice()
+#### 3.2 slice()
 
 `slice()`方法能够基于当前数组中的一个或多个项创建新数组。可以接收一个或两个参数，分别表示返回项的起始和结束位置，该方法会返回从起始和结束位置之间的项——包括起始位置但不包括结束位置。
 
@@ -127,7 +133,7 @@ console.log(colors.slice(-2, -1)) // ["green"]
 console.log(colors)               // ["red", "green", "blue"]
 ```
 
-### splice()
+#### 3.3 splice()
 
 `splice()`方法也可以从数组中获取一个副本，但比`slice()`方法的功能更多、更复杂。`splice()`方法的主要用途是替换数组中的部分项，可以实现如下功能：
 
@@ -167,9 +173,9 @@ console.log(colors.splice(-2, 1))  // ["orange"]
 console.log(colors)                // ["green", "red", "purple", "blue"]
 ```
 
-### indexOf()/lastIndexOf()
+### 4. 查找索引方法
 
-这两个方法都是用来查找指定项在数组中的位置的。前者表示从数组的开头往后查找，后者表示从数组的末尾开始向前查找。如果找到了则返回所在位置的索引，否则返回 -1。
+JavaScript Array 提供了两个查找指定项在数组中的位置的方法：`indexOf()`和`lastIndexOf()`。前者表示从数组的开头往后查找，后者表示从数组的末尾开始向前查找。如果找到了则返回所在位置的索引，否则返回 -1。
 
 这两个方法都可以接收两个参数：
 
@@ -191,4 +197,62 @@ numbers.indexOf('4')      // -1
 numbers.lastIndexOf('4')  // -1
 ```
 
+### 5. 迭代方法
+
+除了使用`for`语法对数组进行迭代之外，JavaScript Array 自身还提供了一些更方便的迭代处理方法：
+
+* `every()` 对数组中的每一项运行给定函数，如果回调函数对每一项都返回 true，则该方法最终返回 true。一旦有一项返回的不是 true，则停止迭代，并返回 false。用于确保数组中的每一项都符合条件。
+* `some()` 对数组中的每一项运行给定的函数，如果回调函数对任一项返回 true，则立即停止迭代，且该方法返回 true。否则会在迭代完全部的数组项之后返回 false。用于确认数组中至少有一项是符合条件的。
+* `filter()` 对数组中的每一项运行给定的函数，最终该方法会将回调函数返回 true 的项组成一个新的数组并返回。用于从数组中过滤出符合条件的项。
+* `forEach()` 对数组中的每一项运行给定的函数。这个方法没有返回值。用于对数组中的每一项都进行相关处理。
+* `map()` 对数组中的每一项运行给定的函数，返回每次回调函数调用的结果组成的数组。用于更改数组中的每一项。
+
+> 以上方法都不会修改数组中包含的值，除非在回调函数中有显式的修改。
+
+它们的语法都相同，以`every()`方法为例，语法如下：
+
+```JavaScript
+Array.prototype.every(function callback(item, index, array) {
+    // statements
+})
+```
+
+这些方法的回调函数可以接收三个参数，分别表示：
+
+* `item` 当前迭代的数组项
+* `index` 当前迭代的项在数组中的位置索引
+* `array` 当前迭代的数组本身
+
+需要注意的是，回调方法的第三个参数表示当前迭代数组本身，所以可以利用这个参数对当前数组进行修改，但是不论是增加还是删除，或者修改数组中的项，都不影响当前的迭代的执行，因为在进行迭代的时候，JavaScript 会创建当前数组的一个副本，并用这个副本进行迭代。
+
+```JavaScript
+let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1]
+
+numbers.every(function (item, index, array) {
+    console.log(index)
+    return item > 2
+})
+// 0 false
+
+numbers.some(function (item, index, array) {
+    console.log(index)
+    return item > 2
+})
+// 0 1 2 true
+
+numbers.filter(function (item, index, array) {
+    return item > 2
+})
+// [3, 4, 5, 4, 3]
+
+numbers.forEach(function (item, index, array) {
+    console.log(item)
+})
+// 1 2 3 4 5 4 3 2 1
+
+numbers.map(function (item, index, array) {
+    return item * 2
+})
+// [2, 4, 6, 8, 10, 8, 6, 4, 2]
+```
 
