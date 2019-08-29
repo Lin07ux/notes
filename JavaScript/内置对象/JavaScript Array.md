@@ -167,4 +167,28 @@ console.log(colors.splice(-2, 1))  // ["orange"]
 console.log(colors)                // ["green", "red", "purple", "blue"]
 ```
 
+### indexOf()/lastIndexOf()
+
+这两个方法都是用来查找指定项在数组中的位置的。前者表示从数组的开头往后查找，后者表示从数组的末尾开始向前查找。如果找到了则返回所在位置的索引，否则返回 -1。
+
+这两个方法都可以接收两个参数：
+
+* 第一个参数表示要查找的项
+* 第二个参数表示查找起点位置的索引，可选。对于`indexOf()`方法，其默认值为 0，对于`lastIndexOf()`方法，其默认值则为数组的长度 - 1。
+
+在查找过程中，会将第一个参数和数组中的项进行全等(`===`)比较，也就是说，第一个参数和数组项的类型不同也会导致查找不到。
+
+```JavaScript
+let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1]
+
+numbers.indexOf(4)      // 3
+numbers.lastIndexOf(4)  // 5
+
+numbers.indexOf(4, 4)      // 5
+numbers.lastIndexOf(4, 4)  // 3
+
+numbers.indexOf('4')      // -1
+numbers.lastIndexOf('4')  // -1
+```
+
 
