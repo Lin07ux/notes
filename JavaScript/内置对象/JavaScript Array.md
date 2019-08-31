@@ -223,7 +223,7 @@ Array.prototype.every(function callback(item, index, array) {
 * `index` 当前迭代的项在数组中的位置索引
 * `array` 当前迭代的数组本身
 
-需要注意的是，回调方法的第三个参数表示当前迭代数组本身，所以可以利用这个参数对当前数组进行修改，但是不论是增加还是删除，或者修改数组中的项，都不影响当前的迭代的执行，因为在进行迭代的时候，JavaScript 会创建当前数组的一个副本，并用这个副本进行迭代。
+需要**注意**的是，回调方法的第三个参数表示当前迭代数组本身，所以可以利用这个参数对当前数组进行修改，但是不论是增加还是删除，或者修改数组中的项，都不影响当前的迭代的执行，因为在进行迭代的时候，JavaScript 会创建当前数组的一个副本，并用这个副本进行迭代。
 
 ```JavaScript
 let numbers = [1, 2, 3, 4, 5, 4, 3, 2, 1]
@@ -254,5 +254,56 @@ numbers.map(function (item, index, array) {
     return item * 2
 })
 // [2, 4, 6, 8, 10, 8, 6, 4, 2]
+```
+
+### 6. 归并方法
+
+ECMAScript 5 为数组新增了两个方法：`reduce()`和`reduceRight()`。这两个方法都会迭代数组的所有项，然后构建一个最终返回的值。其中，`reduce()`方法表示从数组的第一项开始向后归并处理，而`reduceRight()`表示从数组的最后一项开始向前归并处理。
+
+这两个方法都接收一个回调函数，表示对每一项进行处理的逻辑，并可以接收一个可选的参数，表示归并的起始值。而且这两个方法都不会修改原数组的项。
+
+这两个方法的回调函数接收 4 个参数：前一个归并后的结果、当前项、项的索引、当前数组对象。每一项的回调函数返回的任何值都会作为第一个参数(前一个归并结果)传递给下一项的回调函数。
+
+需要**注意**的是，如果不传入第二个参数，那么：
+
+* `reduce()`方法会自动将数组的第一项作为第二个参数的值，并从第二项开始遍历执行回调函数，而第一项则不会执行回调函数；
+* `reduceRight()`方法会自动将数组的最后一项作为第二个参数的值，并从倒数第二项开始遍历执行回调函数，而最后一项不会执行回调函数。
+
+```JavaScript
+let numbers = [1, 2, 3]
+
+numbers.reduce((pre, item, index) => {
+    console.log(pre, item, index)
+    return pre + item
+})
+// 1 2 1
+// 3 3 2
+// 6
+
+numbers.reduceRight((pre, item, index) => {
+    console.log(pre, item, index)
+    return pre + item
+})
+// 1 3 2 1
+// 1 5 1 0
+// 6
+
+numbers.reduce((pre, item, index) => {
+    console.log(pre, item, index)
+    return pre + item
+}, 4)
+// 4 1 0
+// 5 2 1
+// 7 3 2
+// 10
+
+numbers.reduceRight((pre, item, index) => {
+    console.log(pre, item, index)
+    return pre + item
+}, 4)
+// 4 3 2
+// 1 7 2 1
+// 1 9 1 0
+// 10
 ```
 
