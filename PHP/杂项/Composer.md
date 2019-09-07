@@ -230,17 +230,54 @@ composer show monolog/*
 composer show monolog/monolog
 ```
 
-### 4. outdated 查看需要升级的依赖
+`show`命令可以配合`-t`或`--tree`选项使用，使用依赖关系树的形式查看已安装包的信息。
+
+### 4. outdated
+
+此命令是`composer show -lo`的别名之一，用于查看可以升级的依赖。根据语义化的版本，返回着色的代码，来表明每个包的状态：
+
+* 绿色：当前安装包已是最新版本
+* 黄色：有可升级的更新，但可能有不兼容的修改。
+* 红色：有可用的小版本升级(一般是 bug 修复)
 
 ```shell
 # 查看需要升级的依赖，会列出全部的依赖(包括依赖中的依赖)
 composer outdated
 
-# 查看 composer.json 指定的需要升级的依赖 （--direct）
+# 查看 composer.json 指定的需要升级的依赖(--direct)
 composer outdated -D
 
-# 只看有次版本升级的依赖
+# 只看有次版本升级的依赖(--minor-only)
 composer outdated -m
+```
+
+### 5. why/depends
+
+`why`是`depends`命令的别名，用来查看哪些依赖项需要指定的包，而且也可以使用`-t`或`--tree`选项以依赖树形式展示：
+
+```shell
+composer why vlucas/phpdotenv
+composer why vlucas/phpdotenv -t
+```
+
+### 6. why-not/prohibits
+
+有时，一个或多个已安装的软件包将阻止安装或更新软件包。为了检查是哪些安装包，可以使用`why-not`命令(别名为`prohibits`)。
+
+例如，Laravel 最近发布了一个新的 5.8 版本的框架，可以使用`why-not`命令检查任何阻止更新`laravel/framework`包的包：
+
+```shell
+composer why-not laravel/framework 5.8
+```
+
+同样可以使用`--tree`或`-t`标记在依赖关系树中查看此信息。
+
+### 7. licenses
+
+该命令展示每个软件包的许可证信息：
+
+```shell
+composer licenses
 ```
 
 ## 四、其他
