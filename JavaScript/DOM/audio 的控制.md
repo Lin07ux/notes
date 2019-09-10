@@ -84,22 +84,29 @@ Audio 元素可以设置`autoplay`属性来自动播放，但是并不是所有�
 
 ```js
 function audioAutoPlay(id){
-    var audio = document.getElementById(id),
-        play = function() {
-            audio.play();
-            document.removeEventListener("touchstart", play, false);
-        };
+    var audio = document.getElementById(id);
     
-    audio.play();
+    function play() {
+        audio.play().then(function () {
+            document.removeEventListener("touchstart", play, false);
+        }.catch(function () {})
+    };
     
+    // 微信中
+    wx.reay(play)
+    // 微信中方法 2
     document.addEventListener("WeixinJSBridgeReady", play, false);
+    
+    // 通过触碰页面开启
     document.addEventListener("touchstart", play, false);
+    
+    play();
 }
 
 audioAutoPlay('Jaudio');
 ```
 
-> Video 元素也是类似处理，具体可以参考：[视频播放--踩坑小计](https://zhuanlan.zhihu.com/p/37793384)
+> Video 元素也是类似处理，具体可以参考：[视频播放--踩坑小计](https://zhuanlan.zhihu.com/p/37793384)、[Audio Gist](https://gist.github.com/ufologist/7c14837db642a6e916ce#file-autoplay-audio-ios-html)
 
 ### 6. 无法调用 play
 
