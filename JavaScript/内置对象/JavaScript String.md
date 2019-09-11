@@ -1,60 +1,87 @@
 ## 一、基础
 
-字符串 String 类型是 JavaScript 中的一个基本类型。JavaScript 中，字符串是由一对单引号或者一对双引号包裹的字符集合。
+String 类型是字符串的对象包装类型，可以和普通对象一样进行创建。
 
-JavaScript 里的字符串类似于数组，都是一个一个字符拼凑在一起组成的，因此可以用`length`属性取得字符串的长度。也能够像使用数组一样，通过索引获取字符串指定位置的字符，比如：
+JavaScript 里的字符串类似于数组，都是一个一个字符拼凑在一起组成的，因此可以用`length`属性取得字符串的长度。也能够像使用数组一样，通过索引获取字符串指定位置的字符。
+
+比如：
 
 ```javascript
-var string = 'abcdefg';
+var string = new String('abcdefg');
 console.log(string.length);   // 7
-console.log(string[2]);       // 'c'
+console.log(string[2]);       // "c"
 ```
+
+需要注意的是，即使字符串中包含双字节字符(不是占一个字节的 ASCII 字符)，每个字符也仍然算一个字符。所以 String 对象上的 length 属性有时候并不准确。
 
 ## 二、方法
 
-字符串上都很多方法，其实这些方法都是 String 对象上的，在字符串调用这些方法的时候，会隐式的先将字符串转成 String 对象，然后再调用对象上的方法。
+String 对象的`valueOf()`、`toString()`和`toLocalString()`方法都会返回对象所表示的基本字符串值。
 
-需要注意的是：**这些方法都不会改变源字符串自身，返回的结果都是源字符串的一个副本**。
+String 对象上还有很多方法，用于完成对字符串的解析和操作。**这些方法都不会改变源字符串自身，返回的结果都是源字符串的一个副本**。
 
-### 2.1 charAt()
+### 2.1 charAt()/charCodeAt()
 
-语法：`String.charAt(n)`
+语法：`String.charAt(n)`、`String.charCodeAt(n)`
 
-返回字符串的第 n 个字符，如果 参数 n 不在 0~str.length-1之间，则返回一个空字符串。
+这两个方法都接受一个参数，用于指定要操作的字符的位置，从 0 开始。
 
-其作用类似于通过数组方式访问字符串，只是对于不存在的索引位置，`charAt()`返回的是一个空字符串。
+其中：
+
+* `charAt()` 返回字符串的第 n 个字符，如果参数 n 不在`0~str.length-1`之间，则返回一个空字符串。其作用类似于通过数组方式访问字符串，只是对于不存在的索引位置，`charAt()`返回的是一个空字符串。
+* `charCodeAt()` 返回字符串的第 n 个字符的字符编码，相当于先用`charAt()`获取指定位置的字符，然后将这个字符转换成 ASCII 编码值返回。如果获取的字符不存在，则返回 NaN。
 
 ```javascript
 var str = "javascript";
 str.charAt(2);  // 'v'
 str.charAt(12); // ''
 str[12];        // undefined
+
+str.charCodeAt(2);  // 118
+str.charCodeAt(12); // NaN
 ```
 
-### 2.2 indexOf()
+### 2.2 indexOf()/lastIndexOf()
 
-语法：`String.indexOf(subString[, start])`
+语法：`String.indexOf(subString[, start])`、`String.lastIndexOf(subString[, start])`
 
-返回 subString 在字符串 String 中首次出现的位置，从 start 位置开始查找，如果不存在，则返回 -1。 
+这两个方法都是用来查找字符串中子字符串的位置：
 
-start 可以是任意整数，默认值为 0。如果 start < 0 则查找整个字符串（如同传进了 0）。如果 start >= str.length，则该方法返回 -1，*除非被查找的字符串 subString 是一个空字符串，此时返回 str.length*。
+* `indexOf()` 返回子字符串在原字符串中首次出现的位置，从 start 位置开始，*向后查找*。如果不存在，则返回 -1。 
+* `lastIndexOf()` 返回子字符串在原字符串中*最后出现的位置*，从 start 位置开始，*向前查找*，如果不存在，则返回 -1。、
+
+这两个方法的参数如下：
+
+* `substring` String，必须。表示要在原字符串中进行查找的子字符串
+* `start` Integer，可选。表示查找的起始位置，可以是任意整数，默认值为 0。
 
 ```javascript
 var str = "javascript";
-str.indexOf('s');    // 1
-str.indexOf('s',6);  // -1
-str.indexOf('',11);  // 10
-str.indexOf('',8);   // 8
+str.indexOf('s');     // 4
+str.indexOf('s', 6);  // -1
+str.indexOf('', 8);   // -1
+
+str.lastIndexOf('a');    // 3
+str.lastIndexOf('a', 2); // 1
+str.lastIndexOf('', 8);  // -1
 ```
 
-### 2.3 lastIndexOf()
+### 2.3 concat()
 
-语法：`String.lastIndexOf(subString[, start])`
+语法：`String.concat(str1[...])`
 
-返回 subString 在字符串 String 中*最后出现的位置*，从 start 位置 向前开始查找，如果不存在，则返回 -1。和`String.indexOf()`方法类似。
+该方法用于将当前字符串与一个或多个字符串拼接起来，并返回拼接后的新字符串。它可以接受任意多个参数。
 
-```javascript
-'javascript'.lastIndexOf('a'); // 3
+这个方法的功能和直接对字符串使用`+`操作符的效果是一样的。一般情况也都是使用`+`操作符，更简便。
+
+比如：
+
+```JavaScript
+var stringValue = 'hello';
+var result = stringValue.concat(' ', 'world');
+
+console.log(stringValue); // hello
+console.log(result);      // hello world
 ```
 
 ### 2.4 substring()
@@ -89,6 +116,7 @@ str.substr(-4, 2);  // "as"
 ```
 
 ### 2.6 slice()
+
 语法：`String.slice(start[, end])`
 
 返回从 start 到 end （不包括）之间的字符，可传负值。传负值的时候，表示从字符串末尾开始计数，最后一个字符的索引为 -1。
@@ -132,6 +160,7 @@ str.replace('love', 'hate');  // "do you hate me"
 ```
 
 ### 2.8 search()
+
 语法：`String.search(regexp)`
 
 查找字符串与一个正则表达式是否匹配。如果匹配成功，则返回正则表达式在字符串中首次匹配项的索引；否则，返回 -1。*如果参数传入的是一个非正则表达式对象，则会使用 new RegExp(obj) 隐式地将其转换为正则表达式对象。*
@@ -162,6 +191,7 @@ str.match(/ab/g);    // null
 ```
 
 ### 2.10 split()
+
 语法：`String.split([separator][, limit])`
 
 返回一个数组，使用分隔符 separator 来分割字符串，分割的生成的每个结果都作为返回数组的一部分。分隔符可以是一个字符串或正则表达式。如果设置了 limit 参数，那么返回的数组中，最多包含 limit 个元素。
@@ -175,6 +205,7 @@ str.split('',5); // ["H", "e", "l", "l", "o"]
 ```
 
 ### 2.11 trim()
+
 语法：`String.trim()`
 
 去除字符串开头和结尾处的空白字符。
@@ -185,26 +216,56 @@ str.trim();        // 'abc'
 console.log(str);  // '   abc  '
 ```
 
-### 2.12 toLowerCase()
-语法：`String.toLowerCase()`
+### 2.12 toLowerCase()/toUpperCase()/toLocalLowerCase()/toLocalUpperCase()
 
-将字符串转换为小写，并返回一个副本，不影响字符串本身的值。
+语法：`String.toLowerCase()`、`String.toUpperCase()`、`String.toLocalLowerCase()`、`String.toLocalUpperCase()`
+
+这几个方法分别返回字符串小写或大写格式的副本。
+
+其中，`toLocalLowerCase()`和`toLocalUpperCase()`方法用于将字符串转成本地区的大小写格式，一般和对应的`toLowerCase()`、`toUpperCase()`的结果相同，仅在特定地区有所区别。不确定的时候，可以直接使用带有 local 的方法更稳妥。
+
+比如：
 
 ```javascript
 var str = 'JavaScript';
+
 str.toLowerCase(); // 'javascript'
-console.log(str);  // 'JavaScript'
-```
-
-### 2.13 toUpperCase()
-语法：`String.toUpperCase()`
-
-将字符串转换为大写，并返回一个副本，不影响字符串本身的值。
-
-```javascript
-var str = 'JavaScript';
 str.toUpperCase(); // 'JAVASCRIPT'
-console.log(str);  // 'JavaScript'
 ```
 
+### 2.13 localCompare()
+
+语法：`String.localCompare(str)`
+
+这是一个与地区有关的字符串比较方法，它会根据本地区字母表的排序，依次比较当前字符串与参数 str 的相应位置的字符的大小。比如，首先取两个字符串的第一个字符，如果本字符串的第一个字符大于参数 str 的第一个字符，则立即返回正数；如果本字符串的第一个字符小于参数 str 的第一个字符，则返回负数；否则，两个字符相等，继续比较两个字符串的下一个字符，直到某个字符的结尾，或者不相等。如果都比完了依旧相等，则返回 0。
+
+该方法的返回值与字符在字母表中的先后顺序有关：
+
+* 如果本字符串在字符表中应排在字符串参数之前，则返回一个负数(一般是 -1，但并非强制)
+* 如果本字符串等于字符串参数，则返回 0
+* 如果本字符串在字符表中应牌子字符串参数之后，则返回一个正数(一般是 1，但并非强制)
+
+比如：
+
+```JavaScript
+var stringValue = 'yellow';
+
+console.log(stringValue.localCompare('brick'));  // 1
+console.log(stringValue.localCompare('yellow')); // 0
+console.log(stringValue.localCompare('zoo'));    // -1
+```
+
+### 2.14 fromCharCode()
+
+语法：`String.fromCharCode()`
+
+这是 String 构造函数的一个静态方法，不可在字符串对象上使用。
+
+这个方法的功能是接收一个或多个字符编码，然后将它们转换成一个字符串。从本质上看，这个方法与字符串实例方法`charCodeAt()`执行的是相反的操作。
+
+比如：
+
+```JavaScript
+String.fromCharCode(104, 101, 108, 108, 111); // "hello"
+```
 
