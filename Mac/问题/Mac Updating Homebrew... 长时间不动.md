@@ -8,6 +8,10 @@ git remote set-url origin https://mirrors.ustc.edu.cn/brew.git
 # 替换 homebrew-core.git:
 cd "$(brew --repo)/Library/Taps/homebrew/homebrew-core"
 git remote set-url origin https://mirrors.ustc.edu.cn/homebrew-core.git
+
+# 如果使用了 homebrew-cask 还需要替换 Homebrew Cask 的地址
+cd "$(brew --repo)/Library/Taps/homebrew/homebrew-cask"
+git remote set-url origin https://mirrors.ustc.edu.cn/homebrew-cask.git
 ```
 
 > 转摘：[Mac 解决brew一直卡在Updating Homebrew](https://www.jianshu.com/p/7cb05a2b39a5)
