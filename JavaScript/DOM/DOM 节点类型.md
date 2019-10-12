@@ -30,6 +30,16 @@ document 对象还附带有很多的其他属性：
 - `forms` 文档中所有的`<form>`元素
 - `images` 文档中所有的`<img>`元素
 
+下面的属性是在 HTML5 中新增的：
+
+- `activeElement` 文档中当前获得了焦点的元素。文档加载期间，值为 Null；刚刚加载完成时，值为`document.body`节点。
+- `readyState` 指示文档的加载状态，可以有两个值：`loading`、`complete`，分别表示加载中和已加载完。
+- `compatMode` 指示浏览器采用了哪种渲染模式。在标准模式下，值为`CSS1Compat`；在混杂模式下，值为`BackCompat`。
+- `charset` 表示文档中实际使用的字符集。可以通过`<meta>`元素、响应头部或直接设置`document.charset`属性来修改该值。
+- `defaultCharset` 表示浏览器和操作系统默认的字符集。
+
+> `readyState`和`compatMode`虽然加入标准的时间不长，但各个浏览器大都早就已经实现了。
+
 ### 1.3 方法
 
 document 对象中还有一些方法：
@@ -48,6 +58,7 @@ document 对象中还有一些方法：
 * `writeln(text)` 将 text 写入到文档输出流中，并在字符串的末尾梯恩将一个换行符(`\n`)
 * `open()` 打开网页的输出流
 * `close()` 关闭网页的输出流
+* `hasFocus()` 判断当前文档是否获得了焦点，从而可以知道用户是否正在与页面交互。
 
 > **注意**：通过`write()`和`writeln()`方法写入的内容会被浏览器当做 HTML 文本进行解析，如果包含 HTML 标签，也可以正常展示。
 
