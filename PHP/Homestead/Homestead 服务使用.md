@@ -7,7 +7,3 @@ sudo systemctl restart php7.1-fpm.service
 ```
 
 
-
-
-
-
