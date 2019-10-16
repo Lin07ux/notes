@@ -2,7 +2,8 @@ Memcached 是一个高性能的内存缓存系统，能够提高站点系统的�
 
 > 安装的是 Memcached 扩展，PHP 还有一个 Memcache 扩展，这两者是不同，需要特别注意。
 
-## 从软件源中安装
+## 一、安装
+### 1. 从软件源中安装
 
 对于某些 PHP 版本或者 Linux 系统来说，可能会存在一些软件源包含了打包好的 Memcached 扩展，此时就可以直接通过系统命令来安装，如：
 
@@ -12,11 +13,9 @@ yum install memcached -y
 
 > 不过这种安装的，并不一定能够使用，或者被 PHP 识别为扩展。
 
-## 编译安装
+### 1.2 编译安装
 
 编译安装，首先需要从 GitHub 仓库下载源码，然后进行编译。在安装过程中，可能会出现一些依赖问题，解决好依赖问题之后，才能顺利安装成功。
-
-### 安装步骤
 
 下面是安装步骤：
 
@@ -48,7 +47,9 @@ service php-fpm restart
 4. 进行编译和安装;
 5. 之后修改 PHP 配置文件，加入相关扩展，并重启 php-fpm。
 
-#### 配置 PHP 会话存储
+## 二、使用
+
+### 2.1 配置 PHP 会话存储
 
 PHP 支持使用 Memcached 存储会话信息，需配置`php.ini`如下：
 
@@ -64,7 +65,7 @@ session.save_handler = memcache
 session.save_path = "tcp://127.0.0.1:11211" 
 ```
 
-### 问题
+## 三、问题
 
 编译安装中，需要如下的依赖：
 
@@ -75,7 +76,7 @@ session.save_path = "tcp://127.0.0.1:11211"
 
 这些依赖如果没有安装好的话，前面的编译安装就不会提供，而且会有相关的提示信息。根据提示信息，依次解决即可。下面是常遇到的一些问题和解决方法：
 
-#### 1、没有安装 Memcached
+### 3.1 没有安装 Memcached
 
 由于 PHP 中的 Memcached 扩展也是需要依赖 Memcached，所以需要先安装 Memcached 服务：
 
@@ -92,7 +93,7 @@ yum install -y memcached
 * `-m` 分配内存，这里我分配了 150M 内存。
 * `-u` 使用哪个用户运行 memcached。
 
-#### 2、没有安装 libmemcached
+### 3.2 没有安装 libmemcached
 
 首先在 [libmemcached 官网](https://launchpad.net/libmemcached/+download) 中找到合适的版本(一般最新)的下载链接，将其下载下来之后，进行安装：
 
@@ -107,7 +108,7 @@ tar -zxvf libmemcached-1.0.8.tar.gz
 make && make install
 ```
 
-#### 3、没有安装 zlib
+### 3.3 没有安装 zlib
 
 Memcached 模块使用了函数 zlib 来支持数据压缩，因此安装此模块需要安装 Zlib 模块：
 
@@ -115,11 +116,11 @@ Memcached 模块使用了函数 zlib 来支持数据压缩，因此安装此模�
 yum install -y zlib-devel
 ```
 
-#### 4、PHP Warning: Module 'memcache' already loaded in Unknown on line 0
+### 3.4 PHP Warning: Module 'memcache' already loaded in Unknown on line 0
 
 如果安装成功之后，经常有这个提示，可以删除 PHP 配置文件`php.ini`中的`extension=memcached.so;`，然后重启 php-fpm。
 
-### 参考
+## 四、参考
 
 1. [CenOS7环境安装PHP7扩展(持续更新)](https://hanxv.cn/archives/25.html#memcached)
 2. [GitHub - php-memcached-dev/php-memcached](https://github.com/php-memcached-dev/php-memcached/tree/php7)
