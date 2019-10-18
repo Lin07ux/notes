@@ -99,6 +99,16 @@ ALTER SEQUENCE <sequence_name> RESTART WITH <max_id>;
 
 其中，`<sequence_name>`表示需要修改的序列的名称，`<max_id>`表示序列的起始值，一般需设置为当前最大 ID 的值加 1。
 
+### 清除数据并重置自增主键
+
+```sql
+-- 清除所有的记录（有外键关联的情况下）
+TRUNCATE TABLE <table_name> CASCADE;
+
+-- 清除所有的记录，并且将主键索引号重置为从 0 开始
+TRUNCATE TABLE <table_name> RESTART IDENTITY CASCADE;
+```
+
 ## 转载
 
 [Postgresql主键自增](http://zhiwei.li/text/2012/02/15/postgresql%E4%B8%BB%E9%94%AE%E8%87%AA%E5%A2%9E/)
