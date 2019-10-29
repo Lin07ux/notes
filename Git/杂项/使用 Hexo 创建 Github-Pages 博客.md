@@ -825,4 +825,30 @@ hexo clean
 hexo d -g
 ```
 
+## 0x05 问题
+
+### 1. 文章的修改时间不是真正的修改时间
+
+> 转摘：[从 Git 提交历史中「恢复」文件修改时间](https://yq.aliyun.com/articles/31770)
+
+Hexo 没有依赖文件系统的特性去保存创建时间，而是直接把时间作为文章的元数据，放在文章开头的 YAML 区域里头了。
+
+与此同时，Hexo 也提供了获取文章修改时间的 API，由于 POSIX 保证了能够问系统要到文件的最后修改时间，Hexo 就直接把这个功能交给系统代理，文件的最后修改时间就认为是文章的修改时间。
+
+在博客的自动部署流程中，需要把博客源码从 Github 上 clone 到 Travis-CI 的虚拟机里，然后使用 Hexo 编译出静态页面。显然这些 clone 出来的文件，它们的最后修改时间是这些文件在 Travis-CI 的虚拟机里的创建时间，而不是当初修改并保存的时间。至于为什么 Git 不保存文件的修改时间，原因在[这里](https://git.wiki.kernel.org/index.php/Git_FAQ#Why_isn.27t_Git_preserving_modification_time_on_files.3F)。
+
+那么有没有什么办法恢复文件的修改时间呢？精确的恢复是不可能的，毕竟信息已经丢失了，丢失得很彻底。但是作为一个博客系统，对时间精确度的要求没那么高，近似一下，使用文件的 commit 时间作为修改时间，也是可以接受的。
+
+Google 一下，神通广大的外国朋友已经给出了[解决方案](http://www.commandlinefu.com/commands/view/14335/reset-the-last-modified-time-for-each-file-in-a-git-repo-to-its-last-commit-time)，精简参数后如下：
+
+```shell
+git ls-files | while read file; do touch -d $(git log -1 --format="@%ct" "$file") "$file"; done
+```
+
+这个操作就是把当前 Git 仓库里正在跟踪的文件给列出来，然后依次「篡改」文件的最后修改时间。根据`git log`命令的[文档](https://git-scm.com/docs/git-log)，`%ct`是 committer date, UNIX timestamp 的占位符，代表提交时的时间戳。
+
+把上面这行代码添加到`.travis.yml`中，在生成静态页面之前恢复一下文件的修改时间就可以修复文章的修改时间不正确的问题了。
+
+> 上面那段代码中为什么要在时间戳前面用`@`符号呢？从 Coreutils 5.3.0 开始，实用工具中只要是涉及时间的参数，都可以用`@+unix timestamp`的形式来替代，比如`touch -d`本来要带的参数是一个「人类可读」的时间描述，可以是`Sun, 29 Feb 2004 16:21:42 -0800`或者`2004-02-29 16:21:42`，甚至`next Thursday`也行，但还是可以任性地用`@1078042902`作为时间输入。
+> 参考：[GNU Coreutils 的文档](https://www.gnu.org/software/coreutils/manual/html_node/Seconds-since-the-Epoch.html#Seconds-since-the-Epoch)
 
