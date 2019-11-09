@@ -14,7 +14,44 @@
 
 * `Nginx --> web root`  Nginx 作为一个 web server，自然需要对网站目录有访问权限。不过可以仅仅赋予其读和执行的权限，而不必进行写。另外，目前 php 项目大都使用 MVC 框架，而框架中的文件夹并不需要被用户访问，只需要提供给用户一个公共目录即可。所以我们将网站的根目录(一般是 Public 目录)设置为能让 Nginx 读和执行，而项目中的其他目录和文件则禁止 Nginx 访问。
 
-### 2. Unix socket vs TCP
+### 2. PHP-FPM 配置
+
+首先修改主配置`/etc/php/fpm-php5.6/php-fpm.conf`，在`Pool Definitions`中添加指定的 Pool：
+
+```conf
+; Include one or more files. If glob(3) exists, it is used to include a bunch of
+; files from a glob(3) pattern. This directive can be used everywhere in the
+; file.
+; Relative path can also be used. They will be prefixed by:
+;  - the global prefix if it's been set (-p argument)
+;  - /usr/lib64/php5.6 otherwise
+include=/etc/php/fpm-php5.6/etc/fpm.d/*.conf
+```
+
+然后每个 web site 一个独立的 php-fpm 配置(具体解释看默认的配置文件)：
+
+```conf
+# cat /etc/php/fpm-php5.6/etc/fpm.d/blog1.conf
+[blog1]
+user = blog1    ; php-fpm子进程的uid
+group = nogroup
+
+listen = /var/run/php-fpm-blog1.sock
+listen.owner = nginx    ; sock通信文件的属主, 和nginx通信
+listen.group = nginx    ; sock通信文件的属组, 和nginx通信
+listen.mode = 0660
+
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+
+chroot = /var/www/blog1
+chdir = /
+```
+
+### 3. Unix socket vs TCP
 
 > 转摘：[PHP-FPM 与 Nginx 的通信机制总结](https://juejin.im/post/5c7795246fb9a04a0b22dd08)
 
