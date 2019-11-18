@@ -1,3 +1,5 @@
+> 转摘：[Math - 30 seconds of php](https://php.30secondsofcode.org/tag/math)
+
 ### 1. approximatelyEqual
 
 计算两个数值在一定误差范围内是约等的。
