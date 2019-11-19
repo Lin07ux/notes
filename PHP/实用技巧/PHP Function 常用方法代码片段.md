@@ -78,4 +78,75 @@ $add10(15); // 25
 $curriedAdd(10, 15); // 25
 ```
 
+### 3. memoize
+
+将函数改成可缓存结果的逻辑，当有缓存的时候，可以直接返回缓存结果，无需再执行函数。
+
+```php
+function memoize ($function)
+{
+    return function () use ($function) {
+        static $cache = [];
+        
+        $args = func_get_args();
+        $key = serialize($args);
+        $cached = true;
+        
+        if (! isset($cache[$key])) {
+            $cache[$key] = $function(...$args);
+            $cached = false;
+        }
+        
+        return ['result' => $cache[$key], 'cached' => $cached];
+    };
+}
+```
+
+> 这里的`$cached`只是为了标识是否是从缓存中获取的值，可以去除不使用。
+
+例如：
+
+```php
+$memoizedAdd = memoize(function ($num) {
+    return $num + 10;
+});
+
+$memoizedAdd(5); // ['result' => 15, 'cached' => false]
+$memoizedAdd(6); // ['result' => 16, 'cached' => false]
+$memoizedAdd(5); // ['result' => 15, 'cached' => true]
+```
+
+### 4. once
+
+确保函数只能执行一次。
+
+```php
+function once ($function)
+{
+    return function (...$args) use ($function) {
+        static $called = true;
+        
+        if ($called) {
+            return;
+        }
+        
+        $called = true;
+        
+        return $function(...$args);
+    }
+}
+```
+
+示例：
+
+```php
+$add = function ($a, $b) {
+    return $a + $b;
+};
+
+$once = once($add);
+
+$once(10, 5);  // 15
+$once(20, 10); // null
+```
 
