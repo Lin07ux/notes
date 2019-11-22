@@ -85,4 +85,71 @@ firstStringBetween('This is a [custom] string', '[', ']'); // custom
 firstStringBetween('This is a <[custom]> string', '<[', ']>'); // custom
 ```
 
+### 6. palindrome
+
+检查字符串是否是回文字符串(palindrome)。
+
+> 回文字符串是指字符串和其倒叙排列组成的字符串相同。`strrev()`函数可以将一个字符串变成倒叙。
+
+```php
+function palindrome ($string)
+{
+    return strrev($string) === (string) $string;
+}
+```
+
+例如：
+
+```php
+palindrome('racecar'); // true
+palindrome(2221222);   // true
+palindrome(121212);    // false
+```
+
+### 7. shorten
+
+当字符串超过一定长度时，将其截断并拼接指定的结束字符串。如果没有超过指定的长度则直接返回。
+
+```php
+function shorten (string $input, int $length = 100, string $end = '...')
+{
+    if (mb_strlen($input) <= $length) {
+        return $input;
+    }
+    
+    return rtrim(mb_substr($input, 0, $length, 'UTF-8')).$end;
+}
+```
+
+例如：
+
+```php
+shorten('The quick brown fox jumped over the lazy dog', 15); // The quick brown...
+```
+
+### 8. slugify
+
+将字符串变成 URL 友好的、用短横线`-`连接的格式。
+
+```php
+function slugify($text) {
+  $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+  $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+  $text = preg_replace('~[^-\w]+~', '', $text);
+  $text = preg_replace('~-+~', '-', $text);
+  $text = strtolower($text);
+  $text = trim($text, " \t\n\r\0\x0B-");
+
+  return empty($text) ? 'n-a' : $text;
+}
+```
+
+> 对中文字符串处理不是很好。
+
+例如：
+
+```php
+slugify('Hello World');  // hello-wrold
+```
+
 
