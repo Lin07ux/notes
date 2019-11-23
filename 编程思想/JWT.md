@@ -117,3 +117,74 @@ Payload 部分：
 
 在实现过程中，遇到了这样一个问题：如果使用 RS256 这类非对称加密算法，加密出来的是一串二进制数据，所以第三部分还是用 Base64 编码了一层，这样最终的 JWT 就是可读的了。
 
+## 三、应用
+
+JWT 并不对数据进行加密，而是对数据进行签名，保证不被篡改。除了在登录中可以用到，在进行邮箱校验、图形验证码和短信验证码时也可以用到。
+
+### 3.1 邮箱校验
+
+网站在用户注册成功之后会进行邮箱校验，具体做法是给邮箱发一个链接，用户点开链接就校验成功。
+
+利用 JWT 可以将用户的 id、校验码有效期等内容一起生成一个 token，然后用户访问带有这个 token 的验证链接的时候就可以通过直接校验 token 的内容即可实现邮箱校验，而无需在服务器端存储内容。
+
+```javascript
+const jwt = require('jsonwebtoken')
+
+// 把邮箱和用户 id 绑定在一起
+const code = jwt.sign({ email, userId }, secret, { expiresIn: 60 * 30 })
+
+// 生成校验链接
+const link = `https://example.com/code=${code}`
+```
+
+### 3.2 验证码
+
+在登录时，输入密码错误次数过多会出现图形验证码。图形验证码的原理是给客户端一个图形，并且在服务器端保存与这个图片配对的字符串。
+
+之前基本都是通过 session 来实现，利用 JWT 时，可以将验证码配对的字符串作为 secret 生成校验 token。在提交时将验证码和该 token 一起提交，并进行无状态校验。
+
+> 短信验证码同理。
+
+```javascript
+const jwt = require('jsonwebtoken')
+const code = 'ACDE'
+
+// 生成验证码图形
+const codeImage = getImageFromString(code)
+
+// 生成校验 token，10 分钟失效
+const token = jwt.sign({}, secret + code, { expiresIn: 60 * 10 })
+
+// 给前端的响应
+const res = { token, codeImage }
+```
+
+### 3.3 JWT token 主动失效
+
+JWT 的 token 设置有有效期，默认是无法主动失效的。如果需要主动失效某个 token，则需要将该 token 放入到一个黑名单中(如由 Redis 提供的缓存)，并将其在黑名单中的时间设置为其自动失效时间。
+
+### 3.4 如何允许用户只能在一个设备登录，如微信
+
+* `session` 使用 sql 类数据库，对用户数据库表添加 token 字段并加索引，每次登录重置 token 字段，每次请求时根据 token 查找用户。
+
+* `jwt` 使用 sql 类数据库，对用户数据库表添加 token 字段(不需要添加索引)，每次登录重置 token 字段，每次请求时根据 jwt 中的用户 id 查找用户，并比对查到找的用户的 token 和当前 token 是否一致，当然也可以使用计数器方法，如下一个问题。
+
+### 3.5 如何允许用户只能在最近五个设备登录，如视频网站
+
+* `session` 使用 sql 类数据库，创建 token 数据表，包含`id`、`token`、`user_id`三个字段，一个用户可以有多个 token 记录。每登录一次添加一行记录，并删除该用户的除最后五个的 token 记录。请求时根据 token 获取 user_id，再根据 user_id 获取用户信息。
+
+* `jwt`  使用计数器，使用 sql 类数据库，在用户表中添加字段`count`，默认值为 0，每次登录 count 字段自增 1。每次登录创建的 jwt 的 Payload 中携带数据`current_count`为用户当前的 count 值。每次请求权限接口时，使用 jwt 中的 user_id 查询用户信息，并比较用户信息中的 count 和 jwt 中的 current_count 的差值是否小于 5，小于的话则登录成功，否则失败。
+
+### 3.6 如何允许用户只能在最近五个设备登录，而且使某一用户剔除掉现有设备外的其他所有设备，如视频网站
+
+* `session` 在上一个问题的基础上，删除掉该用户该设备以外的其他所有 token 记录。
+
+* `jwt` 在上一个问题的基础上，将 count 增加 5，并对该设备的 jwt 中的 count 重新赋值。
+
+### 3.7 如何显示该用户的登录设备列表/如何踢掉特定用户
+
+* `session` 在 token 表中增加设备标识列
+
+* `jwt` 需要服务器端保持设备列表信息，做法和 session 相同，使用 jwt 意义不大。
+
+
