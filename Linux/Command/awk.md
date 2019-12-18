@@ -328,13 +328,13 @@ asort(arr)
 1. 输出第二列大于 0 的记录：
     
     ```shell
-    awk ' $2 > 0 { print }' file
+    awk ' $2 > 0 { print } ' file
     ```
 
 2. 输出以`tcp`开头的记录：
 
     ```shell
-    awk ' /^tcp/ { print }' file
+    awk ' /^tcp/ { print } ' file
     ```
 
 3. 过滤第七列中包含`nologin`的记录：
@@ -346,7 +346,7 @@ asort(arr)
 4. 输出前 7 行数据：
 
     ```shell
-    awk ' NR <= 7 { print }' file
+    awk ' NR <= 7 { print } ' file
     ```
 
 5. 过滤(去除)空白行：
@@ -366,4 +366,15 @@ asort(arr)
     ```shell
     awk ' END { print NR } ' file
     ```
+
+8. 删掉文件中的重复行
+
+    ```shell
+    awk ' !visited[$0]++ ' file
+    ```
+    
+    这里`visited`被声明为一个键值对数组，并将当前处理的行的内容作为键进行累加计算。由于`++`操作符是先取变量值，操作之后再进行自增 1，所以`!visited[$0]++`相当于先获取当前行对应的计数，然后判断当前值是否大于 0，再自增 1。当判断当前值为 0 的时候将会显示当前行的内容，否则不会显示当前行的内容。
+    
+    > 转摘：[怎样使用 awk 删掉文件中重复的行](https://linux.cn/article-11666-1.html)
+
 
