@@ -421,4 +421,130 @@ JS（ES5）中不支持以下正则特性（在一览图中也可以看到）：
 * 条件匹配
 * 注释
 
+## 四、ES9 正则表达式新特性
+
+ES9 为正则表达式添加了四个新的特性，进一步提高了 JavaScript 的字符串处理能力。这些特性有：
+
+* `s`修饰符(dotAll)
+* 命名捕获组
+* Lookbehind 后行断言
+* Unicode 属性转义
+
+这些新特性的目前(2019年)的支持程度如下：
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1576721997316.png)
+
+### 4.1 s 修饰符
+
+正则表达式中，`.`是一个特殊的字符，可以代表任意的单个字符，除了下面两种：
+
+1. 无法表示四个字节的 UTF-16 字符。
+2. 也无法代表行终止符，如换行符`\n`和回车符`\r`。
+
+对于四字节的 UTF-16 字符可以通过`u`修饰符来解决，而对换行符则需要使用 ES9 中新增加的`s`修饰符来解决。比如：
+
+```JavaScript
+console.log(/foo.bar/.test('foo\nbar'))  // false
+console.log(/foo.bar/s.test('foo\nbar')) // true
+```
+
+正则中使用了`s`修饰符之后，可以通过如下方式查看到：
+
+```JavaScript
+const re = /foo.bar/s  // 或者：const re = new RegExp('foo.bar', 's')
+
+console.log(res.test('foo\nbar'))  // true
+console.log(re.dotAll)  // true
+console.log(re.flags)   // 's'
+```
+
+### 4.2 命名捕获组
+
+正则表达式中，可以使用`$n`这种方式来指代匹配组。但是在一些正则表达式模式中，使用数字进行匹配可能会令人混淆。
+
+例如，使用正则表达式`/(\d{4})-(\d{2})-(\d{2})/`来匹配日期。因为美式英语中的日期表示法和英式英语中的日期表示法不同，所以很难区分哪一组表示日期，哪一组表示月份：
+
+```JavaScript
+const re = /(\d{4})-(\d{2})-(\d{2})/
+const match = re.exec('2019-01-01')
+
+console.log(match[0])  // 2019-01-01
+console.log(match[1])  // 2019
+console.log(match[2])  // 01
+console.log(match[3])  // 01
+```
+
+ES9 引入了命名捕获组，允许为每一个组匹配指定一个名字，既便于阅读代码，也便于引用：
+
+```JavaScript
+const re = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/
+const match = re.exec('2019-01-01')
+
+console.log(match.groups)       // {year: "2019", month: "01", day: "01"}
+console.log(match.groups.year)  // 2019
+console.log(match.groups.month) // 01
+console.log(match.groups.day)   // 01
+```
+
+上面的代码中，命名捕获组在圆括号内部、模式的头部，使用`?<>`符号，并将捕获组的名称写在两个尖括号中间，组成了对该捕获组的命名。然后在该正则执行之后，就可以在匹配结果的`groups`属性上使用这些名称了。
+
+命名捕获组也可以使用在`String.replace()`中。例如，将日期转换为美国的 MM-DD-YYYY 格式：
+
+```JavaScript
+const re = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/
+const usaDate = '2018-04-30'.replace(re, '$<month>-$<day>-$<year>')
+
+console.log(usaDate) // 04-30-2018
+```
+
+需要注意的是，在替换结果中使用捕获组的名称的时候，格式和使用数字表示捕获组的方式一样，都以`$`开头，但是命名捕获组的名称依旧要用`<>`包裹住。
+
+### 4.3 Lookbehind 后行断言
+
+JavaScript 中的正则之前只支持先行断言，不支持后行断言。但是 ES9 提供了正则的后行断言支持。
+
+`(?<)`是后行断言的符号，`(?)`是先行断言的符号，然后结合`=`(等于)、`!`(不等)、`\1`(捕获匹配)。
+
+先行断言表示先匹配断言前的正则，然后再判断其后面的断言是否满足。比如：
+
+```JavaScript
+const test = 'hello world'
+
+console.log(test.match(/hello(?=\sworld)/))
+// ["hello", index: 0, input: "hello world", groups: undefined]
+```
+
+后行断言则表示先判断断言是否满足，满足之后才匹配后续的正则。比如：
+
+```JavaScript
+const test = 'world hello'
+
+console.log(test.match(/(?<=world\s)hello/))
+// ["hello", index: 6, input: "world hello", groups: undefined]
+```
+
+### 4.4 Unicode 属性转义
+
+ES2018 引入了一种新的写法`\p{...}`和`\P{...}`，允许正则表达式匹配符合某种 Unicode 属性的所有字符。
+
+预设有如下几种匹配表达式：
+
+* 使用`\p{Number}`来匹配所有的 Unicode 数字，`\P{Number}`匹配所有的非 Unicode 数字字符。
+* 使用`\p{Alphabetic}`来匹配所有的 Unicode 单词字符，`\P{Alphabetic}`匹配所有的非 Unicode 单词字符。
+
+比如：
+
+```JavaScript
+const str1 = '㉛'
+
+console.log(/\d/u.test(str1))  // false
+console.log(/\p{Number}/u.test(str1))  // true
+console.log(/\P{Number}/u.test(str1))  // false
+
+const str2 = 'ض'
+
+console.log(/\w/u.test(str))  // false
+console.log(/\p{Alphabetic}/u.test(str2))  // true
+console.log(/\P{Alphabetic}/u.test(str2))  // false
+```
 
