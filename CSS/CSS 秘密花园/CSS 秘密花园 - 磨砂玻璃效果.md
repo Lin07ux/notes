@@ -78,9 +78,12 @@ main::before {
     content: '';
     position: absolute;
     top: 0; right: 0; bottom: 0; left: 0;
+    filter: blur(20px);
     z-index: -1;
 }
 ```
+
+> 在用负的`z-index`值来将子元素移动到它的父元素下面时要小心：如果父元素是作为背景嵌套在其它元素中，子元素也会移到其它元素下方。
 
 此时可以得到如下的效果：
 
