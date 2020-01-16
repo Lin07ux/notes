@@ -40,7 +40,7 @@ sudo certbot --nginx certonly
 因为 Let's Encrypt 提供的证书只有三个月的有效期，过期前如果需要继续使用，就需要进行刷新续期。Certbot 也提供了刷新命令：
 
 ```shell
-cretbot renew
+certbot renew
 ```
 
 该命令会自动检查已经生成的 Let's Encrypt 证书，并将其中剩余有效期不足 30 天的证书刷新，从而延长其有效期。
@@ -95,4 +95,42 @@ The nginx plugin is not working;The error was NoInstallationError()
 
 其中，要执行的语句为`. /etc/profile;/usr/bin/certbot renew`，其中`.`后面是有一个空格的，`. /etc/profile`的意思是加载`/etc/profile`中的设置，从而可以正常的在系统路径中找到 Nginx。
 
+
+### 没有 TLSSNI01Response 属性
+
+安装了 certbot 之后，运行时有如下错误提示：
+
+```
+Traceback (most recent call last):
+  File "/usr/bin/certbot", line 9, in <module>
+    load_entry_point('certbot==1.0.0', 'console_scripts', 'certbot')()
+  File "/usr/lib/python2.7/site-packages/certbot/main.py", line 14, in main
+    return internal_main.main(cli_args)
+  File "/usr/lib/python2.7/site-packages/certbot/_internal/main.py", line 1320, in main
+    plugins = plugins_disco.PluginsRegistry.find_all()
+  File "/usr/lib/python2.7/site-packages/certbot/_internal/plugins/disco.py", line 208, in find_all
+    plugin_ep = PluginEntryPoint(entry_point)
+  File "/usr/lib/python2.7/site-packages/certbot/_internal/plugins/disco.py", line 50, in __init__
+    self.plugin_cls = entry_point.load()
+  File "/usr/lib/python2.7/site-packages/pkg_resources/__init__.py", line 2380, in load
+    return self.resolve()
+  File "/usr/lib/python2.7/site-packages/pkg_resources/__init__.py", line 2386, in resolve
+    module = __import__(self.module_name, fromlist=['__name__'], level=0)
+  File "/usr/lib/python2.7/site-packages/certbot_nginx/configurator.py", line 17, in <module>
+    from certbot import constants as core_constants
+  File "/usr/lib/python2.7/site-packages/certbot/constants.py", line 52, in <module>
+    tls_sni_01_port=challenges.TLSSNI01Response.PORT,
+AttributeError: 'module' object has no attribute 'TLSSNI01Response'
+2020-01-16 15:09:05,626:ERROR:certbot._internal.log:An unexpected error occurred:
+```
+
+通过查看错误信息，基本可以认为这是由于之前安装了一个旧版本后，重新安装的新版本的 certbot 与其不兼容导致的。解决方法就是先使用 pip 删除掉旧版本的程序，然后卸载新安装的 certbot 重新安装即可：
+
+```shell
+pip list | grep certbot
+pip uninstall certbot certbot-nginx
+
+yum -y remove certbot-nginx
+yum -y install certbot-nginx
+```
 
