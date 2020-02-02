@@ -5,10 +5,18 @@ Homebrew 是 MacOS 中一个常用的软件安装工具。
 首先需要确保已经安装了 Homebrew。没有安装的话，可以通过下面的方式安装：
 
 ```shell
-ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+# 或
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
 Homebrew 安装目录为`/usr/local/etc/`，放置软件包源码的路径为`/Library/Caches/Homebrew/`。
+
+删除 Homebrew 可以使用如下的命令：
+
+```shell
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+```
 
 ### 二、常用命令
 
