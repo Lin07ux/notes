@@ -1,7 +1,17 @@
-### 常用命令
+## 常用命令
 
 * 启动守护进程：`supervisord -c /etc/supervisor/supervisord.conf`
 * 重载配置：`supervisorctl reload`
+* 关闭：`supervisorctl shutdown`
+* 重新读入配置：`supervisorctl reread`
+* 重新载入配置：`supervisorctl update`(更新子进程组的配置)
+* 查看状态：`supervisorctl status`
+* 启动程序：`supervisorctl start <program>`
+* 关闭程序：`supervisorctl stop <program>`
+* 重启程序：`supervisorctl restart <program>`
+* 清空日志：`supervisorctl clear <program>`
+
+> `start`、`stop`、`restart`后跟随`all`表示表示启动、关闭、重启所有程序。
 
 ## 常见报错
 
