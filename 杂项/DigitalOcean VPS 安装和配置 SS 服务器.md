@@ -53,19 +53,21 @@ pip install git+https://github.com/shadowsocks/shadowsocks.git@master
 
 ```json
 {
-    "server":"my_server_ip",
+    "server": "::",
     "local_address": "127.0.0.1",
-    "local_port":1080,
+    "local_port": 1080,
     "port_password": {
-        "8000": "password1",
-        "8001": "password2",
-        "8002": "password3"
+        "443": "R1vers1de",
+        "3306": "R1vers1de"
     },
-    "timeout":300,
-    "method":"aes-256-cfb",
-    "fast_open": false
+    "timeout": 300,
+    "method": "aes-256-cfb",
+    "fast_open": false,
+    "verbose": -2
 }
 ```
+
+其中，`method`表示加密类型，`verbose`表示日志记录级别，-2 表示仅记录错误日志。
 
 > 如果仅单用户使用，可以将上面的`port_password`改成如下配置：
 > ```shell
