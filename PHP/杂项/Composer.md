@@ -67,8 +67,8 @@ composer self-update
 ```shell
 # phpcomposer
 composer config -g repo.packagist composer https://packagist.phpcomposer.com
-# Larave-china
-composer config -g repo.packagist composer https://packagist.laravel-china.org
+# aliyun
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 ```
 
 当然，也可以不这样全局修改，也可以修改特定项目的安装源，只需将上面命令中的`-g`选项去掉即可。
