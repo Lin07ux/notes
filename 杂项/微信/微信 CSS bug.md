@@ -41,4 +41,21 @@ for (var i = 0; i < inputs.length; i++) {
 
 解决方法：为 input 元素设置`readonly`属性，这样该元素就是只读的，不会自动弹出软键盘。不过这样也可能会弹出一个只有上下箭头和“完成”按钮的键盘头部。
 
+### 下拉页面显示出网页域名信息
+
+正常情况下，微信浏览器页面下拉后可以看到一个 『该网页由 xxxx 提供』，如果要隐藏该信息，可以通过如下的 CSS 代码来遮盖该信息：
+
+```CSS
+body:before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    z-index: -1;
+}
+```
+
 
