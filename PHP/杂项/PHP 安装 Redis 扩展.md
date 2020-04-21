@@ -9,6 +9,9 @@ PECL 是一个 PHP 扩展，提供一个目录的所有已知的扩展和托管�
 igbinary 扩展能够提供比 PHP 提供更好的序列化和反序列化性能，而且 Redis 的 PHP 扩展也会需要使用到，所以需要先安装该扩展。
 
 ```shell
+# 查看是否安装了 igbinary
+php -i | grep igbinary
+
 # 使用 pecl 安装
 pecl install igbinary
 ```
@@ -46,10 +49,18 @@ make && make install
 
 ### 2.4 引入扩展
 
-安装完成之后，需要在 PHP 的配置文件中引入 redis 扩展。对于 PHP 7 来说，不能直接在`/etc/php.ini`文件中通过`extension=redis.so`来引入，这样会提示找不到`igbinary`的相关函数，而需要在`/etc/php.d/`路径中，新建一个`redis.ini`文件，然后在其中引入 redis 扩展并重启 php-fpm：
+安装完成之后，需要在 PHP 的配置文件中引入 redis 扩展。
+
+对于使用系统工具安装的 PHP 来说，不能直接在`/etc/php.ini`文件中通过`extension=redis.so`来引入，这样可能会提示找不到`igbinary`的相关函数，而需要在`/etc/php.d/`路径中，新建一个`redis.ini`文件，然后在其中引入 redis 扩展并重启 php-fpm：
 
 ```ini
-extension=redis.io
+extension=redis.so
+```
+
+对于编译安装的 PHP 来说，可以直接在其配置文件(如`/usr/local/php72/etc/php.ini`)中扩展相关的配置列表的最后添加上如下配置即可：
+
+```ini
+extension=redis.so
 ```
 
 配置好之后，可以通过如下命令来检测是否正常加载了 Redis 扩展，如果下面的命令的输出中有结果则说明是正常的：
@@ -106,7 +117,7 @@ sudo pecl install -f redis
 /usr/local/php72/bin/phpize
 
 # 配置
-./configure –with-php-config=/usr/local/php72/bin/php-config
+./configure --prefix=/usr/local/php72 --with-php-config=/usr/local/php72/bin/php-config
 
 # 编译安装
 make && make install

@@ -18,7 +18,7 @@ tar -zxvf php-7.0.2.tar.gz
 
 解压得到源码之后，就可以用源码进行配置安装了。在安装的时候，需要特别注意的是：安装地址(使用`--prefix`指定)需要和已经安装的其他版本的 PHP 有所区别。
 
-> 这些配置并不一定都要安装，可以根据自己的需要有选择的使用。
+> 这些配置并不一定都要安装，可以根据自己的需要有选择的使用。而且不同版本的 PHP 编译时配置参数会有所更改，需要根据实际情况进行确认。
 > 
 > 编译过程中，如果遇到错误请参考后面的**编译错误**部分。
 
@@ -26,7 +26,7 @@ tar -zxvf php-7.0.2.tar.gz
 cd ~/php-7.1.25
 
 # 编译
-./configure --prefix=/usr/local/php71 --exec-prefix=/usr/local/php71 --bindir=/usr/local/php71/bin --sbindir=/usr/local/php71/sbin --includedir=/usr/local/php71/include --libdir=/usr/local/php71/lib/php --mandir=/usr/local/php71/php/man --with-config-file-path=/usr/local/php71/etc --with-mhash --with-openssl --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --enable-pdo --with-gd --with-iconv --with-zlib --enable-zip --enable-inline-optimization --enable-intl --disable-rpath --enable-shared --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-sysvshm --enable-mbregex --enable-mbstring --enable-ftp --enable-gd-native-ttf --enable-pcntl --enable-sockets --with-xmlrpc --enable-phar  --enable-posix --enable-soap --without-pear --with-gettext --enable-session --with-curl --with-jpeg-dir --with-png-dir --with-freetype-dir --with-freetype-dir --enable-opcache --enable-fpm --with-fpm-user=nginx --with-fpm-group=nginx --without-gdbm --enable-fast-install --disable-fileinfo --with-xpm-dir --with-bz2
+./configure --prefix=/usr/local/php71 --with-config-file-path=/usr/local/php71/etc --with-mhash --with-openssl --with-mysqli=mysqlnd --with-pdo-mysql=mysqlnd --enable-pdo --with-iconv --with-zlib --enable-inline-optimization --enable-intl --disable-rpath --enable-shared --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-sysvshm --enable-mbregex --enable-mbstring  --enable-pcntl --enable-sockets --with-xmlrpc --enable-phar  --enable-posix --enable-soap --disable-ftp --without-pear --with-gettext --enable-session --with-curl --enable-opcache --enable-fpm --with-fpm-user=nginx --with-fpm-group=nginx --without-gdbm --enable-fast-install --with-bz2 --with-zip --enable-gd --with-jpeg --with-webp
 
 # 安装
 make clean && make && make install
@@ -158,6 +158,10 @@ ln -s /usr/local/php71/bin/phpize /usr/bin/phpize71
 
 错误 configure: error: xslt-config not found. Please reinstall the libxslt >= 1.1.0 distribution
 执行 yum -y install libxslt-devel
+
+# php 7.4 处理正则表达式的依赖
+错误 configure: error: Package requirements (oniguruma) were not met: No package 'oniguruma' found
+执行 yum install -y oniguruma-devel
 ```
 
 #### 7.2 libzip 版本过低
@@ -172,15 +176,37 @@ checking for libzip... configure: error: system libzip must be upgraded to versi
 
 ```shell
 yum remove -y libzip
-wget https://libzip.org/download/libzip-1.5.2.tar.gz
-tar -zxvf libzip-1.5.2.tar.gz
-cd libzip-1.5.2
+
+# 由于 libzip 需要使用 cmake 3.0 以上的版本来编译，先确认已安装 cmake3
+yum install -y cmake3
+
+# 下载最新版本的 libzip
+wget https://libzip.org/download/libzip-1.6.1.tar.gz
+tar -zxvf libzip-1.6.1.tar.gz
+cd libzip-1.6.1
 mkdir build && cd build
-cmake ..
+
+# 编译和安装
+cmake3 ..
 make && make test && makte install
 ```
 
+已经安装过 libzip 后，重新配置 PHP 时，如果依旧提示 libzip 不存在，可以通过如下两种方式来解决：
+
+```shell
+# 这里配置的路径为 libzip 的 libzip.pc 文件路径，可以查看 libzip 的安装信息来确认实际安装位置
+
+# 直接设置系统的 PKG_CONFIG_PATH
+export PKG_CONFIG_PATH="/usr/local/lib64/pkgconfig"
+
+# 在 PHP 配置时设置 PKG_CONFIG_PATH
+./configure .. PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig
+```
+
+在后续的 PHP make 过程中，可能会出现找不到`libzip.so.5`的错误，建议先参考下后面的`7.3 off_t 未定义`部分，确认 ldconfig 中已有 libzip.so 的配置。
+
 > [libzip - github](https://github.com/nih-at/libzip/blob/master/INSTALL.md)
+> [CentOS7.3编译安装PHP7.4.1](https://wujie.me/centos7-3-compile-and-install-php-7-4-1/)
 
 #### 7.3 off_t 未定义
 

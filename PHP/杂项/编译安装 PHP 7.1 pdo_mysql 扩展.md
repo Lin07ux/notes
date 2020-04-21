@@ -23,7 +23,7 @@ cd php-7.1.25/ext/pdo_mysql/
 ```shell
 /usr/local/php71/bin/phpize
 
-./configure -with-php-config=/usr/local/php71/bin/php-config -with-pdo-mysql=mysqlnd
+./configure --with-php-config=/usr/local/php71/bin/php-config --with-pdo-mysql=mysqlnd
 
 make && make install
 ```
