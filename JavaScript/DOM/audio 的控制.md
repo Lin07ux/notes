@@ -89,11 +89,11 @@ function audioAutoPlay(id){
     function play() {
         audio.play().then(function () {
             document.removeEventListener("touchstart", play, false);
-        }.catch(function () {})
+        }).catch(function () {})
     };
     
     // 微信中
-    wx.reay(play)
+    wx.read(play)
     // 微信中方法 2
     document.addEventListener("WeixinJSBridgeReady", play, false);
     
