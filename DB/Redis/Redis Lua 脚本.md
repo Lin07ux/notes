@@ -31,7 +31,7 @@ EVAL 命令的参数均是通过 Key-Value 格式传入的，也就是每个参�
 EVAL 'local val="Hello" return val' 0
 # Hello
 
-EVAL 'local val=KEYS[1] return val.." "..ARGV[1]' Hello Redis
+EVAL 'local val=KEYS[1] return val.." "..ARGV[1]' 1 Hello Redis
 # Hello Redis
 ```
 

@@ -335,7 +335,21 @@ slowlog-max-len 600
 
 使用`SLOWLOG RESET`命令，可以重置 Slow Log。
 
-## 五、参考
+## 五、更多
+
+### 5.1 通信协议
+
+Redis 采用直观的文本协议，实现简单，解析性能好，每个单元结束后统一加上`\r\n`：
+
+* 单行字符串，以`+`符号开始，如：`+hello world\r\n`。
+* 多行字符串，以`$`符号开始，后跟字符串长度，如：`$11\r\nhello world\r\n`。
+* 整数值，以`:`符号开始，后跟整数的字符串形式，如：`:1024\r\n`。
+* 错误消息，以`-`符号开始，如：`-WRONGTYPE Operation against a key holding the wrong kind of value`。
+* 数组，以`*`开始，后跟数组的长度，如：`*3\r\n:1\r\n:2\r\n:3\r\n`。
+* `NULL`用多行字符串表示，不过长度要写成`-1`，如：`$-1\r\n`。
+* 空行用多行字符串表示，长度填 0，如：`$0\r\n`。
+
+## 六、参考
 
 [十二张图带你了解 Redis 的数据结构和对象系统](https://mp.weixin.qq.com/s/J6prsqE3B_o0ZXIxqdC3Cw)
 
