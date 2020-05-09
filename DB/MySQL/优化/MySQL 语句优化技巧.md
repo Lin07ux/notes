@@ -8,6 +8,8 @@
 
 4. 应尽可能的避免更新`clustered`索引数据列，因为`clustered`索引数据列的顺序就是表记录的物理存储顺序，一旦该列值改变将导致整个表记录的顺序的调整，会耗费相当大的资源。若应用系统需要频繁更新`clustered`索引数据列，那么需要考虑是否应将该索引建为`clustered`索引。
 
+5. MySQL 一次查询只能使用一个索引，如果要对多个字段使用索引，建立复合索引。
+
 ### 二、WHERE 子句
 
 1. 应尽量避免在`where`子句中使用`!=`或`<>`操作符，否则将引擎放弃使用索引而进行全表扫描。
@@ -46,7 +48,15 @@ MySQL 中有三种 JOIN 类别：LEFT JOIN、INNER JOIN、RIGHT JOIN：
 
 > 使用`STRAIGHT_JOIN`的前提条件是该查询是内连接，也就 INNER JOIN，其他连接不推荐使用`STRAIGHT_JOIN`，因为可能造成查询结果不准确。
 
-### 四、临时表
+### 四、ORDER BY 优化
+
+> 在`ORDER BY`操作中，MySQL 只有在排序条件不是一个查询条件表达式的情况下才使用索引。
+
+1. 为`ORDER BY`中的字段建立索引可以优化排序性能，但是如果`ORDER BY`后的多个字段没有创建联合索引，就不会有性能优化。比如，对于`SELECT * FROM t1 ORDER BY key1, key2;`语句，如果为`key1, key2`两列创建了联合索引，则会有排序优化，如果对两列分别创建索引，则不会有性能优化。
+
+2. 为`ORDER BY`和`WHERE`中的字段创建联合索引可以提升性能，但是如果`WHERE`中的条件列有多个值则无法实现优化。而且由于`WHERE`语句比`ORDER BY`语句先执行，所以创建联合索引的时候，应该将`WHERE`中的字段放在前面。比如，对于`SELECT * FROM [table] WHERE uid=1 ORDER x,y LIMIT 0,10;`语句，建立索引`(uid,x,y)`实现`order by`的优化比建立`(x,y,uid)`索引效果要好得多。
+
+### 五、临时表
 
 1. 避免频繁创建和删除临时表，以减少系统表资源的消耗。临时表并不是不可使用，适当地使用它们可以使某些例程更有效，例如，当需要重复引用大型表或常用表中的某个数据集时。但是，对于一次性事件，最好使用导出表。
 
@@ -56,7 +66,7 @@ MySQL 中有三种 JOIN 类别：LEFT JOIN、INNER JOIN、RIGHT JOIN：
 
 4. 尽量使用表变量来代替临时表。如果表变量包含大量数据，请注意索引非常有限（只有主键索引）。
 
-### 五、游标
+### 六、游标
 
 1. 尽量避免使用游标，因为游标的效率较差，如果游标操作的数据超过 1 万行，那么就应该考虑改写。
 
@@ -64,7 +74,7 @@ MySQL 中有三种 JOIN 类别：LEFT JOIN、INNER JOIN、RIGHT JOIN：
 
 3. 与临时表一样，游标并不是不可使用。对小型数据集使用 FAST_FORWARD 游标通常要优于其他逐行处理方法，尤其是在必须引用几个表才能获得所需的数据时。在结果集中包括“合计”的例程通常要比使用游标执行的速度快。如果开发时间允许，基于游标的方法和基于集的方法都可以尝试一下，看哪一种方法的效果更好。
 
-### 六、其他
+### 七、其他
 
 1. 不要写一些没有意义的查询，如需要生成一个空表结构：`select col1, col2 into #t from t where 1=0`。这类代码不会返回任何结果集，但是会消耗系统资源的，应改成这样：`create table #t(…)`。
 
@@ -85,7 +95,7 @@ MySQL 中有三种 JOIN 类别：LEFT JOIN、INNER JOIN、RIGHT JOIN：
 9. 不使用`ORDER BY RAND()`，比如可以将`select id from `dynamic` order by rand() limit 1000;`改成`select id from `dynamic` t1 join (select rand() * (select max(id) from `dynamic`) as nid) t2 on t1.id > t2.nidlimit 1000;`。
 
 
-### 六、转摘
+### 八、转摘
 
 * [MySQL SQL语句优化技巧](http://www.uml.org.cn/sjjm/201610184.asp)
 * [19 条立竿见影的 MySQL 优化技巧！](https://mp.weixin.qq.com/s/xqGL_oM8lsPV2mFcslkGCA)
