@@ -94,6 +94,7 @@ MySQL 中有三种 JOIN 类别：LEFT JOIN、INNER JOIN、RIGHT JOIN：
 
 9. 不使用`ORDER BY RAND()`，比如可以将`select id from `dynamic` order by rand() limit 1000;`改成`select id from `dynamic` t1 join (select rand() * (select max(id) from `dynamic`) as nid) t2 on t1.id > t2.nidlimit 1000;`。
 
+10. 使用`INSERT INTO table_a SELECT * FROM table_b`语句时，要确保 table_b 后面的`WHERE`、`ORDER`或者其他条件中使用了索引，来避免出现 table_b 被锁住全部记录，导致无法正常写入数据。
 
 ### 八、转摘
 
