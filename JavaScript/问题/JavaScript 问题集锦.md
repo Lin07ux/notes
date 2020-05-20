@@ -69,7 +69,7 @@ new f() instanceof f;
 
 返回`false`。在这里，`f`最终返回的是其自身的定义，也就是说每一次执行`f()`就是对之前的`f`的覆盖。如果`f`的形式为`function f(){return this}`或`function f(){}`，结果就不一样。
 
-### 5. 数组
+### 5. typeof
 
 ```js
 var x = [typeof x, typeof y][1];
@@ -119,55 +119,9 @@ typeof f;  // "number"
 
 所以`(function f(){ return '1'; }, function g(){ return 2; })`的返回值就是函数 `g`，然后执行她，那么结果是 2；最后再`typeof 2`，根据问题一的表格，结果自然是`number`。
 
-### 8. 数组 map 的回调
-
-下面的方法调用返回的是什么？
-
-```JavaScript
-["1", "2", "3"].map(parseInt)
-```
-
-解析：`.map(callback(value, index, array))`回调函数传入三个参数，`parseInt(string, radix)`接收两个参数。
-
-所以`map`传递给`parseInt`的参数是这样的（`parseInt`忽略`map`传递的第三个参数）`[1, 0], [2, 1], [3, 2]`。
-
-然后`parseInt()`解析传过来的参数，相当于执行以下语句：
-
-```JavaScript
-parseInt('1', 0);   // 当 radix 为 0 时，默认为 10 进制，所以返回 1
-parseInt('2', 1);   // 没有 1 进制，所以返回 NaN
-parseInt('3', 2);   // 二进制中只有数字 1、2，没有数字 3，所以返回 NaN
-```
-
-`parseInt(string, radix)`中`radix`可选，表示要解析的数字的基数。该值介于`2 ~ 36`之间。如果省略该参数或其值为 0，则数字将以 10 为基础来解析，如果`string`以`0x`或`0X`开头，将以 16 为基数。如果该参数小于 2 或者大于 36，则`parseInt()`将返回`NaN`。
-
-所以最终的结果是：`[1, NaN, NaN]`。
 
 
-### 9. 数组 reduce 的回调
-
-下面的调用的输出是什么？
-
-```JavaScript
-[ [3,2,1].reduce(Math.pow), [].reduce(Math.pow) ]
-```
-
-解析：`arr.reduce(callback, [initialValue])`的回调方法可以接收四个参数，依次为：
-
-* `accumulator` 上一次调用回调返回的值，或者是提供的初始值（initialValue）
-* `currentValue` 数组中正在处理的元素
-* `currentIndex` 数组中正在处理的的元素索引
-* `array` 调用 reduce 的数组 
-另外，`reduce`的第二个参数可选，其值用于第一次调用`callback`的第一个参数。如果没有提供，则对数组的第一个参数的调用的回调方法会直接返回该元素的值。但如果数组为空并且没有提供`initialValue`，会抛出`TypeError`。
-
-那么，第一个表达式等价于`Math.pow(3, 2) => 9, Math.pow(9, 1) => 9`。
-
-而第二个表达式就直接抛出`TypeError`错误了。
-
-所以最终的结果是：`Uncaught TypeError`。
-
-
-### 10. 运算符优先级
+### 8. 运算符优先级
 
 ```JavaScript
 var val = 'smtg';
@@ -186,7 +140,7 @@ val === 'stmg'      // => true
 
 所以结果为`'Something'`。
 
-### 11. 最大的数值
+### 9. 最大的数值
 
 ```JavaScript
 var END = Math.pow(2, 53);
@@ -206,46 +160,7 @@ JS 里`Math.pow(2, 53)`是可以表示的最大值，最大值加 1 还是最大
 
 所以 i 永远不可能大于 END，最终的结果是**无限循环**。
 
-
-### 12. 稀疏数组和密集数组
-
-```JavaScript
-var ary = [0,1,2];
-ary[10] = 10;
-ary.filter(function(x) { return x === undefined;});
-```
-
-首先需要理解稀疏数组和密集数组。
-
-遍历稀疏数组时，会发现这个数组并没有元素，js 会跳过这些坑。
-
-```JavaScript
-//第一种情况
-var a = new Array(3); 
-console.log(a);   // [undefined x 3]
-
-//第二种情况
-var arr = [];
-arr[0] = 1;
-arr[100] = 100;
-
-arr.map(function (x, i) {return i}); // [0, 100]
-```
-
-而对于密集数组则可以看到对应的数组元素：
-
-```JavaScript
-var a = Array.apply(null, Array(3));
-console.log(a);   // [undefined, undefined, undefined]
-
-a.map(function (x, i) {return i}); // [0, 1, 2]
-```
-
-这道题目里的数组是一个稀疏数组，不会遍历到从索引 3 - 9 的“坑”，这些索引都不存在数组中，所以永远筛选不到等于 undefined 的值。
-
-所以结果为`[]`。
-
-### 13. Switch 的比较
+### 10. Switch 的比较
 
 ```JavaScript
 function showCase(value) {
@@ -280,7 +195,7 @@ typeof (String('A'));      // 'string'
 所以第一个的函数调用的输出为`Do not know`，第二个函数的调用结果为：`Case A`。
 
 
-### 14. 数值：奇偶与无穷大
+### 11. 数值：奇偶与无穷大
 
 ```JavaScript
 function isOdd(num) {
@@ -300,25 +215,58 @@ values.map(isSane);
 
 所以结果为`[true, true, true, false, false]`。
 
-### 15. 数组 prototype
+### 12. arguments 对象
 
 ```JavaScript
-Array.isArray( Array.prototype )
-```
-
-`Array.prototype`本身是一个数组，这只能牢牢记住了~。所以结果为`true`。
-
-### 16. 数组的 bool 值
-
-```JavaScript
-var a = [0];
-if ([0]) {
-  console.log(a == true);
-} else {
-  console.log("wut");
+function sideEffecting (ary) {
+    arguments[1] = 10;
+    console.log('sideEffecting 1:', ary);
+    ary[0] = ary[2];
+    console.log('sideEffecting 2:', ary);
 }
+
+function bar (a, b, c) {
+    c = 10;
+    console.log('bar 1:', arguments);
+    sideEffecting(arguments);
+    console.log('bar 2:', arguments);
+    
+    return a + b + c;
+}
+
+console.log(bar(1, 1, 1));
 ```
 
-所有对象都是`true`，但是当执行`a == true`时会进行隐式转换。所以结果为`false`。
+`arguments`是函数中的一个特殊的类数组对象。当将对象作为参数传递给一个函数时，在函数内部对该对象参数的修改会传递到外部，产生副作用。同时，在函数内部修改形参的值时，也会更改到`arguments`对象中。
+
+所以，上面的代码执行时会有如下的输出：
+
+```
+bar 1: Arguments(3) [1, 1, 10, callee: ƒ, Symbol(Symbol.iterator): ƒ]
+sideEffecting 1: Arguments(3) [1, 1, 10, callee: ƒ, Symbol(Symbol.iterator): ƒ]
+sideEffecting 2: Arguments(3) [10, 1, 10, callee: ƒ, Symbol(Symbol.iterator): ƒ]
+bar 2: Arguments(3) [10, 1, 10, callee: ƒ, Symbol(Symbol.iterator): ƒ]
+21
+```
+
+### 13. function.name
+
+函数是一类特殊的对象，其具有一个只读的`name`属性。
+
+```JavaScript
+function x () {}
+
+var oldName = x.name;
+x.name = 'bar';
+console.log(oldName, x.name);  // 'x' 'x'
+
+var parent = Object.getPrototypeOf(x);
+console.log(typeof eval(x.name));  // 'function'
+console.log(typeof eval(parent.name)); // 'undefined'
+```
+
+由于函数的原型对象是`Function.prototype`，是一个对象，其并没有`name`属性，所以`parent.name = ''`。在`eval()`函数中，`x.name`就代表着 x，执行之后返回的就是 x 函数，所以其类别就是`'function'`；而对于空字符串，`eval()`执行的结果就是`undefined`。
+
+
 
 
