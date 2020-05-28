@@ -1,10 +1,14 @@
-## 基本
-- 申明字符编码 `<mate charset="utf-8">`
+## 一、通用
+
+### 1.1 基本
+
+- 声明字符编码 `<mate charset="utf-8">`
 - 使用最新版的 IE 和 Chrome `<mate http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">`
 - 双核浏览器使用 webkit 内核 `<mate name="renderer" content="webkit">`
 - 禁止百度的 Siteapp 对页面转码 `<mate http-equiv="Cache-Control" content="no-siteapp">`
 
-## Viewport
+### 1.2 viewport
+
 经常在移动端会写成下面的方式，以禁止用户缩放，和设置页面的宽度为设备宽度：
 
 `<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">`
@@ -20,24 +24,38 @@
 
 iPhone 6 和 iPhone 6p 可以分别使用如下的设置：
 
-`<meta name="viewport" content="width=375">`
+* `<meta name="viewport" content="width=375">`
+* `<meta name="viewport" content="width=414">`
 
-`<meta name="viewport" content="width=414">`
+### 1.3 format-detection
 
+format-detection mate 可以用来禁止设备自动识别数据格式并进行特定的显示，一般用在 iOS 设备上。比如：
 
-## iOS 设备
+* 禁止将数字识别为电话号码(避免点击后出现拨号提示): `<mate name="format-detection" content="telephone=no">`
+* 禁止自动识别日期格式字符串(避免点击后出现添加提醒等提示): `<meta name="format-detection" content="date=no">`
+* 禁止自动识别地址字符串: `<meta name="format-detection" content="address=no">`
+
+## 二、iOS 设备
+
+### 2.1 浏览器设置
+
+iOS 设备提供了一些单独的 mate 标签设置，用来控制不同操作，比如：
+
 - 页面添加到主屏幕后的标题 `<mate name="apple-mobile-web-app-title" content="设置标题">`
+
 - 是否启用 webAPP 进入全屏模式 `<mate name="apple-mobile-web-app-capable" content="yes">`
+
 - 状态栏的背景色 `<mate name="apple-mobile-web-app-statuss-bar-style" content="black-translucent">`
     content 参数可取如下值：
+
     * `default` 默认值。
     * `black` 状态栏背景是黑色。
     * `black-translucent` 状态栏背景是黑色半透明。
+
     如果设置为`default`或`black`，网页内容从状态栏底部开始；如果设置为`black-translucent`，网页内容充满整个屏幕，顶部会被状态栏遮挡。
 
-- 禁止将数字识别为电话号码 `<mate name="format-detection" content="telephone=no">`
+### 2.2 iOS 图标
 
-## iOS 图标
 设置一个`link`标签的`rel`参数为`apple-touch-icon`，即可为 iOS 设备添加一个图标，图片自动处理成圆角和高光等效果；如果设置成`apple-touch-icon-precomposed`则禁止系统自动添加效果，直接显示设计原图。
 
 - iPhone 和 iPod touch，默认 57×57px `<link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-57x57-precomposed.png" />`
@@ -46,7 +64,8 @@ iPhone 6 和 iPhone 6p 可以分别使用如下的设置：
 - Retina iPad，144×144px `<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144x144-precomposed.png" />`
 - iPhone 6+ 上是 180×180px，iPhone 6 是 120×120px。适配 iPhone 6+ `<link rel="apple-touch-icon-precomposed" sizes="180x180" href="retinahd_icon.png">`
 
-## iOS 启动画面
+### 2.3 iOS 启动画面
+
 iPad 启动画面不包括状态栏区域
 
 `<link rel="apple-touch-startup-image" sizes="768x1004" href="/splash-screen-768x1004.png" />`
@@ -72,21 +91,27 @@ iPhone 和 iPod touch 的启动画面是包含状态栏区域的
 
 `<meta name="apple-itunes-app" content="app-id=myAppStoreID, affiliate-data=myAffiliateData, app-argument=myURL">`
 
-## Android
+## 三、其他系统
+
+### 3.1 Android
+
 Android Lollipop 中的 Chrome 39 增加 theme-color meta 标签，可以用来控制选项卡颜色。
 
 `<meta name="theme-color" content="#db5945">`
 
-## Windows 8
+### 3.2 Windows 8
+
 - Windows 8 磁贴颜色 `<meta name="msapplication-TileColor" content="#000"/>`
 - Windows 8 磁贴图标 `<meta name="msapplication-TileImage" content="icon.png"/>`
 
-## RSS
+### 3.3 RSS
+
 添加 RSS 订阅：
 
 `<link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml" />`
 
-## 示例
+## 四、 示例
+
 ```html
 <!DOCTYPE html> <!-- 使用 HTML5 doctype，不区分大小写 -->
 <html lang="zh-cmn-Hans"> <!-- 更加标准的 lang 属性写法 http://zhi.hu/XyIa -->
