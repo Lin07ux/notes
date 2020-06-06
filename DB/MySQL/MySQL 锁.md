@@ -82,3 +82,42 @@ Next-Key 锁是记录锁和间隙锁的组合，它指的是加在某条记录�
  Next-Key         | 兼容       | 兼容              | 冲突      | 冲突
 
 
+## 二、锁示例
+
+### 2.1 select for update
+
+`for update`仅适用于 InnoDB 引擎，且必须在事务块中(`BEGIN/COMMIT`之间)才能生效。
+
+在进行事务操作时，通过**`for update`**语句，MySQL 会**对查询结果集中的每一行数都添加排它锁**，其他线程对该记录的更新与删除操作都会阻塞。这里的排它锁包含行锁、表锁。
+
+InnoDB 引擎的锁实现意味着：只有通过索引条件检索数据，InnoDB 才使用行级锁，否则 InnoDB 将使用表锁！
+
+假设有个表 products，包含 id、type 和 name 三个列，其中 id 是主键，有如下几种加锁情况：
+
+* 明确指定主键，并且有此行记录，加行锁：
+
+    ```sql
+    SELECT * FROM products WHERE id = 3 FOR UPDATE;
+    SELECT * FROM products WHERE id = 3 AND type = 1 FOR UPDATE;
+    ```
+
+* 明确指定主键，但无该记录，不加锁
+
+    ```sql
+    SELECT * FROM products WHERE id = -1 FOR UPDATE;
+    ```
+
+* 不指定主键，加表锁
+
+    ```sql
+    SELECT * FROM products WHERE name = 'Mouse' FOR UPDATE;
+    ```
+
+* 主键不明确，加表锁
+
+    ```sql
+    SELECT * FROM products WHERE id <> 1 FOR UPDATE;
+    SELECT * FROM products WHERE id like '3' FOR UPDATE;
+    ```
+
+
