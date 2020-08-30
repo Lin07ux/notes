@@ -4,6 +4,8 @@
 INSERT INTO table_a (filed1,filed2...) SELECT f1,f2,... FROM table_b
 ```
 
+使用这种方式迁移数据的时候，一定要确保 table_b 的后面的 where、order 或者其他条件，都有对应的索引，来避免 table_b 全部记录被锁定的情况。（参考：[一条 SQL 引发的事故，同事直接被开除！！](https://mp.weixin.qq.com/s/9UF6e2hQCRVo-b1Za9dMow)）
+
 ### 查询一个表中没有存在在另一个表的数据
 
 ```sql
