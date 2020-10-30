@@ -45,5 +45,18 @@ rm -rf fonts
 
 设置 Columns 和 Rows 的数值大小即可调整打开 iTerm2 时窗口的大小。
 
+## 快捷键
+
+### 光标按照单词快速移动设置
+
+打开 iTerm2 的`settings -> Profiles -> Keys`，在这里重新定义`⌥←`和`⌥→`的快捷键即可。
+
+设置`⌥←`的 Action 为“Send Escape Sequence”，然后输入“Esc+”的值为`b`：
+
+![](http://cnd.qiniu.lin07ux.cn/20171108162921470.jpeg)
+
+设置`⌥→`的 Action 为“Send Escape Sequence”，然后输入“Esc+”的值为`f`：
+
+![](http://cnd.qiniu.lin07ux.cn/20171108163005385.png)
 
 

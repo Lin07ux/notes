@@ -6,7 +6,7 @@
 
 也可以跳过中间状态切换：
 
-![跳过中间状态的切换](http://cnd.qiniu.lin07ux.cn/markdown/1464932635964.png")
+![跳过中间状态的切换](http://cnd.qiniu.lin07ux.cn/markdown/1464932635964.png)
 
 ### 克隆项目的全部信息
 

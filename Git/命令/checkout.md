@@ -37,7 +37,7 @@ checkout 的命令如下：
 1. `git checkout -b <new_branch> [<start point>]`
     基于当前分支的 start_point 提交历史创建一个新的分支。
     
-2. `git checkout --datch <branch>` 
+2. `git checkout --detach <branch>` 
     切换到分支的游离状态，默认为该分支下的最后一次提交 ID。
     比如当前分支为 a，然后使用`git checkout --detach master`，那么 HEAD 就会切换为 master 分支的最后一次 commit 的值，而不再是指向 master。
 
