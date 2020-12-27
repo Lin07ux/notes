@@ -129,10 +129,27 @@ make && make install
 
 在 Homestead 环境中需要注意的是，除了要为 cli 配置引入 redis 扩展，还要为 fpm 配置引入，否则可能导致网站代码无法正常使用 Redis 扩展。
 
-## 三、参考
+## 三、问题
+
+### 3.1 Unable to load dynamic library redis.so
+
+在启动 PHP FPM 的时候，出现如下错误：
+
+```
+PHP Warning: PHP Startup: Unable to load dynamic library '/usr/lib64/php/modules/redis.so' - /usr/lib64/php/modules/redis.so: undefined symbol: php_json_decode_ex in Unknown on line 0
+```
+
+这是因为 json 扩展加载的顺序产生了冲突导致的。
+
+解决方法如下：
+
+不要在`php.in`中引入`redis.so`扩展，而是在`php.d`文件夹中创建新文件`redis.ini`，然后在该文件中加入`extension=redis.so`，然后重启 PHP FPM 后，即可看到加载了 redis 扩展了。
+
+## 四、参考
 
 1. [phpredis/INSTALL.markdown](https://github.com/phpredis/phpredis/blob/develop/INSTALL.markdown)
 2. [Linux下PHP安装Redis扩展（二）](https://segmentfault.com/a/1190000008420258)
 3. [pecl 更换对应php版本](https://www.jianshu.com/p/fee58d93e8b1)
+4. [linux上安装redis扩展 ，报错了：Unable to load dynamic library redis.so](https://segmentfault.com/q/1010000019735774)
 
 
