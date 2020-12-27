@@ -73,6 +73,10 @@ composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 当然，也可以不这样全局修改，也可以修改特定项目的安装源，只需将上面命令中的`-g`选项去掉即可。
 
+> 取消配置：
+> 
+> `composer config -g --unset repos.packagist`
+
 ## 二、使用
 
 作为一个包管理工具，composer 和其他语言中的包管理工具的用法基本相同，只是部分命令区别。

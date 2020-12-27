@@ -59,6 +59,12 @@ systemctl start postgresql-9.5
 
 ## 数据库/表
 
+### 更改所属者
+
+```sql
+ALTER DATABASE <database_name> OWNER TO <owner_name>
+```
+
 ### 添加/删除主键
 ```sql
 alter table server add primary key (id);
@@ -85,6 +91,12 @@ DROP SCHEMA schema_name [ CASCADE ];
 
 > 参考：
 > 1. [PostgreSQL 批量权限 管理方法](https://yq.aliyun.com/articles/41512)
+
+### 添加用户
+
+```sql
+CREATE user <username> with password '<password>';
+```
 
 ### 授权
 
