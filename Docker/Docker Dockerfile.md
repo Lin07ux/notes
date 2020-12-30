@@ -4,7 +4,7 @@ Docker 镜像就是一层一层的配置、文件的叠加组成，所以可以�
 
 ### 1. FROM 指定基础镜像
 
-`FROM`指令是 Dockerfile 中的第一条指令，而且是必备指令，用来指定基础镜像。
+`FROM`指令是 Dockerfile 中的必备指令，一般也会是第一条指令（`ARG`指令可以在它前面），用来指定基础镜像。
 
 [Docker Hub](https://hub.docker.com/search?q=&type=image&image_filter=official) 中可以找到非常多的高质量的官方镜像，比如各种红包给服务类镜像、开发/构建/运行时镜像、操作系统类镜像等。
 
@@ -183,5 +183,113 @@ CMD service nginx start
 
 ```yaml
 CMD ["nginx", "-g", "daemon off;"]
+```
+
+### 7. ENTRYPOINT 入口点
+
+`ENTRYPOINT`和`CMD`指令的格式一样，目的也一样，都是指定容器启动程序及参数，而且在执行`docker run`命令时可以通过`--entrypoint`选项指定该指令的替代值。
+
+需要注意的是：指定了`ENTRYPOINT`指令后，`CMD`指令的内容就会作为参数传递给`ENTRYPOINT`指令了。也就是说，执行的时候会变成`<ENTRYPOINT> "<CMD>"`。
+
+之所以有了`CMD`指令还提供`ENTRYPOINT`指令，简单说，是为了让容器启动执行时可以指定参数来影响容器的运行逻辑。这正是使用了`CMD`指令会作为`ENTRYPOINT`指令的参数的特性来实现的。
+
+> 示例可以参见：[ENTRYPOINT 入口点](https://yeasy.gitbook.io/docker_practice/image/dockerfile/entrypoint)
+
+### 8. ENV 环境变量
+
+`ENV`指令用来为 Docker 的构建和构建和的容器提供环境变量，有两种指令格式：
+
+* `ENV <key> <value>`
+* `ENV <key1>=<value1> <key2>=<value2> ...`
+
+通过该指令定义环境变量与在 Shell 中定义环境变量遵循相关的要求，比如：换行时使用`\`进行连接，值中有空格时需要使用`""`包裹值。
+
+```yaml
+ENV VERSION=1.0 DEBUG=on \
+    NAME="Happy Feet"
+```
+
+通过`ENV`指令添加的环境变量，无论是其后面的其他指令（如`RUN`），还是运行时的应用，都可以直接使用。比如：
+
+```yaml
+ENV NODE_VERSION 7.2.0
+
+RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
+  && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
+  && gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc \
+  && grep " node-v$NODE_VERSION-linux-x64.tar.xz\$" SHASUMS256.txt | sha256sum -c - \
+  && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 \
+  && rm "node-v$NODE_VERSION-linux-x64.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
+  && ln -s /usr/local/bin/node /usr/local/bin/nodejs
+```
+
+下列指令可以支持环境变量展开：`ADD`、`COPY`、`ENV`、`EXPOSE`、`FROM`、`LABEL`、`USER`、`WORKDIR`、`VOLUME`、`STOPSIGNAL`、`ONBUILD`、`RUN`。
+
+通过环境变量，可以让一份 Dockerfile 制作多份不同的镜像，所需要做的仅仅是修改相关环境变量即可。
+
+### 9. ARG 构建参数
+
+`ARG`也能设置环境变量，但是其设置的环境变量只能在构建环境时使用，而不能在将来容器运行时使用（已不存在了）。
+
+`ARG`的格式为：`ARG <参数名>[=<默认值>]`。
+
+Dockerfile 中的`ARG`指令是定义参数名称，并可以为其设置默认值。这个默认值可以在使用`docker build`命令构建容器的时候使用`--build-arg <参数名>=<值>`来覆盖。
+
+> 不要使用`ARG`保存密码等隐私信息，因为使用`dcoker history`还是可以看到所有的值的。
+
+需要注意的是，`ARG`指令是有生效范围的：在`FROM`指令之前定义的环境变量，只能在`FROM`指令中使用，而在`FROM`之后定义的环境变量，只能在该段构建中有效。这个生效区间在多段构建中更需要分辨。
+
+**示例 1**
+
+下面的实例中能够从 Docker Hub 中拉取镜像，但是不能正常输出`${DOCKER_USERNAME}`变量的值：
+
+```yaml
+ARG DOCKER_USERNAME=library
+
+FROM ${DOCKER_USERNAME}/alpine
+
+RUN set -x ; echo ${DOCKER_USERNAME}
+```
+
+**示例 2**
+
+如果要能正常输出`${DOCKER_USERNAME}`变量的值，需要在`FROM`之后再次定义才行：
+
+```yaml
+# 只在 FROM 中生效
+ARG DOCKER_USERNAME=library
+
+FROM ${DOCKER_USERNAME}/alpine
+
+# 要想在 FROM 之后使用，必须再次指定
+ARG DOCKER_USERNAME=library
+
+RUN set -x ; echo ${DOCKER_USERNAME}
+```
+
+**示例 3**
+
+多段构建中，由于会先执行所有的`FROM`指令，所以位于第一个`FROM`指令前`ARG`指令定义的环境变量在全部的`FROM`中都会生效，而其他的`ARG`指令只会在其所处的构建阶段中生效：
+
+```yaml
+# 这个变量在每个 FROM 中都生效
+ARG DOCKER_USERNAME=library
+
+FROM ${DOCKER_USERNAME}/alpine
+
+# 这个变量仅在第一构建阶段生效
+ARG DOCKER_USERNAME="first library"
+
+RUN set -x ; echo ${DOCKER_USERNAME}
+
+# 这个变量也仅在第一构建阶段生效
+ARG DOCKER_USERNAME="before library"
+
+FROM ${DOCKER_USERNAME}/alpine
+
+# 这个变量仅在第二构建阶段生效
+ARG DOCKER_USERNAME="second library"
+
+RUN set -x ; echo ${DOCKER_USERNAME}
 ```
 
