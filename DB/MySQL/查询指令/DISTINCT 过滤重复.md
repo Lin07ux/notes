@@ -20,7 +20,7 @@ SELECT DISTINCT name FROM fruits;
 SELECT DISTINCT name, id FROM fruits;
 ```
 
-上面的这个语句会按照(name, id)两个字段同时不重复来过滤。
+上面的这个语句会按照`(name, id)`两个字段同时不重复来过滤。
 
 如果要只根据 name 字段来过滤重复值，但是还要获取其他字段的值，可以使用`GROUP BY`子句来完成：
 
@@ -28,5 +28,5 @@ SELECT DISTINCT name, id FROM fruits;
 SELECT id, name FROM fruits GROUP BY name;
 ```
 
-
+这获取结果的时候，对具有相同的`name`的记录只会返回第一条。
 
