@@ -1,6 +1,6 @@
 `git rebase`可以合并多个 commit 为一个 commit。可以把它理解成是“重新设置基线”，将你的当前分支重新设置开始点，这个时候才能知道你当前分支与你需要比较的分支之间的差异。
 
-### 合并分支
+### 1. 合并分支
 
 相对于使用`git merge`合并分支来说，用`git rebase`来合并分支的好处在于：不会产生新的`commit log`，而且提交日志也会很干净，是一条直线。但是变基之后，不会保留合并分支的原始提交记录。
 
@@ -49,7 +49,7 @@ develop_fixbug_imageprint 分支的 commit log 如下：
 
 rebase 需要基于一个分支来设置你当前的分支的基线，这基线就是当前分支的开始时间轴向后移动到最新的跟踪分支的最后面，这样你的当前分支就是最新的跟踪分支。这里的操作是基于文件事务处理的，所以你不用怕中间失败会影响文件的一致性。在中间的过程中你可以随时用`git rebase –abort`取消 rebase 事务。
 
-### 合并同一分支中的 commit
+### 2. 合并同一分支中的 commit
 
 为了不时的提交下开发进度，在完成一个任务的过程中，可能会提交多个 commit，而这些全部的 commmit 合并起来才是任务的完成开发，所以我们可能就需要合并这些 commit，使得提交历史更干净。
 
@@ -88,9 +88,68 @@ git rebase -i f1f92b
 
 其中，非注释部分就是两次的`commit message`，你要做的就是将这两个修改成新的`commit message`。修改完成后，输入`wq`保存并退出，再次输入`git log`查看 commit 历史信息，就会发现这两个 commit 已经合并了。
 
+### 3. rebase 时如何保留 merge commit
+
+如果 dev 分支上有 merge commit（合并了 test 分支），而 master 分支上有一个新的提交 e，如下所示：
+
+```
+* 31ef4ec (HEAD -> master) e
+| *   b554f2d (dev) Merge branch 'test' into dev
+| |\
+| | * 853aaf6 (test) c
+| * | 1af86fa d
+| |/
+| * c1b49a5 b
+|/
+* 763a350 a
+```
+
+现在 dev 分支想同步到 master 分支上，使用 rebase 操作后，log tree 如下所示：
+
+```
+* 8924fda (HEAD -> dev) c
+* 06201b2 d
+* e0c6b78 b
+* 31ef4ec (master) e
+| * 853aaf6 (test) c
+| * c1b49a5 b
+|/
+* 763a350 a
+```
+
+可以看到，原本 dev 分支上与 test 分支合并的 commit 被抛弃了，同时 test 分支上的提交 d 和 c 都被 patch 到了 dev 分支上，相当于 dev 分支先对 test 分支进行了 rebase，然后再对 master 分支进行了 rebase。
+
+这个效果可能与预期的不太一样：预期的效果是继续保留 merge commit。rebase 命令有一个`--rebase-merges`参数可以来达到这种预期：
+
+```shell
+git rebase --rebase-merges master
+```
+
+执行之后，log tree 如下：
+
+```
+*   88e6cf7 (HEAD -> dev) Merge branch 'test' into dev
+|\
+| * e2fae10 c
+* | 65869a2 d
+|/
+* e61592d b
+* 31ef4ec (master) e
+| * 853aaf6 (test) c
+| * c1b49a5 b
+|/
+* 763a350 a
+```
+
+可以看到，merge commit 被保留了，但 test 分支也被变基了，而且 test 分支上的 commit 还是被复制了一份。
+
+所以，建议 merge 和 rebase 尽量使用一种，不要在一个分支中混用 merge 和 rebase 命令。
+
 ### 转摘
+
 1. [聊下 git rebase -i](http://www.cnblogs.com/wangiqngpei557/p/5989292.html)
 2. [rebase - Git Community Book 中文版](http://gitbook.liuhui998.com/4_2.html)
 3. [「Git」合并多个 Commit](http://www.jianshu.com/p/964de879904a)
+4. [Git在rebase时如何保留merge commit](https://mp.weixin.qq.com/s/vApS6ajWs4UcOd0U8j9c5Q)
 
 
