@@ -6,6 +6,8 @@
 SELECT color, COUNT(*) AS counts FROM items GROUP BY color;
  
 SELECT COUNT(color = 'blue' OR NULL) as blue, COUNT(color = 'red' OR NULL) AS red FROM items;
+
+SELECT SUM(auditPass) AS total, SUM(IF(process = 50, auditPass, 0)) AS processCount FROM orders WHERE id <= 9;
 ```
 
 
