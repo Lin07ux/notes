@@ -69,4 +69,17 @@ autocrlf = false
 * `warn` - 在提交时检查并警告
 * `true` - 在提交时检查，如果发现混用则拒绝提交
 
+### 2.2 git pull 时采用不使用 merge 方式合并
+
+在拉取远程分支的更新时，如果本地也有了新的提交，默认情况下，会生成一个 merge 提交来合并远程和本地的提交。
+
+如果想保持分支的线性，可以使用 rebase 方式来拉取。只需要执行如下命令进行配置即可：
+
+```shell
+# 本项目配置和全局配置
+git config pull.rebase true
+git config --global pull.rebase true
+```
+
+![git pull rebase](http://cnd.qiniu.lin07ux.cn/markdown/git-pull-rebase-e81df88539221.png)
 
