@@ -47,13 +47,17 @@ export PATH=$PATH:$GOPATH/bin
 source ~/.zshrc
 ```
 
-### 1.3 包
+### 1.3 环境变量
+
+Go 自身有一些环境选项可以进行配置：
+
+* `go env -w GOPROXY=https://goproxy.cn,direct` 使用国内第三方包镜像
+
+### 1.4 包与大小写
 
 Go 代码都是属于某个包的，包是一种将相关的 Go 代码组合到一个的方式。
 
 Go 项目中需要定义一个`main`包，并在其中定义一个`main`函数。
-
-### 1.4 大小写
 
 在 Go 中，常量、方法、类型、interface 的名称如果是大写字母开头的，则表示其是公开的，可以被外部访问和使用的；如果是小写字母开头的，则表示其是私有的，外部不可访问和使用。
 
@@ -80,51 +84,7 @@ const (
 )
 ```
 
-### 2.3 定义函数
-
-函数通过`func`关键字来声明，可以直接用来定义普通函数，也可以定义匿名函数：
-
-```go
-// 普通函数
-func Hello() {
-    fmt.Println("Hello")
-}
-
-// 匿名函数
-foo := func() {
-    fmt.Println("foo")
-}
-```
-
-函数如果有参数，需要指定每个参数的类型；如果**连续的**多个参数的**类型相同**，可以只为**最后一个**同类型的参数指定类型。
-
-函数如果有返回值，需要指定每个返回值的类型。如果为函数的返回值指定了名称，则函数体内相当于已经声明好了该名称的变量，并且`return`语句可以不指定该名称即完成返回。
-
-> 函数如果返回多个值，可以很方便的使用一个`return`语句来完成，而无需包装成功其他的类型。
-
-```go
-func Hello(name, language string) string {
-    if name == "" {
-        name = "World"
-    }
-
-    return greetingPrefix(language) + name
-}
-
-func greetingPrefix(language string) (prefix string) {
-    switch language {
-    case french:
-        prefix = frenchHelloPrefix
-    case spanish:
-        prefix = spanishHelloPrefix
-    default:
-        prefix = englishHelloPrefix
-    }
-    return
-}
-```
-
-### 2.4 if
+### 2.3 if
 
 Go 的`if`非常类似于其他编程语言，用作于根据条件来决定是否执行代码块。
 
