@@ -103,3 +103,18 @@ func Hello(name string) string {
 }
 ```
 
+### 2.4 for
+
+在 Go 中循环和迭代都只能使用`for`语法，因为 Go 语言中没有`while`、`do`、`until`这几个关键字。
+
+```go
+func Repeat(character string) string {
+    var repeated string
+    for i := 0; i < 5; i++ {
+        repeated += character
+    }
+    return repeated
+}
+```
+
+
