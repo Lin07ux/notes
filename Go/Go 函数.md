@@ -55,5 +55,28 @@ func greetingPrefix(language string) (prefix string) {
 }
 ```
 
+### 3. 可变参数
 
+函数的参数数量可以是未定的，此时就是可变参数。可变参数使用`...`来声明。
+
+```go
+func SumAll(numbersToSum ...[]int) (sums []int) {
+    lengthOfNumbers := len(numbersToSum)
+    
+    for i, numbers := range numbersToSum {
+        sums = append(sums, Sum(numbers))
+    }
+
+    return
+}
+
+func Sum(numbers []int) (sum int) {
+    for _, number := range numbers {
+        sum += number
+    }
+    return
+}
+```
+
+这个函数的参数是可变参数，也就是可以传入一个或者多个`[]int`类型的切片数据作为参数。
 
