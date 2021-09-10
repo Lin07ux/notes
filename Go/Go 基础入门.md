@@ -88,9 +88,10 @@ const (
 
 Go 的`if`非常类似于其他编程语言，用作于根据条件来决定是否执行代码块。
 
-`if`的条件可以是变量、表达式，但是其类型需为 bool 类型。
+`if`的条件可以是变量、表达式，但是其类型需为 bool 类型。`if`语句也支持`else`及`else if`子句，跟随在`if`后面即可。
 
-另外，`if`语句不支持`else`及`else if`子句。
+关键字`if`、`else-if`和`else`之后的左大括号`{`必须和关键字在同一行；关键`else-if`和`else`的前段代码块的右大括号`}`必须和`else-if`关键字在同一行。这两条规则都是被编译器强制规定的。
+
 
 ```go
 const englishHelloPrefix = "Hello, "
@@ -98,6 +99,10 @@ const englishHelloPrefix = "Hello, "
 func Hello(name string) string {
     if name == "" {
         name = "World"
+    } else if name == "anon" {
+         name = "anonymous"
+    } else {
+         name = strings.TrimSpace(name)
     }
     return englishHelloPrefix + name
 }
