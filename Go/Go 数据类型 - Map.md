@@ -2,6 +2,7 @@
 > 
 > 1. [一文啃透 Go map：初始化和访问](https://mp.weixin.qq.com/s/iL9dgMW47q0ySTYkvfl6fg)
 > 2. [golang中map底层B值的计算逻辑](https://zhuanlan.zhihu.com/p/366472077)
+> 3. [Go map 如何缩容？](https://mp.weixin.qq.com/s/Slvgl3KZax2jsy2xGDdFKw)
 
 ## 一、Map 数据结构
 
@@ -330,5 +331,82 @@ tophash 的作用是：在步骤七中进行迭代快速定位，这样可以提
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1632323881598-1dea11aa37f0.jpg)
 
+## 四、扩缩容
 
+### 4.1 前导
+
+在 Go 底层源码`src/runtime/map.go`中，扩缩容的处理方法是 grow 为前缀的方法来处理的。其中，扩缩容涉及到的是插入元素的操作，对应`mapassign`方法：
+
+```go
+func mapassign(t *maptype, h *hmap, key unsafe.Poiter) unsafe.Pointer {
+  ...
+  if !h.growing() && (overLoadFactor(h.count+1, h.B) || tooManyOverflowBuckets(h.overflow, h.B)) {
+    hashGrow(t, h)
+    goto again
+  }
+  ...
+}
+
+func (h *hmap) growing() bool {
+  return h.oldBuckets != nil
+}
+
+func overLoadFactor(count int, B uint8) bool {
+  return count > bucketCnt && uintptr(count) > loadFactorNum*(bucketShift(B)/loadFactorDen)
+}
+
+func tooManyOverflowBuckets(noverflow uint16, B uint8) bool {
+  if B > 15 {
+   B = 15
+  }
+  
+  return noverflow >= uint16(1)<<(B&15)
+}
+```
+
+针对扩缩容判断的核心逻辑如下：
+
+1. 当前没有正在扩容，条件为：`h.oldbuckets`不为 nil；
+2. 可以进行扩容，条件为：`h.count > (2^h.B)*6.5`；
+3. 可以进行缩容，条件为：`h.noverflow >= 2^(h.B&15)`
+
+### 4.2 缩容
+
+无论是扩容还是缩容，都是由`hashGrow()`方法进行处理的：
+
+```go
+func hashGrow(t *maptype, h *hmap) {
+  bigger := uint8(1)
+  if !overLoadFactor(h.count+1, h.B) {
+    bigger = 0
+    h.flags != sameSizeGrow
+  }
+}
+```
+
+可以看到，根据当前 hash 表的容量是否过载来判断是扩容还是缩容：
+
+* 如果是扩容，则 bigger 为 1，也就是会使得`h.B + 1`，表示 hash 表容量扩大一倍；
+* 如果是缩容，则 bigger 为 0，也就是是的`h.B`保持不变，则 hash 表容量也不变。
+
+可以得出结论：**map 的扩缩容主要区别在于`hmap.B`的容量大小改变**。
+
+由于缩容的时候，`hmap.B`未发生变化，所以实际上其占用的内存空间也是不会减少的。这种方式其实是存在隐患的，也就是导致：**删除元素时，并不会释放内存，使得分配的总内存不断增加**。这在使用 map 来做大 key/value 存储时，如果不注意管理，很容易造成内存占用过多的情况。
+
+要实现*真缩容*，Go Contributor @josharian 表示目前唯一**可用的解决方案是：创建一个新的 map，并从旧的 map 中复制元素，然后删除旧的 map 元素**。
+
+示例如下：
+
+```go
+old := make(map[int]int, 9999999)
+new := make(map[int]int, len(old))
+for k, v := range old {
+  new[k] = v
+}
+old = new
+```
+
+之所以不支持，简单来讲就是没有找到一个很好的方法实现，存在明确的实现成本问题，没法很方便的告诉 Go 运行时，是要保留存储空间以便后续的重用，还是赶紧释放存储空间，因为 map 会开始变得小很多。
+
+抽象来看，症结就是：**需要保证增长结果在下一个开始之前完成**。此处的增长指的是：从小到大、从一个大小到相同的大小、从大到小等多重 case。
 
