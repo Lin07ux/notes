@@ -298,21 +298,21 @@ go tool compile -N -S -l main.go
 
 ```asm
 "".main STEXT size=110 args=0x0 locals=0x28 funcid=0x0
-	0x0000 00000 (main.go:9)	TEXT	"".main(SB), ABIInternal, $40-0
+	0x0000 00000 (main.go:9)	TEXT   "".main(SB), ABIInternal, $40-0
 	... // init
-	0x000f 00015 (main.go:9)	SUBQ	$40, SP
-	0x0013 00019 (main.go:9)	MOVQ	BP, 32(SP)
-	0x0018 00024 (main.go:9)	LEAQ	32(SP), BP
+	0x000f 00015 (main.go:9)	SUBQ   $40, SP
+	0x0013 00019 (main.go:9)	MOVQ   BP, 32(SP)
+	0x0018 00024 (main.go:9)	LEAQ   32(SP), BP
 	... // FUNCDATA
-	0x001d 00029 (main.go:10)	MOVQ	$1, (SP)
-	0x0025 00037 (main.go:10)	MOVQ	$2, 8(SP)
+	0x001d 00029 (main.go:10)	MOVQ   $1, (SP)
+	0x0025 00037 (main.go:10)	MOVQ   $2, 8(SP)
 	... // PCDATA
-	0x002e 00046 (main.go:10)	CALL	"".add(SB)
-	0x0033 00051 (main.go:10)	MOVQ	16(SP), AX
-	0x0038 00056 (main.go:10)	MOVQ	AX, ""..autotmp_0+24(SP)
+	0x002e 00046 (main.go:10)	CALL   "".add(SB)
+	0x0033 00051 (main.go:10)	MOVQ   16(SP), AX
+	0x0038 00056 (main.go:10)	MOVQ   AX, ""..autotmp_0+24(SP)
 	... // println
-	0x005d 00093 (main.go:11)	MOVQ	32(SP), BP
-	0x0062 00098 (main.go:11)	ADDQ	$40, SP
+	0x005d 00093 (main.go:11)	MOVQ   32(SP), BP
+	0x0062 00098 (main.go:11)	ADDQ   $40, SP
 	0x0066 00102 (main.go:11)	RET
 	0x0067 00103 (main.go:11)	NOP
 	...
@@ -463,39 +463,41 @@ go tool objdump -s "main\." demo
 ```asm
 ...
 TEXT main.main(SB) /Users/lin07ux/code/go/src/github.com/lin07ux/learn/demo/main.go
-  main.go:5		0x105e180		65488b0c2530000000	MOVQ GS:0x30, CX
-  main.go:5		0x105e189		483b6110		CMPQ 0x10(CX), SP
-  main.go:5		0x105e18d		7658			JBE 0x105e1e7
-  main.go:5		0x105e18f		4883ec28		SUBQ $0x28, SP
-  main.go:5		0x105e193		48896c2420		MOVQ BP, 0x20(SP)
-  main.go:5		0x105e198		488d6c2420		LEAQ 0x20(SP), BP
-  main.go:6		0x105e19d		48c7042401000000	MOVQ $0x1, 0(SP)
-  main.go:6		0x105e1a5		48c744240802000000	MOVQ $0x2, 0x8(SP)
-  main.go:6		0x105e1ae		e84d000000		CALL main.add(SB)
-  main.go:6		0x105e1b3		488b442410		MOVQ 0x10(SP), AX
-  main.go:6		0x105e1b8		4889442418		MOVQ AX, 0x18(SP)
-  main.go:6		0x105e1bd		0f1f00			NOPL 0(AX)
-  main.go:6		0x105e1c0		e8bb08fdff		CALL runtime.printlock(SB)
-  main.go:6		0x105e1c5		488b442418		MOVQ 0x18(SP), AX
-  main.go:6		0x105e1ca		48890424		MOVQ AX, 0(SP)
-  main.go:6		0x105e1ce		e8ad10fdff		CALL runtime.printint(SB)
-  main.go:6		0x105e1d3		e8680bfdff		CALL runtime.printnl(SB)
-  main.go:6		0x105e1d8		e82309fdff		CALL runtime.printunlock(SB)
-  main.go:7		0x105e1dd		488b6c2420		MOVQ 0x20(SP), BP
-  main.go:7		0x105e1e2		4883c428		ADDQ $0x28, SP
-  main.go:7		0x105e1e6		c3				RET
-  main.go:5		0x105e1e7		e894b2ffff		CALL runtime.morestack_noctxt(SB)
-  main.go:5		0x105e1ec		eb92			JMP main.main(SB)
+  main.go:5		0x105e180		65488b0c2530000000  MOVQ GS:0x30, CX
+  main.go:5		0x105e189		483b611             CMPQ 0x10(CX), SP
+  main.go:5		0x105e18d		7658                JBE 0x105e1e7
+  main.go:5		0x105e18f		4883ec28            SUBQ $0x28, SP
+  main.go:5		0x105e193		48896c2420          MOVQ BP, 0x20(SP)
+  main.go:5		0x105e198		488d6c2420          LEAQ 0x20(SP), BP
+  main.go:6		0x105e19d		48c7042401000000    MOVQ $0x1, 0(SP)
+  main.go:6		0x105e1a5		48c744240802000000  MOVQ $0x2, 0x8(SP)
+  main.go:6		0x105e1ae		e84d000000          CALL main.add(SB)
+  main.go:6		0x105e1b3		488b442410          MOVQ 0x10(SP), AX
+  main.go:6		0x105e1b8		4889442418          MOVQ AX, 0x18(SP)
+  main.go:6		0x105e1bd		0f1f00              NOPL 0(AX)
+  main.go:6		0x105e1c0		e8bb08fdff          CALL runtime.printlock(SB)
+  main.go:6		0x105e1c5		488b442418          MOVQ 0x18(SP), AX
+  main.go:6		0x105e1ca		48890424            MOVQ AX, 0(SP)
+  main.go:6		0x105e1ce		e8ad10fdff          CALL runtime.printint(SB)
+  main.go:6		0x105e1d3		e8680bfdff          CALL runtime.printnl(SB)
+  main.go:6		0x105e1d8		e82309fdff          CALL runtime.printunlock(SB)
+  main.go:7		0x105e1dd		488b6c2420          MOVQ 0x20(SP), BP
+  main.go:7		0x105e1e2		4883c428            ADDQ $0x28, SP
+  main.go:7		0x105e1e6		c3                  RET
+  main.go:5		0x105e1e7		e894b2ffff          CALL runtime.morestack_noctxt(SB)
+  main.go:5		0x105e1ec		eb92                JMP main.main(SB)
 ...
 
 TEXT main.add(SB) /Users/lin07ux/code/go/src/github.com/lin07ux/learn/demo/add_asm.s
-  add_asm.s:2		0x105e200		488b442408		MOVQ 0x8(SP), AX
-  add_asm.s:3		0x105e205		4803442410		ADDQ 0x10(SP), AX
-  add_asm.s:4		0x105e20a		4889442418		MOVQ AX, 0x18(SP)
-  add_asm.s:5		0x105e20f		c3				RET
+  add_asm.s:2		0x105e200	488b442408   MOVQ 0x8(SP), AX
+  add_asm.s:3		0x105e205	4803442410   ADDQ 0x10(SP), AX
+  add_asm.s:4		0x105e20a	4889442418   MOVQ AX, 0x18(SP)
+  add_asm.s:5		0x105e20f	c3           RET
 ```
 
 可以看到，反编译得到的汇编与`add_asm.s`文件中的汇编操作大致相同，只是表达方式不同：
 
 1. `FP` 伪寄存器在编写 Go 汇编代码时会使用，指向 caller 传递给 callee 的第一个参数；
 2. 使用`go toll compile / go tool objdump`得到的汇编代码中，自动将 FP 伪寄存器改为了 SP 硬件寄存器的相对偏移地址。
+
+
