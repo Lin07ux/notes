@@ -356,6 +356,8 @@ func appendSorted(es []muxEntry, e muxEntry) []muxEntry {
 
 而如果注册`greeting`路由时，使用的是`http.Handle("/greeting/", greeting("Welcome, DJ"))`，那么访问`/greeting/a/b/c`就能匹配到`/greeting/`的路由了。但是此时访问`/greeting`就无效了。
 
+> 在浏览器中访问`/greeting`时会被自动重定向到`/greeting/`路径中，所以还是能够继续访问的。
+
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1635306058047-e0ff270f8673.jpg)
 
 ### 7. 自定义 HTTP 服务
