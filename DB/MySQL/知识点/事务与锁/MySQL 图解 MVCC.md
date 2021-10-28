@@ -126,6 +126,6 @@ undo log 与具体的行记录之间是通过行中的隐藏字段建立关联�
 * 可以保证一个事务不会读到并发执行的另一个事务的更新；
 * 一个事务只可以读到该事务自己修改的或该事务开始之前的数据。
 
-READ COMMITTED 和 REPEATABLE READ 事务隔离级之间的根本性不同，就在于**生成 ReadView 的时机不同**。
+READ COMMITTED 和 REPEATABLE READ 事务隔离级之间的根本性不同，就在于**生成 ReadView 的时机不同**：REPEATABLE READ 只会在事务开始之前生成 ReadView，而 READ COMMITTED 会在每次执行前都生成一次 ReadView。
 
 
