@@ -1,3 +1,5 @@
+> 转摘：[Go 看源码必会知识之 unsafe 包](https://mp.weixin.qq.com/s/wdFdPv3Bdnhy5pc8KL6w6w?forceh5=1)
+
 ### 1. 什么是 unsafe
 
 Go 语言被设计成一门强类型的静态语言，那么一个变量在定义之后其类型就不能改变了，静态也是意味着类型检查在运行前就做了，所以 Go 语言中不允许两个指针类型进行转换。
