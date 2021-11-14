@@ -1,0 +1,70 @@
+[gorilla](https://github.com/gorilla) web 开发包是 Go 语言中辅助开发 Web 服务器的工具包，包括 Web 服务器开发的各个方面。这些组件都能与`net/http`很好的结合使用。
+
+### 1. 路由管理 gorilla/mux
+
+[gorilla/mux](github.com/gorilla/mux) 是 gorilla Web 开发工具包中的路由管理库，有如下特点：
+
+* 实现了标准的`http.Handler`接口，路由、中间件等都可以与`net/http`标准库结合使用；
+* 可以根据请求的主机名、路径、路径前缀、协议、HTTP 首部、查询字符串和 HTTP 方法匹配处理器，还可以自定义匹配逻辑；
+* 可以在主机名、路径和请求参数中使用变量，还可以为之指定一个正则表达式；
+* 可以传入参数给指定的处理器让其构造出完整的 URL；
+* 支持路由分组，方便管理和维护。
+
+示例如下：
+
+> 参考：[Go 每日一库之 gorilla/mux](https://mp.weixin.qq.com/s/lhuv27BuaX-J0gcKyJC0Bw)
+
+```go
+func main() {
+    r := mux.NewRouter()
+    
+    // Books
+    br := r.PathPrefix("/books").Subrouter()
+    br.HandleFunc("/", BooksHandler).Name("books.list")
+    // 符合这个正则表达式的路由才会进入到 BookDetailHandler 处理器中
+    br.HandleFunc("/books/{isbn:\\d{3}-\\d-\\d{3}-\\d{5}-\\d}", BookHandler).Name("books.detail")
+    
+    // Movies
+    mr := r.PathPrefix("/movies").Subrouter()
+    mr.HandleFunc("/", MoviesHandler).Name("movies.list")
+    mr.HandleFunc("/{imdb}", MovieHandler).Name("movies.detail")
+    
+    // 可以将所有请求通过 / 绑定到 mux router，也可以直接将服务器的请求处理绑定到 mux router
+    // http.Handle("/", r)
+    // http.ListenAndServe(":8088", nil)
+    log.Fatal(http.ListenAndServe(":8088", r))
+}
+```
+
+### 2. 中间件 gorilla/handlers
+
+[gorilla/handlers](github.com/gorilla/handlers) 提供了一些很有用的中间件，能够在`net/http`中使用。
+
+> 参考：[Go 每日一库之 gorilla/handlers](https://mp.weixin.qq.com/s/0gWmwOf2hhA-N3FJWCrQ7A)
+
+* 日志
+
+    - `LoggingHandler` 以 Apache 的 Common Log Format 日志格式记录 HTTP 请求日志；
+    - `CombinedLoggingHandler` 以 Apache 的 Combined Log Format 日志格式记录 HTTP 请求日志，Apache 和 Nginx 默认使用这种日志格式。
+    - `CustomLoggingHandler` 支持自定义的日志格式。
+
+* 压缩
+
+    - `CompressHandler` 解压使用客户端请求中的`Accept-Encoding`请求头启用对应的压缩算法。如果客户端未指定或请求头中有`Upgrade`，则不压缩。
+
+* 内容类型
+
+    - `ContentTypeHandler` 指定请求的`Content-Type`必须在给定的类型中。该中间件只对`POST/PUT/PATCH`方法生效。
+
+* 方法分发
+
+    - `MethodHandler` 可以为同一个路径的不同请求方法注册不同的处理器。
+
+* 重定向
+
+    - `CanonicalHost` 将请求重定向到指定的域名中，而请求路径保持不变。可以指定跳转使用的状态（301、302）。
+
+* 错误恢复
+
+    - `RecoveryHandler` 提供了从请求处理中的 panic 恢复的功能。
+

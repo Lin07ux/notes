@@ -236,10 +236,10 @@ func (c *conn) serve(ctx context.Context) {
 
 这里展示的是 HTTP/1.x 的处理逻辑，HTTP/2 的逻辑是从其他地方进行的。HTTP/1.x 虽然可以复用一个 TCP 连接发出多个请求，但是请求之间都是顺序发起的，所以这里可以使用 for 循环每次读取一个请求并进行处理。而且这里没有考虑 HTTP 管道流的情况，因为这种情况比较少见，而且更好的并行请求解决方案是 HTTP/2。
 
-> HTTP cannot have multiple simultaneous active requests.[*]
+> HTTP cannot have multiple simultaneous active requests.[\*]
 > Until the server replies to this request, it can't read another,
 > so we might as well run the handler in the goroutine.
-> [*] Not strictly true: HTTP pipelining. We could let them all process
+> [\*] Not strictly true: HTTP pipelining. We could let them all process
 > in parallel even if their responses need to be serialized.
 > But we're not going to implement HTTP pipelining because it
 > was never deployed in the wild and the answer is HTTP/2.
