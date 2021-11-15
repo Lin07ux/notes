@@ -95,6 +95,11 @@ Lunar 最基础的功能就是可以在不影响笔记本屏幕的情况下对�
 
 <img src="http://cnd.qiniu.lin07ux.cn/Lunar.gif"/>
 
+### 9. YouTube 下载
+
+* [Gihosoft TubeGet](https://www.gihosoft.com/free-youtube-downloader.html) 视频下载
+* [DownSub](https://downsub.com/) 下载字幕
+* [下载YouTube油管字幕的2种方法](https://zhuanlan.zhihu.com/p/349506890)
 
 ## 四、编程开发
 
