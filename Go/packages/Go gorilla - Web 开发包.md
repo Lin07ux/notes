@@ -68,3 +68,79 @@ func main() {
 
     - `RecoveryHandler` 提供了从请求处理中的 panic 恢复的功能。
 
+### 3. 序列化 gorilla/schema
+
+> 转摘：[Go 每日一库之 gorilla/schema](https://mp.weixin.qq.com/s/88WNqhxq6RacbK2Ev9JDTg)
+
+[gorilla/schema](https://github.com/gorilla/schema) 是 gorilla 开发工具包中用于处理表单的库。它提供了一个简单的方式，可以很方便的将表单数据转为结构体对象，或者将结构体对象转为表单数据。也就是说，`gorilla/schema`是一个用来在结构体对象和表单数据之间进行转换的工具。
+
+`gorilla/schema`使用反射来对应表单和结构体字段，可以通过结构体标签来指定表单数据和字段的对应关系。**可以将它的解码器作为一个全局变量来使用，因为解码器会缓存一些结构体的元数据，并且是并发安全的。**
+
+示例如下：
+
+```go
+type User struct {
+  Username string `schema:"username"`
+  Password string `schema:"password"`
+}
+
+var (
+  decoder = schema.NewDecoder()
+  encoder = schema.NewEncoder()
+)  
+
+func login(w http.ResponseWriter, r *http.Request) {
+  r.ParseForm() // 解析表单数据
+  u := User{}
+  decoder.Decode(&u, r.PostForm) // 将表单数据解码到 User 类型的变量中
+  if u.Username == "dj" && u.Password == "handsome" {
+    http.Redirect(w, r, "/", 301)
+    return
+  }
+  http.Redirect(w, r, "/login", 301)
+}
+
+func buildLoginData () {
+  client := &http.Client{}
+  form := url.Values{}
+  
+  u := &User{
+    Username: "dj",
+    Password: "handsome",
+  }
+  encoder.Encode(u, form) // 将 User 类型的变量的内容编码到 form 变量中
+  
+  res, _ := client.PostForm("http://localhost:8080/login", form)
+  data, _ := ioutil.ReadAll(res.Body)
+  fmt.Println(string(data))
+  res.Body.Close()
+}
+```
+
+目前`gorilla/schema`支持一下类型的编码和解码：
+
+* 布尔类型：bool
+* 浮点数：float32/float64
+* 有符号整数：int/int8/int16/int32/int64
+* 无符号整数：uint/uint8/uint16/uint32/uint64
+* 字符串：string
+* 结构体：由以上类型组成的结构体
+* 指针：指向以上类型的指针
+* 切片：元素为以上类型的切片，或指向切片的指针
+
+也可以自定义类型的类型的转换函数，转换函数的类型为：`func(s string) reflect.Value`。
+
+比如，有时候客户端会将一个切片拼成一个字符串传到服务器，服务器收到之后需要解析成切片：
+
+```go
+var decoder = schema.NewDecoder()
+
+func init() {
+  decoder.RegisterConverter([]string{}, func(s string) reflect.Value {
+    return reflect.ValueOf(strings.Split(s, ","))
+  })
+}
+```
+
+这样，当需要从字符串数据中解码出字符串切片时，就会使用逗号分隔将字符串分割为一个切片。
+
