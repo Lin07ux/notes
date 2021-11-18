@@ -83,7 +83,7 @@ func goexit0(gp *g) {
     - 将当前 G 从 M 上摘下，放到 P 的本地队列中；
     - 重新调度别的可执行的 G。
 
-[](http://cnd.qiniu.lin07ux.cn/markdown/3457d13cb3aec172c41944b40ec38c7d.gif)
+![](http://cnd.qiniu.lin07ux.cn/markdown/3457d13cb3aec172c41944b40ec38c7d.gif)
 
 状态为`_Gdead`的 goroutine 可以在后续被复用，或者在一定时候被 GC 清理掉。
 
