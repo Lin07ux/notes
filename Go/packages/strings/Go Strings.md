@@ -1,3 +1,5 @@
+Go 中的包名一般使用单数，但是因为 Go 中已经存了 string 类型，所以就将字符串相关的包命名为`strings`了。
+
 * `strings.HasPrefix(s, prefix string) bool` 判断字符串`s`是否以`prefix`开头；
 * `strings.HasSuffix(s, suffix string) bool` 判断字符串`s`是否以`prefix`结尾。
 
