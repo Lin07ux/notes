@@ -290,4 +290,63 @@ func main() {
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/dd7f9d85aea5421244c0ea10ba2d71a3.svg)
 
+### 4.5 go-spew 查看对象内部数据
+
+> [看透 Go 对象内部细节的神器](https://mp.weixin.qq.com/s/TUrT58ry1AF6KWLGFnYLww)
+
+[davecgh/go-spew/spew](github.com/davecgh/go-spew/) 为 Go 结构体实现了一个深度打印机，可以将结构体的各个字段对应的内容（不论是指针还是一般值）都能很好的展示出来，而且可以处理循环引用的问题。安装如下：
+
+```shell
+go get -u github.com/davecgh/go-spew/spew
+```
+
+在调试 Go 程序时，常需要知道对象的内部数据是什么样的，一般情况下可以使用`fmt`包来打印，复杂场景下需要利用调试器 GDB、LLDB、Delve 等来完成。
+
+但是这两种做法都有不足之处。`fmt`包能打印的信息并不不友好，尤其在结构体中含有指针对象时；通过调试器来调试程序也经常受限于各种因素，例如远程访问服务器。
+
+比如，定义 Instance 和 Inner 结构体，其中 Instance 中的`C`属性字段是 Inner 类型指针：
+
+```go
+type Instance struct {
+  A string
+  B int
+  C *Inner
+}
+
+type Inner struct {
+  D string
+  E string
+}
+
+ins := Instance{
+  A: "AAAA",
+  B: 1000,
+  C: &Innner{
+    D: "DDDD",
+    E: "EEEE",
+  },
+}
+```
+
+在`fmt`中打印`ins`变量，结果如下：
+
+```go
+fmt.Println(ins) // {AAAA 1000 0xc000054020}
+```
+
+由于 C 字段是指针，所以打印出来的是一个地址，而地址背后的数据确被隐藏了。显然，这对程序排查很不友好。
+
+使用 go-spew 时候，通过`spew.Dump(ins)`，打印的结果如下：
+
+```
+(main.Instance) {
+ A: (string) (len=4) "AAAA",
+ B: (int) 1000,
+ C: (*main.Inner)(0xc0000ba0c0)({
+  D: (string) (len=4) "DDDD",
+  E: (string) (len=4) "EEEE"
+ })
+}
+```
+
 
