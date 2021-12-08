@@ -5,6 +5,7 @@ Nginx 这个轻量级、高性能的 web server 主要可以做两件事：
 
 Nginx 的优势在于处理并发请求上。虽然 Apache 的`mod_proxy`和`mod_cache`结合使用也可以实现对多台 app server 的反向代理和负载均衡，但是在并发处理方面 Apache 还是没有 Nginx 擅长。
 
+> [Nginx Playground](https://nginx-playground.wizardzines.com)
 
 ## 安装和运行
 ### 安装
