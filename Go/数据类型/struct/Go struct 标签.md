@@ -22,6 +22,8 @@ type User struct {
 }
 ```
 
+> 标签的多个值的分隔符与使用该标签的库相关，通常是使用`,`分隔符，但是也有使用`;`分隔符的（如`gorm`库）。
+
 按照惯例，如果一个字段的结构体标签里某个键的`value`被设置成了短横线`-`，那么就意味着告诉处理该结构体标签值的进程排除该字段。
 
 如下面的设置就是在进行 JSON 编码/解码时忽略`Name`字段：
@@ -101,7 +103,30 @@ Field: User.Email
         Tag 'xml': 
 ```
 
-### 3. 常用标签键
+### 3. 检查标签声明
+
+标签的声明比较简单，有一定的规范，但是也还是很容易出错，因为 Go 语言在编译阶段并不会对其格式做合法键值对的检查。
+
+可以使用`go vet`工具来对标签声明进行检查。例如：
+
+```go
+type User struct {
+  Name string `abd def ghk`
+  Age uint16 `123: 123`
+}
+```
+
+假如这个声明在`main.go`文件中，就可以对其进行检查，得出类似如下的结果：
+
+```shell
+$ go vet main.go
+go_vet_tag/main.go:4:2: struct field tag `abc def ghk` not compatible with reflect.StructTag.Get: bad syntax for struct tag pair
+go_vet_tag/main.go:5:2: struct field tag `123: 232` not compatible with reflect.StructTag.Get: bad syntax for struct tag value
+```
+
+这里`bad syntax for struct tag pair`表示键值对语法错误，`bad syntax for struct tag value`表示值语法错误。
+
+### 4. 常用标签键
 
 常用结构体标签的键，指的是被一些常用的开源包声明使用的结构体标签`key`：
 
@@ -111,5 +136,28 @@ Field: User.Email
 * `protobuf` 由`github.com/golang/protobuf/proto`使用；
 * `yaml` 由`gopkg.in/yaml.v2`包使用，详见`yaml.Marshal()`；
 * `gorm` 由`gorm.io/gorm`包使用。
+
+ Tag       | Documentation
+-----------|--------------
+ asn1      | [https://godoc.org/encoding/asn1](https://godoc.org/encoding/asn1)
+ bigquery  | [https://godoc.org/cloud.google.com/go/bigquery](https://godoc.org/cloud.google.com/go/bigquery)
+ bson      | [https://godoc.org/labix.org/v2/mgo/bson](https://godoc.org/labix.org/v2/mgo/bson)、[https://godoc.org/go.mongodb.org/mongo-driver/bson/bsoncodec](https://godoc.org/go.mongodb.org/mongo-driver/bson/bsoncodec)
+ datastore | [https://godoc.org/cloud.google.com/go/datastore](https://godoc.org/cloud.google.com/go/datastore)
+ db        | [https://github.com/jmoiron/sqlx](https://github.com/jmoiron/sqlx)
+ dynamodb  | [https://docs.aws.amazon.com/sdk-for-go/api/service/dynamodb/dynamodbattribute/#Marshal](https://docs.aws.amazon.com/sdk-for-go/api/service/dynamodb/dynamodbattribute/#Marshal)
+ feature   | [https://github.com/nikolaydubina/go-featureprocessing](https://github.com/nikolaydubina/go-featureprocessing)
+ gorm      | [https://godoc.org/github.com/jinzhu/gorm](https://godoc.org/github.com/jinzhu/gorm)
+ json      | [https://godoc.org/encoding/json](https://godoc.org/encoding/json)
+ mapstructure | [https://godoc.org/github.com/mitchellh/mapstructure](https://godoc.org/github.com/mitchellh/mapstructure)
+ parser    | [https://godoc.org/github.com/alecthomas/participle](https://godoc.org/github.com/alecthomas/participle)
+ protobuf  | [https://github.com/golang/protobuf](https://github.com/golang/protobuf)
+ reform    | [https://godoc.org/gopkg.in/reform.v1](https://godoc.org/gopkg.in/reform.v1)
+ spanner   | [https://godoc.org/cloud.google.com/go/spanner](https://godoc.org/cloud.google.com/go/spanner)
+ toml      | [https://godoc.org/github.com/pelletier/go-toml](https://godoc.org/github.com/pelletier/go-toml)
+ url       | [https://github.com/google/go-querystring](https://github.com/google/go-querystring)
+ validate  | [https://github.com/go-playground/validator](https://github.com/go-playground/validator)
+ xml       | [https://godoc.org/encoding/xml](https://godoc.org/encoding/xml)
+ yaml      | [https://godoc.org/gopkg.in/yaml.v2](https://godoc.org/gopkg.in/yaml.v2)
+ 
 
 
