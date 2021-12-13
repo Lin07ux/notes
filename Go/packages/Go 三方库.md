@@ -213,74 +213,7 @@ inotify 也是一个特殊句柄，属于匿名句柄之一，这个句柄用于
 
 参考示例：[轻轻松松打印网页并生成pdf文档](https://colobu.com/2021/05/05/generate-pdf-for-a-web-page-by-using-chromedp/)
 
-### 4.2 uuid
-
-[gofs/uuid](https://github.com/gofrs/uuid) 是 UUID 的纯 Go 实现。
-
-使用示例：
-
-```go
-package main
-
-import (
-	"log"
-	"github.com/gofrs/uuid"
-)
-
-// Create a Version 4 UUID, panicking on error.
-// Use this form to initialize package-level variables.
-var u1 = uuid.Must(uuid.NewV4())
-
-func main() {
-	// Create a Version 4 UUID.
-	u2, _ := uuid.NewV4()
-
-	// Parse a UUID from a string.
-	s := "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
-	u3, _ := uuid.FromString(s)
-}
-```
-
-### 4.3 slug
-
-[gosimple/slug](https://github.com/gosimple/slug) 用来生成 URL 友好型 slugify 库，支持多种语言。
-
-使用示例：
-
-```go
-package main
-
-import (
-	"fmt"
-	"github.com/gosimple/slug"
-)
-
-func main() {
-	text := slug.Make("Hellö Wörld хелло ворлд")
-	fmt.Println(text) // Will print: "hello-world-khello-vorld"
-
-	someText := slug.Make("影師")
-	fmt.Println(someText) // Will print: "ying-shi"
-
-	enText := slug.MakeLang("This & that", "en")
-	fmt.Println(enText) // Will print: "this-and-that"
-
-	deText := slug.MakeLang("Diese & Dass", "de")
-	fmt.Println(deText) // Will print: "diese-und-dass"
-
-	slug.Lowercase = false // Keep uppercase characters
-	deUppercaseText := slug.MakeLang("Diese & Dass", "de")
-	fmt.Println(deUppercaseText) // Will print: "Diese-und-Dass"
-
-	slug.CustomSub = map[string]string{
-		"water": "sand",
-	}
-	textSub := slug.Make("water is hot")
-	fmt.Println(textSub) // Will print: "sand-is-hot"
-}
-```
-
-### 4.4 go-pretty & pterm 命令行美化
+### 4.2 go-pretty & pterm 命令行美化
 
 [jedib0t/go-pretty](https://github.com/jedib0t/go-pretty) 在终端输出漂亮的表格、列表、进度条等：
 
@@ -290,7 +223,7 @@ func main() {
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/dd7f9d85aea5421244c0ea10ba2d71a3.svg)
 
-### 4.5 go-spew 查看对象内部数据
+### 4.3 go-spew 查看对象内部数据
 
 > [看透 Go 对象内部细节的神器](https://mp.weixin.qq.com/s/TUrT58ry1AF6KWLGFnYLww)
 
