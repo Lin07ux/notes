@@ -215,7 +215,28 @@ func chansend1(c *hchan, elem unsafe.Pointer) {
 }
 ```
 
-可以看到，其真实调用的是`chansend`方法。该方法代码比较长，下面进行分段分析。
+可以看到，其真实调用的是`chansend`方法，签名如下：
+
+```go
+func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool
+```
+
+参数如下：
+
+* `c *hcahn` Channel 实例
+* `ep unsafe.Pointer` 发送数据的指针
+* `block bool` 发送不能立即成功时是否需要阻塞
+* `callrpc uintptr` 发送数据的调用方的 PC 值，用于后续的返回跳转
+
+其中，`block`参数会指定在以下情况下，是否需要阻塞:
+
+1. 向无缓冲的 Channel 发送数据，且当前无接收者；
+2. 向有缓冲的 Channel 发送数据，且缓冲 Channel 已满；
+3. 向一个 nil Channel 发送数据（此时并不会引发 panic，只是后续无法再被唤醒了）。
+
+> 在`select...case`语法中，代码会被解析为`runtime.selectnbsend()`方法，而方法调用`chansend()`方法的时候，传入的`block`参数值就是 false，表示不能立即获取到结果时不会等待阻塞。
+
+该方法代码比较长，下面进行分段分析。
 
 #### 3.2.1 前置处理
 
@@ -416,9 +437,25 @@ msg := <-ch
 msg, ok := <-ch
 ```
 
-这两种方式在编译器翻译后分别对应`runtime.chanrecv1`和`runtime.chanrecv2`两个入口方法。其在内部会再进一步的调用`runtime.chanrecv`方法。
+这两种方式在编译器翻译后分别对应`runtime.chanrecv1`和`runtime.chanrecv2`两个入口方法。其在内部会再进一步的调用`runtime.chanrecv`方法，签名如下：
 
-需要注意的是，发送和接收 Channel 是相对的，也就是其核心实现也是先对的，因此在理解时可以相互结合来看。
+```go
+func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
+```
+
+参数列表如下：
+
+* `c *hchan` Channel 底层实例
+* `ep unsafe.Pointer` 接收数据的位置
+* `block bool` 指示不能立即从 Channel 中获取数据时，是否需要阻塞
+
+其中，`block`参数用来指示在如下几种情况下，是否需要阻塞：
+
+1. 从无缓冲的 Channel 中接收数据，且当前无发送者；
+2. 从有缓冲的 Channel 中接收数据，且当前 Channel 缓冲区为空；
+3. 从一个 nil Channel 中接收数据（后续将无法被唤醒了）。
+
+发送和接收 Channel 是相对的，也就是其核心实现也是先对的，因此在理解时可以相互结合来看。
 
 #### 3.3.1 前置处理
 
@@ -786,5 +823,11 @@ func recv(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
 
 通过上述的代码分析和图示，不难发现，Go Channel 设计并不复杂，本质上就是一个带锁的环形队列，再加上对称的`sendq`、`recvq`等双向链表的辅助属性，就能勾画出 Channel 的基本逻辑流转模型。
 
-再具体的数据传输上，都是围绕着“边界上下限处理，使用互斥锁，阻塞/非阻塞，缓冲/非缓冲，缓存出队列，拷贝数据，解互斥锁，协程调度“在不断的流转处理。在基本逻辑上也是相对重合的，因为发送和接收、创建和关闭总是相对的。
+Channel 的发送-接收流程如下图所示：
+
+![无缓冲 Channel](http://cnd.qiniu.lin07ux.cn/markdown/1639481525400-8f58ddacf6bd.jpg)
+
+![缓冲 Channel](http://cnd.qiniu.lin07ux.cn/markdown/1639481770524-10c401856ca0.jpg)
+
+在具体的数据传输上，都是围绕着“边界上下限处理，使用互斥锁，阻塞/非阻塞，缓冲/非缓冲，缓存出队列，拷贝数据，解互斥锁，协程调度“在不断的流转处理。在基本逻辑上也是相对重合的，因为发送和接收、创建和关闭总是相对的。
 
