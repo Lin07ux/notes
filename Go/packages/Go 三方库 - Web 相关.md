@@ -77,3 +77,9 @@ func main() {
 4. 创建 Web 中间件实例；
 5. 在中间件实例中使用`limiter.Limiter`。
 
+### 4.goth 第三方认证
+
+[markbates/goth](https://github.com/markbates/goth) 封装了接入第三方认证的方法，并且内置实现了很多第三方认证的实现。
+
+使用 goth 接入 GitHub 授权的实例：[Go 每日一库之 goth](https://mp.weixin.qq.com/s/ghw6Vr8AGXKMos9QfT_Fjg)
+
