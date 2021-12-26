@@ -65,7 +65,32 @@ func level2() {
 
 有趣的是，函数`runtime.Goexit`使用完全相同的工作流程：`runtime.Goexit`实际上创建了一个 panic 对象，且有着一个特殊标记来让它与真正的 panic 区别开来。这个标记让运行时可以跳过恢复以及适当的退出，而不是直接停止程序的运行。
 
-### 3. 实际使用
+### 3. recover 源码
+
+`recover()`函数对应了`runtime.panic.go`中的`gorecover()`函数，源码如下：
+
+```go
+func gorecover(argp uintptr) interface{} {
+  // 只处理 gp._panic 链表中最新的这个 _panic
+  gp := getg()
+  p := gp._panic
+  if p != nil ** !p.recovered && argp == uintptr(p.argp) {
+    p.recovered = true
+    return p.arg
+  }
+  return nil
+}
+```
+
+这个函数逻辑和功能都很简单：
+
+1. 取出当前 goroutine 结构体；
+2. 去除当前 goroutine 的`_panic`链表中最新的一个`_panic`实例；
+3. 将最新的`_panic`的`recovered`字段赋值为 true，并返回`_panic`参数(`arg`字段)。
+
+所以`recover()`方法就只会修改 panic 的状态，并取出 panic 的参数数据，不涉及代码的神奇跳转。而`_panic.recovered`字段值的改变会在`panic()`函数中起作用。
+
+### 4. 实际使用
 
 理解这个工作流程会让我们了解 defer 函数的重要性以及它如何起作用。比如，在处理若干个 Gouroutine 的时候，在一个 defer 函数中延迟使调用`WaigGroup`可以避免死锁。
 
