@@ -409,7 +409,7 @@ func deferreturn(arg0 uintptr) {
 在理解`jmpdefer`做了什么的时候，一定要理解函数调用的基础知识。当 Go 的`return`关键字执行的时候，触发`call`调用函数`deferreturn`，在`deferreturn`中摘除`_defer`节点，然后出个执行，执行的入口就是调用`jmpdefer`来实现。所以，明面上的调用关系是：
 
 ```
--> defered function (延迟回调函数)
+-> deferred function (延迟回调函数)
 -> jmpdefer (汇编 diam)
 -> deferreturn (执行调用链)
 -> caller (defer 所在的 caller 函数)
@@ -418,7 +418,7 @@ func deferreturn(arg0 uintptr) {
 但其实真实的栈帧是只有两个：
 
 ```
--> defered function
+-> deferred function
 -> caller
 ```
 
@@ -449,7 +449,7 @@ TEXT runtime.jmpdefer(SB), NOSPLIT, $0-16
 指令解析：
 
 1. 汇编语句`$0-16`说明，数字 0 这个函数栈帧为 0（也就是说没有栈帧，因为没有局部变量或者其他的需要保存的），数字 16 说明入参数为 16 个字节。参数和返回值的大小是声明给调用者看的，调用者根据这个数字可以构造栈，caller 为 callee 准备需要的参数，callee 设置返回值到对应的位置；
-2. 最前面两行的`MOVQ`指令，就是把入参取出来而已，第一个参数是延迟函数(defered func)地址，保存到 rdx 寄存器，第二个参数是 caller 函数的 rsp 值，保存到 rbx 寄存器；
+2. 最前面两行的`MOVQ`指令，就是把入参取出来而已，第一个参数是延迟函数(deferred func)地址，保存到 rdx 寄存器，第二个参数是 caller 函数的 rsp 值，保存到 rbx 寄存器；
 3. 然后回复 rbp 的值（恢复成 caller 的栈基）；
 4. 然后再回复 rsp 的值，恢复成 caller 的栈顶值（调用 deferreturn 之前的值），并且（重点），要显式把 rsp 往下扩展 8 字节，类似 call 指令的压栈效果。而压栈的值要手动修改成 caller 里面`call deferreturn`的指令地址；
 5. 最后使用`JMP`指令跳转到延迟函数的指令地址执行（注意了：`JMP`指令和`CALL`的最重要的区别就是前者只会跳转，不会压栈从而导致 rsp 变化）。
@@ -457,7 +457,7 @@ TEXT runtime.jmpdefer(SB), NOSPLIT, $0-16
 调用顺序：
 
 ```
-caller ->deferreturn -> defered() -> caller
+caller ->deferreturn -> deferred() -> caller
 ```
 
 注意一下`SUBQ  $5, (SP)`指令，在二进制反汇编代码中可以看到类似如下的`call runtime.deferreturn`调用代码：
@@ -468,7 +468,7 @@ caller ->deferreturn -> defered() -> caller
 2. 然后，因为在`SUBQ  $5, (SP)`指令之前，`$rsp`是会恢复到 caller 函数的栈顶值（并且已经往下减 0x8 了，模拟往下扩展），那么`SP`(`rsp`)里存储的值刚好就是`call deferreturn`的时候压栈的值，也就是`0x48e8c1`；
 3. 然后把`0x48e8c1`减去`0x5`，结果就是`0x48e8bc`，这个地址刚好就指向了`call runtime.deferreturn`这行指令。
 
-也就是说：`jmpdefer`最终会刚好使得调用链重新定位到了`deferreturn`函数上。这样就是先了`caller -> [deferreturn -> jmpdefer -> defered func -> defererturn]`的递归循环，而当`gp._defer == nil`的时候则结束递归循环。
+也就是说：`jmpdefer`最终会刚好使得调用链重新定位到了`deferreturn`函数上。这样就是先了`caller -> [deferreturn -> jmpdefer -> deferred func -> defererturn]`的递归循环，而当`gp._defer == nil`的时候则结束递归循环。
 
 图示如下：
 
@@ -478,4 +478,167 @@ caller ->deferreturn -> defered() -> caller
 
 > 这个也是早年黑客尝试用的一种 hack 手段，修改函数压栈的值，跳转到一些 hack 的指令上去执行代码。
 
+## 三、问题
+
+### 3.1 defer 怎么传递参数
+
+#### 3.1.1 预计算参数
+
+在前面描述`_defer`数据结构的时候说到内存结构如下：
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1641718679973-88a958b1455e.jpg)
+
+`_defer`作为一个 header，延迟回调函数`deferred`的参数和返回值紧接着`_defer`放置，而这个参数值是在`defer`执行的时候就设置好了，也就是预计算参数，而非等到执行 deferred 函数的时候才去获取。
+
+举个例子，执行`defer func(x, y)`的时候，x、y 这两个实参是计算出来的，Go 中的函数调用都是值传递，会将 x、y 的值拷贝到`_defer`结构体之后。
+
+示例如下：
+
+```go
+func main() {
+  var x = 1
+  defer println(x)
+  x += 2
+  return
+}
+```
+
+这个程序执行的输出是 1，因为`defer`执行的函数是`println`，参数是`x`，其值在执行`defer`语句执行的时候就确认了。
+
+#### 3.1.2 deferred 的参数准备
+
+deferred 延迟函数执行的参数已经保存在和`_defer`一起的连续内存块了。那么执行 deferred 函数的时候，参数自然不是直接去`_defer`的地址找，因为这里走的是标准的函数调用。
+
+在 Go 语言中，一个函数的参数由 caller 函数准备好，比如说：一个`main() -> A(7) -> B(a)`形成类似如下的栈帧：
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1641719206591-b5eb9b8fc84d.jpg)
+
+所以，`deferreturn`除了跳转到 deferred 函数指令，还需要做一个时期：把 deferred 延迟回调函数需要的参数准备好（空间和具体的值）。那么就是如下 diam 来做的事情：
+
+```go
+func deferreturn(arg0 uintptr) {
+  //...
+  switch d.siz {
+  case 0:
+    // Do nothing.
+  case sys.PtrSize:
+    *(*uintptr)(unsafe.Pointer(&arg0)) = *(*uintptr)(deferArgs(d))
+  default:
+    memmove(unsafe.Pointer(&arg0), deferArgs(d), uintptr(d.siz))
+  }
+  //...
+}
+```
+
+arg0 就是 caller 用来防止 deferred 参数和返回值的栈地址。这段代码的意思就是：把`_defer`预先准备好的参数 copy 到 caller 栈帧的某个地址（arg0）。
+
+### 3.2 一个函数多个 defer 语句
+
+由于`_defer.link`的存在，多个 defer 语句注册的延迟调用可以串成一个单向链表，表头存放在`goroutine._defer`中。在执行的时候，按照`_defer.rsp`来区分是否需要执行。并且，注册的时候是把新的 deferred 放在表头，执行的时候是从前往后执行，所以这里是按照 LIFO 特性执行的。
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1641779625674-c78b45e16f10.jpg)
+
+### 3.3 defer 和 return 返回值运行顺序
+
+#### 3.3.1 函数调用过程
+
+函数调用的过程总结如下：
+
+1. Go 的一行函数调用语句其实并非原子操作，会对应多行汇编指令，包括参数设置和`call`指令执行。`call`汇编指令的内容也有两个：
+    
+    - 返回地址压栈（会导致 rsp 值往下增长`rsp - 0x8`）
+    - callee 函数地址加载到 pc 寄存器。
+
+2. Go 的一行函数返回`return`语句也并非原子操作，会对应多行汇编指令，包括返回值设置和`ret`指令执行。`ret`汇编指令的内容也有两个：
+
+    - 指令寄存器 pc 恢复为 rsp 栈顶保存的地址，跳转到 caller 函数；
+    - rsp 往上缩减`rsp + 0x8`。
+
+3. 参数设置在 caller 函数里，返回值设置在 callee 函数里；
+
+4. rsp、rbp 两个寄存器是栈帧的最重要的两个寄存器，这两个值划定了栈帧；
+
+5. rbp 寄存器的常见的作用是栈基寄存器，也可以作为通用寄存器，常用于调试作用。
+
+#### 3.3.2 先返回值还是先执行 defer 函数
+
+defer 注册的延迟函数的调用时机在 Go 官方文档中有明确的说明：
+
+> That is, if the surrounding function returns through an explicit return statement, deferred functions are executed **after any result parameters are set by that return statement** but **before the function returns to its caller**.
+
+也就是说，defer 函数链调用是在设置了返回值之后，但是在运行指令上下文返回到 caller 函数之前。
+
+所以有 defer 注册的函数，执行`return`语句之前，对应执行三个操作序列：
+
+1. 设置返回值
+2. 执行 deferred 链表
+3. ret 指令跳转到 caller 函数。
+
+这样就**允许在 deferred 函数中修改返回值了**。
+
+#### 3.3.3 defer 和返回值示例
+
+```go
+func f1() (r int) {
+  t := 1
+  defer func() {
+    t = t + 5
+  }()
+  return t
+}
+
+func f2() (r int) {
+  defer func() {
+    r = r + 5
+  }(r)
+  return 1
+}
+
+func f3() (r int) {
+  defer func() {
+    r = r + 5
+  }()
+  return 1
+}
+```
+
+这几个函数的执行结果分别为：1、1、6。
+
+* 函数 f1 执行`return t`之后：
+
+    1. 设置返回值`r = t`，这个时候局部变量 t 的值等于 1，所以返回值 r 的值也为 1；
+    2. 执行 deferred 函数，更新局部变量 t 的值为`t + 5`，也就是 6；
+    3. 执行汇编`ret`指令，跳转到 caller 函数。
+    4. 所以 f1 的返回值就是 1。
+
+* 函数 f2 执行`return 1`语句之后：
+
+    1. 设置返回值`r = 1`；
+    2. 执行 deferred 函数，接收的参数是 r，而 r 在预计算参数的时候值为 0。由于 Go 传参为值传递，所以就是将值 0 赋值给了 deferred 函数的参数变量 r。所以执行之后 deferred 的参数变量 r 的值为 5；
+    3. 执行汇编`ret`指令，跳转到 caller 函数；
+    4. 所以 f2 的返回值就是 1。
+
+* 函数 f3 执行`return 1`语句之后：
+
+    1. 设置返回值`r = 1`；
+    2. 执行 deferred 函数，`r = r + 5`，也就是设置 r 的值为 6。由于这里的 r 为 f2 的返回值 r 变量，所以也就是修改了 f2 的返回值 r 的值为 6；
+    3. 执行汇编`ret`指令，跳转到 caller 函数；
+    4. 所以 f3 的返回值就是 6。
+
+## 四、总结
+
+1. defer 关键字执行对应的是`_defer`数据结构。在 Go1.1 - Go1.12 期间一直是在堆上分配，在 Go1.13 之后优化成栈上分配`_defer`结构，性能提升明显。Go1.14 之后还有一个开放编码的优化，类似于内联，继续提升性能；
+2. `_defer`数据结构大部分场景是分配在栈上，但是遇到循环嵌套的场景会导致结构分配在堆上。所以在使用 defer 的时候需要注意场景，避免嵌套设置，出现性能问题；
+3. `_defer`对应一个注册的延迟回调函数 deferred，其参数和返回值空间都紧跟着`_defer`结构体设置，是一块连续的内存空间。`_defer`可以理解为 header，`_defer.siz`指明参数和返回值所占的空间大小；
+
+4. 同一个协程里 defer 注册的函数都挂在一个链表中，表头为`goroutine._defer`：
+
+    - 新元素插入在最前面，遍历执行的时候是从前往后执行，具有 LIFO 特性；
+    - 不同的函数注册的 deferred 函数都在一个链表上，以`_defer.sp`字段值区分。
+
+5. deferred 的参数是预计算的，也就是在 defer 关键字执行的时候参数值就已经确定下来了，并复制到`_defer`的内存块后面，执行的时候再 copy 到栈帧对应的位置上；
+
+6. `jmpdefer`修改了默认的函数调用行为（修改了压栈指令），实现了一个 deferred 链表循环执行直至结束的调用链；
+
+7. `return`对应 3 个动作的复合操作：设置返回值、执行 deferred 函数链表、`ret`指令跳转。
 
