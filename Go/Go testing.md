@@ -72,6 +72,28 @@ func ExampleAdder() {
 }
 ```
 
+### 2.2 不确定顺序的输出
+
+有时候输出的顺序是不确定的，这时候就需要使用 **Unordered Output**。
+
+比如，`url.Values`底层类型为`map[string][]string`，可以遍历输出所有的键值，但是输出顺序不确定。
+
+```go
+func ExampleValuesAll() {
+  v := url.Values{}
+  v.Set("name", "Ava")
+  v.Add("friend", "Jess")
+  v.Add("friend", "Sarah")
+  v.Add("friend", "Zoe")
+  for key, values := range v {
+    fmt.Println(key, values)
+  }
+  // Unordered Output:
+  // name [Ava]
+  // friend [Jess Sarah Zoe]
+}
+```
+
 ## 三、基准测试
 
 基准测试(benchmarks)是 Go 预约的一个一级特性，与编写典型的测试非常相似。
