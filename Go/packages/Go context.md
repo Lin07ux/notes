@@ -13,7 +13,7 @@ context 的核心作用是存储键值对和取消机制。其中，存储键值
 * 给一个函数方法传递`Context`的时候，不要传递 nil，如果不知道传递什么，就使用`context.TODO`；
 * `Context`的`Value`相关方法应该传递必须的数据，不要什么数据都使用这个传递。
 * `context.Value`应该很少使用，它不应该被用来传递可选参数。这使得 API 隐式的并且可以引起错误。取而代之的是，这些值应该作为参数传递。
-* `Context`是线程安全的，可以放心的在多个 goroutine 中传递和访问。
+* `Context`是线程安全的，会不断的衍生新的 content，可以放心的在多个 goroutine 中传递和访问。
 * `Context`结构没有取消方法，因为只有派生 context 的函数才应该取消 context。
 
 ## 二、源码
