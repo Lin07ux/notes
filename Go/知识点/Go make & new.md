@@ -1,16 +1,23 @@
-> 转摘：[深入理解make和new，从底层到应用！](https://mp.weixin.qq.com/s/5WQIu3LLb5BhOqyaXPM0Sw)
+> 转摘：
+> 
+> 1. [深入理解make和new，从底层到应用！](https://mp.weixin.qq.com/s/5WQIu3LLb5BhOqyaXPM0Sw)
+> 2. [Go 面试题： new 和 make 是什么，差异在哪？](https://mp.weixin.qq.com/s/tZg3zmESlLmefAWdTR96Tg)
 
 `make`和`new`是 Go 语言内置的用来为特定类型申请内存空间的方法。
 
-### 1. new
+## 一、new
 
-`new`方法会根据变量类型返回一个指向该类型的指针，函数声明如下：
+**`new`函数**可以对类型进行内存创建和初始化，其**返回值是所创建类型的指针引用**。而且`new`函数**只会为类型申请所需空间**，而不会为类型中每个指针字段都申请对应的类型空间。
+
+函数声明如下：
 
 ```go
 func new(Type) *Type
 ```
 
 > 这里的`Type`是指变量的类型。
+
+### 1.1 演示示例
 
 对于下面的例子：
 
@@ -33,7 +40,11 @@ func main() {
 }
 ```
 
-这里会运行错误，发生 panic。执行命令`go build -gcflags="-l -S -N" main.go`得到汇编代码如下：
+这里会运行错误，发生 panic。因为`new`操作只分配了类型`Student`所需要的空间，而没有为`Student.age`指针分配具体的指向空间。
+
+### 1.2 汇编 & 源码分析
+
+执行命令`go build -gcflags="-l -S -N" main.go`得到汇编代码如下：
 
 ```asm
 "".getStudent STEXT size=86 args=0x8 locals=0x20
@@ -68,27 +79,38 @@ func newobject(typ *_type) unsaef.Pointer {
 
 `newobject`的底层调用的是`mallocgc`在堆上按照`typ.size`的大小申请内存。
 
-因此，`new`只会为结构体`Student`申请一片内存哦空间，不会为结构体中的指针`age`申请内存空间（`Student`的内存空间只包括`age`字段的指针空间，不包括实际值空间）。所以上面的程序中，在第 10 行的解引用操作就会因为访问无效的内存空间而出现 panic。
+因此，`new`只会为结构体`Student`申请一片内存空间，不会为结构体中的指针`age`申请内存空间（`Student`的内存空间只包括`age`字段的指针空间，不包括实际值空间）。所以上面的程序中，在第 10 行的解引用操作就会因为访问无效的内存空间而出现 panic。
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1640754762317-998d25aaa162.jpg)
 
 对于结构体指针，一般使用`s := &Student{age: new(int)}`的方式赋值，这样能够清晰的知道结构体中的没一个字段是什么，避免不必要的错误。
 
-这个问题同样出现在使用`new`为 slice、map、Channel 申请内存空间中，因为这些结构体中都包含指针字段，在使用`new`的时候就不会为具体的指针申请内存空间了。
+这个问题同样出现在使用**`new`为 slice、map、Channel 申请内存空间**中，因为这些结构体中都包含指针字段，在使用`new`的时候就**不会为具体的指针申请内存空间**了。
 
-### make
+## 二、make
 
-`make`返回的是复合型类型本身，也就是说，`make`会为类型中的每个字段都分配对应的内存空间。`make`的函数声明如下：
+Go 中，**`make`函数**仅支持`slice`、`map`、`channel`三种数据类型的创建，其**返回值是锁创建类型本身，而不是指针引用**。也就是说，**`make`会为类型中的每个字段都分配对应的内存空间**。
+
+`make`的函数声明如下：
 
 ```go
 func make(t Type, size ...IntegerType) Type
 ```
 
-使用`make`来为类型进行初始化时，编译后会分别对应不同的方法：
+使用`make`为类型进行初始化时，编译后会分别对应不同的方法：
 
 * slice: `runtime.makeslice`
 * map: `runtime.makemap_small`
 * channel: `runtime.makechan`
+
+有一个细节是，`make`函数初始化切片`slice`类型时，会带有零值。比如：
+
+```go
+s := make([]int, 1, 5)
+fmt.Println(s) // [0]
+```
+
+### 2.1 演示示例
 
 比如，对于如下的代码：
 
@@ -109,6 +131,8 @@ type slice struct {
   cap  int
 }
 ```
+
+### 2.2 汇编 & 源码分析
 
 使用`go build -gcflags="-l -S -N" main.go`得到上面代码的汇编代码：
 
@@ -156,7 +180,7 @@ func MulUinptr(a, b uintptr) (uintptr, bool) {
 }
 ```
 
-### 3. make 和 new 的区别
+## 三、make 和 new 的区别
 
 相同点：
 
@@ -165,8 +189,9 @@ func MulUinptr(a, b uintptr) (uintptr, bool) {
 
 不同点：
 
-* `make`返回的是复合结构体本身的指针，而`new`返回的是指向变量内存的指针；
-* `make`只能为 slice、map、channel 申请内存空间，`new`则无限制。
+* `make`只能为 slice、map、channel 申请内存空间，`new`则无限制；
+* `make`返回的是引用类型本身，而`new`返回的是指向变量内存的指针；
+* `make`能分配并初始化类型所需的内存空间和结构，包括内部指针字段的空间，而`new`则只会分配类型本身所需的内存空间，而且不会做初始化；
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1640764482565-038c3ae07252.jpg)
 
