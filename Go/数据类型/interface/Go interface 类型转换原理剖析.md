@@ -235,7 +235,28 @@ data: {}
 下面的代码中使用了 interface 的类型断言：
 
 ```go
+type Person interface {
+  Say() string
+}
 
+type Man struct {
+  Name string
+}
+
+func (m *Man) Say() string {
+  return "Man"
+}
+
+func main() {
+  var p Person
+
+  m := &Man{Name: "hhf"}
+  p = m
+
+  if m1, ok := p.(*Man); ok {
+    fmt.Println(m1.Name)
+  }
+}
 ```
 
 对应的关键汇编代码如下：
@@ -262,42 +283,3 @@ data: {}
 ```
 
 从上面的代码中可以看出，类型断言其实就是将`iface.itab`与具体类型进行比较，如果两者相等就说明是该类型的。`switch`类型断言的方式也跟这个基本相同，没有本质上的区别。
-
-### 4. interface 与 nil
-
-interface 不管是`iface`结构，还是`eface`结构，里面都有存储类型和具体类型值的两个字段。
-
-只有 interface 中的类别和值都是 nil 的时候，`interface == nil`才是 true。
-
-如果一个 interface 的变量指向了某个具体的类型，但是类型值为 nil，此时 interface 依旧不为 nil。
-
-示例代码如下：
-
-```go
-package main
-
-import "fmt"
-
-func main()  {
-	var a interface{}
-	var b *int
-
-	isNil(a) // empty interface
-	isNil(b) // non-empty interface
-
-	a = b
-	isNil(a) // non-empty interface
-}
-
-func isNil(x interface{}) {
-	if x == nil {
-		fmt.Println("empty interface")
-	} else {
-		fmt.Println("non-empty interface")
-	}
-}
-```
-
-可以看到，默认情况下，一个 interface 变量的值就是 nil。但是一旦将一个具体类型的变量赋值给它了，它就不再是 nil 了。因为，虽然它的值是 nil，但是类型必然不是 nil 了。
-
-
