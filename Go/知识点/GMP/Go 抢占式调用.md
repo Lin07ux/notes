@@ -1,3 +1,5 @@
+> 转摘：[再见 Go 面试官：单核 CPU，开两个 Goroutine，其中一个死循环，会怎么样？](https://mp.weixin.qq.com/s/h27GXmfGYVLHRG3Mu_8axw)
+
 ### 1. 问题
 
 单核 CPU 中，运行两个 goroutine，其中一个死循环，会怎么样？
