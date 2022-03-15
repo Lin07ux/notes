@@ -1,4 +1,7 @@
-> 转摘：[如何有效控制 Go 线程数？](https://mp.weixin.qq.com/s/HYcHfKScBlYCD0IUd0t4jA)
+> 转摘：
+> 
+> 1. [如何有效控制 Go 线程数？](https://mp.weixin.qq.com/s/HYcHfKScBlYCD0IUd0t4jA)
+> 2. [Go 群友提问：Goroutine 数量控制在多少合适，会影响 GC 和调度？](https://mp.weixin.qq.com/s/uWP2X6iFu7BtwjIv5H55vw)
 
 Go 对运行时创建的线程数量有一个限制，最大值默认是 10000。如果运行时总的线程数量达到了这个限制，程序就会挂掉。
 
@@ -165,8 +168,8 @@ Go 目前并没有对闲置线程做清理处理，它们被当做复用的资�
 
 GMP 三者的数量限制如下：
 
-* M：有限制，默认数量为 10000，可调整；
-* G：没限制，但受内存影响；
+* M：有限制，默认数量为 10000，可使用`debug.SetMaxThreads()`方法调整；
+* G：没限制，但受内存影响，每个 G 需要 2K~4K 的栈空间；
 * P：受本机核数影响，可大可小，不影响 G 的数量创建。
 
 
