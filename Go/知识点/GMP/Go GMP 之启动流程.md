@@ -27,16 +27,16 @@ GOFLAGS="-ldflags=-compressdwarf=false" go build
 使用 gdb 进行调试：
 
 ```
-$ gdb awesomeProject 
-(gdb) info files
-Symbols from "/Users/eddycjy/go-application/awesomeProject/awesomeProject".
-Local exec file:
- `/Users/eddycjy/go-application/awesomeProject/awesomeProject', file type mach-o-x86-64.
- Entry point: 0x1063c80
- 0x0000000001001000 - 0x00000000010a6aca is .text
- ...
-(gdb) b *0x1063c80
-Breakpoint 1 at 0x1063c80: file /usr/local/Cellar/go/1.15/libexec/src/runtime/rt0_darwin_amd64.s, line 8.
+$ gdb awesomeProject 
+(gdb) info files
+Symbols from "/Users/eddycjy/go-application/awesomeProject/awesomeProject".
+Local exec file:
+ `/Users/eddycjy/go-application/awesomeProject/awesomeProject', file type mach-o-x86-64.
+ Entry point: 0x1063c80
+ 0x0000000001001000 - 0x00000000010a6aca is .text
+ ...
+(gdb) b *0x1063c80
+Breakpoint 1 at 0x1063c80: file /usr/local/Cellar/go/1.15/libexec/src/runtime/rt0_darwin_amd64.s, line 8.
 ```
 
 根据输出的 Entry point 进行调试，可以看到真正的程序入口在 runtime 包中。在不同的计算机架构中入口指向的文件不同，例如：
