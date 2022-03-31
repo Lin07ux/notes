@@ -234,11 +234,34 @@ type schedt struct {
 
 两级线程模型中的一部分调度任务会由操作系统之外的程序承担。在 Go 语言中，调度器就负责这一部分调度任务。调度的主要对象就是 G、M 和 P 的实例。每个 M（即每个内核线程）在运行过程中都会执行一些调度任务，他们共同实现了 Go 调度器的调度功能。
 
-### 3.1 go 和 m0
+### 3.1 m0
 
 运行时系统中的每个 M 都会拥有一个特殊的 G，一般称为 M 的 g0。M 的 g0 不是由 Go 用户程序中的代码间接生成的，而是由 Go 运行时系统在初始化 M 时创建并分配给该 M 的。M 的 g0 一般用于执行调度、垃圾回收、栈管理等方面的任务。
 
+`m0`是 Go runtime 所创建的第一个系统线程，也叫做主线程，一个 Go 进程只有一个`m0`。它具有如下特点：
+
+* 数据结构：`m0`和其他的 M 没有任何区别；
+* 变量声明：`m0`和常规 M 一样，就是`var m0 m`这种方式创建的；
+* 创建过程：`m0`是 Go 进程在启动时由汇编赋值设置数据的，其他后续的 M 都是在 Go runtime 内自行创建的。
+
 M 还会拥有一个专用于处理信号的 G，称为 gsignal。
+
+### 3.2 g0
+
+G 一般分为三种：
+
+* 执行用户任务的 G；
+* 执行`runtime.main`的 G，一般叫做 main goroutine；
+* 执行调度任务的 G，叫做`g0`。
+
+也就是说，`g0`比较特殊，它是每次启动一个 M 时第一个创建的 goroutine，不指向任何可执行的函数，仅负责 G 的调度。每个 M 都会绑定一个自己的`g0`，且只绑定一个`g0`。而且，全局变量的`g0`是`m0`上绑定的`g0`。
+
+`g0`具有如下特点：
+
+* 数据结构：`g0`和其他创建的 G 在数据结构上是一样的，但是存在栈的差别；
+* 变量声明：`g0`和常规的 G 的声明方式一样，都是`var g0 g`这样的方式；
+* 创建过程：`g0`也是通过汇编进行赋值的，其他的 G 的创建和赋值都是 Go runtime 内做的；
+* 运行状态：`g0`和常规的 G 不一样，没有那么多种运行状态，也不会被调度程序抢占，调度本身就是在`g0`上运行的。
 
 除了 g0 和 gsignal 之外，其他由 M 运行的 G 都可以视为用户级别的 G，简称用户 G。对应的，g0 和 gsignal 可称为系统 G。
 
@@ -246,7 +269,7 @@ Go 运行时系统会进行切换，以使每个 M 都可以交替运行用户 G
 
 除了每个 M 都拥有属于它自己的 g0 外，还存在一个`runtime.g0`，用于执行引导程序，它运行在 Go 程序拥有的第一个内核线程之中。这个线程也称为`runtime.m0`，而`runtime.m0`的 g0 就是`runtime.g0`。
 
-### 3.2 核心元素的容器
+### 3.3 核心元素的容器
 
 下面承载 G、M、P 元素实例的容器：
 
@@ -269,126 +292,3 @@ Go 运行时系统会进行切换，以使每个 M 都可以交替运行用户 G
 此外，这两个可运行 G 队列之间也会互相转移 G。例如，本地 P 的可运行 G 队列已满时，其中一半的 G 会被转移到调度器的可运行 G 队列（全局 G 列表）中。
 
 调度器的空闲 M 列表和空闲 P 列表用于存放暂时不被使用的元素实例，运行时系统需要时，会从中获取相应元素的实例并重新启用它。
-
-## 四、调度循环
-
-### 4.1 获取调度的 G
-
-通过调用`runtime.schedule`函数可以进入调度循环中：
-
-```go
-func schedule() {
-  _g_ := getg()
-  
-top:
-  var gp *p
-  var inheritTime bool
-  
-  if gp == nil {
-    // 为了公平，每调用 schedule 函数 61 次就要从全局可运行 G 队列中获取 G
-    if _g_.m.p.ptr().schedtick%61 == 0 && sched.runqsize > 0 {
-      lock(&sched.lock)
-      gp = globrunqget(_g_.m.p.ptr(), 1)
-      unlock(&sched.lock)
-    }
-  }
-  
-  // 从 P 本地获取 G 任务
-  if gp == nil {
-    gp, inheritTime = runqget(_g_.m.p.ptr())
-  }
-  
-  // 运行到这个逻辑表示本地运行队列和全局队列都没有找到需要运行的 G
-  if gp == nil {
-    // 阻塞地查找可用的 G
-    gp, inhertTime = findrunable()
-  }
-  
-  // 执行 G 任务函数
-  execute(gp, inheritTime)
-}
-```
-
-从代码中可以看出，`runtime.schedule`函数会从下面几个地方查找待执行的 Goroutine：
-
-* 为了保证公平，当全局运行队列中有待执行的 Goroutine 时，通过 schedtick 保证有一定几率会从全局的运行队列中查找对应的 Goroutine；
-
-* 从 P 本地的运行队列中查找待执行的 Goroutine；
-
-* 如果前两种方法都没有找到 G，会通过`runtime.findrunnable()`函数去其他 P 里面“偷”一些 G 来执行；如果“偷”不到，就阻塞查找直到有可运行的 G。
-
-### 4.2 切换调度的 G
-
-获取到的 G 会通过`runtime.execute()`来执行：
-
-```go
-func execute(gp *g, inheritTime bool) {
-  _g_ := getg()
-  
-  // 将 G 绑定到当前 M 上
-  _g_.m.curg = gp
-  gp.m = _g_.m
-  
-  // 将 g 正式切换为 _Grunning 状态
-  casgstatus(gp, _Grunnable, _Grunning)
-  gp.waitsince = 0
-  // 抢占信号
-  gp.preempt = false
-  gp.stackguard0 = gp.stack.lo + _StackGuard
-  if !inheritTime {
-    // 调度器调度次数增加 1
-    _g_.m.p.ptr().schedtick++
-  }
-  // ...
-  // gogo 完成从 g0 到 gp 的切换
-  gogo(&gp.sched)
-}
-```
-
-在执行`runtime.execute()`时，被调度运行的 G 会被切换到`_Grunning`状态，并将 M 和 G 进行绑定，最终调用`runtime.gogo()`函数将 Goroutine 调度到当前的线程上。
-
-### 4.3 执行调度的 G
-
-`runtime.gogo()`函数会从`runtime.gobuf`中取出`runtime.goexit`的程序计数器和待执行函数的程序计数器，并将：
-
-* `runtime.goexit`的程序计数器放到栈 SP 上；
-* 待执行函数的程序计数器放到寄存器 BX 上。
-
-对应的汇编代码如下：
-
-```asm
-MOVL gobuf_sp(BX), SP // 将 runtime.goexit 函数的 PC 恢复搭配 SP 中
-MOVL gobuf_pc(BX), BX // 获取待执行函数的程序计数器
-JMP  BX               // 开始执行
-```
-
-这样，当 Goroiutine 中运行的函数返回时，程序会跳转到`runtime.goexit`所在位置，最终在当前线程的 g0 的栈上调用`runtime.goexit0`函数，该函数会将 Goroutine 转换为`_Gdead`状态，并清理其中的字段、移除 Goroutine 和线程的关联并调用`runtime.gfput`将 G 重新加入处理器的 Goroutine 空闲列表`gFree`中：
-
-```go
-func goexit0(gp *g) {
-  _g_ := getg()
-  
-  // 设置当前 G 状态为 _Gdead
-  casgstatus(gp, _Grunning, _Gdead)
-  // 清理 G
-  gp.m = nil
-  // ...
-  gp.writebuf = nil
-  gp.waitreason = 0
-  gp.param = nil
-  gp.labels = nil
-  gp.timer = nil
-  
-  // 解绑 M 和 G
-  dropg()
-  // ...
-  // 将 G 扔进 gfree 链表中等待复用
-  gfput(_g_.m.p.ptr(), gp)
-  // 再次进行调度
-  schedule()
-}
-```
-
-在`runtime.goexit0`函数的最后，会重新调用`runtime.schedule`函数触发新一轮的 Goroutine 调度。这样，调度器从`runtime.schedule`函数开始，最终又回到`runtime.schedule`，这就是 Go 语言的调度循环。
-
-
