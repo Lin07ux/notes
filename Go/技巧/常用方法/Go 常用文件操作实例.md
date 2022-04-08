@@ -644,7 +644,7 @@ func main() {
 }
 ```
 
-### 2.11
+### 2.11 读取字节 bufio.Reader
 
 ```go
 package main
@@ -1102,3 +1102,5 @@ func main() {
   fmt.Printf("Md5 checksum: %x\n", sum)
 }
 ```
+
+
