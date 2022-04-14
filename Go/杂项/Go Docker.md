@@ -1,3 +1,31 @@
+### 1. 导入私有仓库的认证问题
+
+> [在docker环境导入私有仓库的问题](https://mp.weixin.qq.com/s/iHX6ty2XDUwxF-G_aWDEQw)
+
+在 GitLab 中使用 gitlab ci 来发布时，因为引入了私有仓库的依赖，导致在 build 容器的时候报错：
+
+```
+fatal: could not read Username for ‘https://git.domain.com’: terminal prompts disabled
+```
+
+这里的`git.domain.com`是一个私有仓库，报错内容也显示是因为无法正确的读取用户姓名而无法通过验证。
+
+虽然可以通过共享 [GitLab SSH Key](https://vsupalov.com/build-docker-image-clone-private-repo-ssh-key/) 的方式来通过私有仓库的认证，但还有更简单的方式：在 ci 中使用`go mod vendor`命令。
+
+因为 GitLab runner 本身已经缓存了 Git 认证信息，它可以访问所有的私有仓库。当执行`go mod vendor`后，项目依赖就都被放到了 vendor 目录里了。接下来当执行到 Dockerfile 的 COPY 指令时，项目依赖就被自然而然的拷贝到了容器里，从而不用再联网执行 Git 下载了。
+
+对应的`.gitlab-ci.yaml`配置示例如下：
+
+```yaml
+build_job:
+  stage: build
+  script:
+    - go mod vendor
+    - make docker-build
+```
+
+### 2. 有效设置 GOMAXPROCS
+
 > 转摘：[在 Go 容器里设置 GOMAXPROCS 的正确姿势](https://mp.weixin.qq.com/s/MWe5EsAYpU7F-FuXrbfFYA)
 
 GOMAXPROCS 是 Go 提供的一个非常重要的环境变量。通过设定这个环境变量，用户可以调整调度器中 Processor（简称 P）的数量。
@@ -30,4 +58,8 @@ func main() {
   // Your application logic here.
 }
 ```
+
+
+
+
 
