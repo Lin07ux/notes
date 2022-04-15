@@ -59,7 +59,69 @@ func main() {
 }
 ```
 
+### 3. Docker 编译
+
+> 转摘：[构建 Go 应用 docker 镜像的几种姿势](https://mp.weixin.qq.com/s/LJ5mECUh-jRcBlVZ98q61A)
+
+Go 程序需要进行编译后才可运行，而编译环境和运行环境的要求不同：编译环境需要较多的依赖，而运行环境只需要简单的操作系统即可。所以为了减少 Go 程序容器的尺寸，可以通过多阶段编译，将编译环境和运行环境区分，并选择 alpine 镜像作为运行镜像。
+
+简单的 Dockerfile 文件如下所示：
+
+```yaml
+FROM golang:alpine AS builder
+
+WORKDIR /build
+ADD go.mod .
+COPY . .
+RUN go build -o hello hello.go
+
+FROM alpine
+
+WORKDIR /build
+COPY --from=builder /builder/hello /build/hello
+CMD ["./hello"]
+```
+
+其中，第一个`FROM`部分是作为构建镜像，在其中编译出可执行文件 hello，然后将其拷贝到第二个`FROM`定义的运行镜像中，并在运行镜像中执行。
+
+也可以使用安装并使用 go-zero 中的`goctl docker`（[文档](https://go-zero.dev/en/goctl-other.html)）来自动生成这样的 Dockerfile。首先安装该工具：
+
+```shell
+# 安装 goctl 工具
+GOPROXY=https://goproxy.cn/,direct go install github.com/zeromicro/go-zero/tools/goctl@latest
+# 一键编写 Dockerfile
+goctl docker -go hello.go
+```
+
+其生成的 Dockerfile 如下：
+
+```yaml
+FROM golang:alpine AS builder
+
+LABEL stage=gobuilder
+
+ENV CGO_ENABLED 0 # 禁用 cgo
+ENV GOOS linux # linux 环境
+ENV GOPROXY https://goproxy.cn,direct # 启用 GOPROXY
+
+WORKDIR /build
+
+ADD go.mod .
+ADD go.sum .
+RUN go mod download
+COPY . .
+RUN go build -ldflags="-s -w" -o /app/hello ./hello.go # 去掉调试信息
 
 
+FROM alpine
 
+# 运行环境中安装 ca-certificates 和 tzdata，以使用 TLS 证书，自动设置本地时区
+RUN apk update --no-cache && apk add --no-cache ca-certificates tzdata
+ENV TZ Asia/Shanghai
+
+WORKDIR /app
+COPY --from=builder /app/hello /app/hello
+
+CMD ["./hello"]
+```
 
