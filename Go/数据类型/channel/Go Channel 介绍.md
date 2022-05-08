@@ -1,4 +1,7 @@
-> 转摘：[一文带你解密 Go 语言之通道 channel](https://mp.weixin.qq.com/s/Ih4FOi4hx4GgS8Pq7bjRJA)
+> 转摘：
+> 
+> 1. [一文带你解密 Go 语言之通道 channel](https://mp.weixin.qq.com/s/Ih4FOi4hx4GgS8Pq7bjRJA)
+> 2. [多图详解Go中的Channel源码](https://mp.weixin.qq.com/s/S9zkYIE2U6Xjx9R4JwTJ_w)
 
 ## 一、基础
 
@@ -170,12 +173,16 @@ func makechan(t *chantype, int size) *hchan {
   var c *hchan
   switch {
   case mem == 0:
+    // chan 的 size 或者元素的 size 是 0，不需要创建 buf 的空间
     c = (*hchan)(mallocgc(hchanSize, nil, true))
+    // Race detector
     c.buf = c.raceaddr()
   case elem.ptrdata == 0:
+    // 元素不是指针，需要为 buf 创建空间
     c = (*hchan)(mallocgc(hchanSize+mem, nil, true))
     c.buf = add(unsafe.Pointer(c), hchanSize)
   default:
+    // 元素是指针，则分别为 hchan 和 buf 申请空间
     c = new(hchan)
     c.buf = mallocgc(mem, elem, true)
   }
@@ -191,9 +198,9 @@ func makechan(t *chantype, int size) *hchan {
 
 创建 Channel 的逻辑主要分为三大块：
 
-* 当前 Channel 不存在缓冲区，也就是元素数量为 0 的情况下，会调用`mallocgc`方法分配一段连续的内存空间作为`hchan`结构体实例的空间；
-* 当前 Channel 存储的类型存在指针引用，就会将`hchan`连同底层数组同时分配一段连续的内存空间；
-* 其他情况下，分别为`hchan`和底层数据分配空间。
+* 当前 Channel 不存在缓冲区，也就是元素数量为 0 的情况下，会调用`mallocgc`方法分配一段连续的内存空间作为`hchan`结构体实例的空间，而不必创建 buf 的空间；
+* 当前 Channel 存储的类型不存在指针引用，会申请一块连续的内存，作为`hchan`数据结构和 buf 的内存空间。其中，buf 的空间就直接紧跟着 hchan 结构体的空间；
+* 其他情况下，也就是 Channel 存储的类型中存在指针引用，则需要分别为`hchan`和 buf 分配空间。
 
 从整体上来说，`makechan`方法的逻辑比较简单，就是创建`hchan`并分配合适的`buf`大小的堆上内存空间。
 
@@ -215,7 +222,26 @@ func chansend1(c *hchan, elem unsafe.Pointer) {
 }
 ```
 
-可以看到，其真实调用的是`chansend`方法，签名如下：
+对于 select 操作：
+
+```go
+select {
+case c <- v:
+  // ...
+default:
+  // ...
+}
+```
+
+在编译后对应的是`runtime.selectnbsend`方法：
+
+```go
+func selectnbsend(c *hcahn, elem unsafe.Pointer) (selected bool) {
+  return chansend(c, elem, false, getcallerpc())
+}
+```
+
+可以看到，真实调用的都是`chansend`方法，签名如下：
 
 ```go
 func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool
@@ -228,13 +254,11 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool
 * `block bool` 发送不能立即成功时是否需要阻塞
 * `callrpc uintptr` 发送数据的调用方的 PC 值，用于后续的返回跳转
 
-其中，`block`参数会指定在以下情况下，是否需要阻塞:
+其中，`block`参数会指定在以下情况下是否需要阻塞发送：
 
 1. 向无缓冲的 Channel 发送数据，且当前无接收者；
 2. 向有缓冲的 Channel 发送数据，且缓冲 Channel 已满；
 3. 向一个 nil Channel 发送数据（此时并不会引发 panic，只是后续无法再被唤醒了）。
-
-> 在`select...case`语法中，代码会被解析为`runtime.selectnbsend()`方法，而方法调用`chansend()`方法的时候，传入的`block`参数值就是 false，表示不能立即获取到结果时不会等待阻塞。
 
 该方法代码比较长，下面进行分段分析。
 
@@ -272,10 +296,13 @@ func full(c *hchan) bool {
 
 一开始，`chansend`方法会在先判断当前的 Channel 是否为 nil。如果为 nil，在逻辑上来讲就是向 nil Channel 发送数据，此时就会调用`gopark`方法使得当前 Goroutine 休眠，进而出现死锁崩溃，表象就是出现`panic`事件来快速失败。
 
-接着，对非阻塞的 Channel 进行一个上限判断，看看是否快速失败。失败的场景如下：
+接着，对非阻塞的 Channel 进行一个上限判断，看看是否快速失败。失败的场景条件如下：
 
-* 若非阻塞且未关闭，同时底层数据`dataqsiz`大小为 0（缓冲区五元素），则会返回失败。
-* 若是`qcount`与`dataqsiz`大小相同（缓冲区已满）时则会返回失败。
+1. 非阻塞状态
+2. 通道没有关闭
+3. 无缓冲且无接收者，或者有缓冲但是缓冲区已满。
+
+这一部分是不加锁就先进行的判断，所以被称为 fast path。因为加锁是一个很重的操作，所以能够在加锁之前返回的判断就在加锁之前进行处理是最好的。
 
 #### 3.2.2 加锁
 
@@ -284,23 +311,26 @@ func full(c *hchan) bool {
 ```go
 func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
   ...
+  // 加锁
   lock(&c.lock)
+  // 再次判断是否已关闭
+  if c.closed != 0 {
+    unlock(&c.lock)
+    panic(plainError("send on closed channel")
+  }
   ...
 }
 ```
 
+在加锁之后，会再次判断一下 Channel 是否已经处于 closed 状态。这是因为，在前面的 fast path 判断之后、加锁之前，可能 Channel 的 closed 状态被修改过了，所以需要再次判断以避免状态问题。
+
 #### 3.2.3 直接发送
 
-在正式开始发送之前，加锁之后，会对 Channel 在进行一次状态判断（是否关闭）：
+在一切正常的情况下，会先尝试进行直接发送：
 
 ```go
 func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
   ...
-  if c.closed != 0 {
-    unlock(&c.lock)
-    panic(plainError("send on closed channel")
-  }
-  
   if sg := c.recvq.dequeue(); sg != nil {
     send(c, sg, ep, func() { unlock(&c.lock) }, 3)
     return true
@@ -309,7 +339,9 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr)
 }
 ```
 
-这种情况是最为基础的，也就是当前 Channel 有正在阻塞等待的接收方，那么只需要发送就可以了。
+这里是先从 recvq 中尝试取出一个接收者，如果取到了就直接将数据传递给该接收这。
+
+这种情况是最为基础的，当前 Channel 有正在阻塞等待的接收方，说明此时的缓冲区是空的，那么就可以直接将当前的数据发送给第一个等待接收的接收者就可以了。
 
 #### 3.2.4 缓冲发送
 
@@ -346,7 +378,9 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr)
 * 将队列中的总数据自增 1；
 * 解除互斥锁，返回结果。
 
-至此，针对缓冲区的数据操作完成。但若没有走进缓冲区处理的情况，则会判断当前是是否阻塞 Channel。如果是非阻塞状态，将会解锁并直接返回失败。
+至此，针对缓冲区的数据操作完成。
+
+但若没有走进缓冲区处理的情况，则会判断当前是是否阻塞 Channel。如果是非阻塞状态，将会解锁并直接返回失败。
 
 图示如下：
 
@@ -383,7 +417,9 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr)
 }
 ```
 
-这段代码的处理逻辑如下：
+这段代码的主要作用是将当前要发送数据的 goroutine 和要发送的数据一起包装成一个 sudog 对象，加入到 Channel 的阻塞发送队列中，然后将当前的 goroutine 转为 waiting 状态。
+
+处理流程如下：
 
 1. 调用`getg`方法获取当前 goroutine 的指针，用于后续的发送数据；
 2. 调用`acquireSudog`方法获取一个`sudog`结构体，并设置当前`sudog`具体的待发送数据信息和状态；
@@ -395,12 +431,14 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr)
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1639111427298-e6a12e66e354.jpg)
 
-当前 goroutine 在经过上面的程序之后已经被挂起了，如果继续执行就是 Channel 能够发送数据了，被唤醒了。唤醒之后会继续执行发送数据操作了：
+#### 3.2.6 恢复发送
+
+当前 goroutine 在经过上面的程序之后已经被挂起了。如果能够继续执行后续的`chansend`代码，就说明 Channel 能够发送数据了，当前的 goroutine 被唤醒了：
 
 ```go
 func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
   ...
-  // 从这里开始唤醒，并回复阻塞的发送操作
+  // 从这里开始唤醒，并恢复阻塞的发送操作
   if mysg != gp.waiting {
     throw("G waiting list is corrupted")
   }
@@ -423,7 +461,7 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr)
 }
 ```
 
-在唤醒 goroutine （调度器在停止 g 时会记录运行线程和方法内执行的位置）并完成 Channel 的阻塞数据发送动作后，进行基本的参数检查，确保是符合要求的（纵深防御）。接着开始取消`mysq`上的 Channel 绑定和`sudog`的释放。
+在唤醒 goroutine （调度器在停止 g 时会记录运行线程和方法内执行的位置）并完成 Channel 的阻塞数据发送动作后，进行基本的参数检查，确保是符合要求的（纵深防御）。接着开始取消`mysq`上的 Channel 绑定，完成`sudog`的释放。
 
 至此完成所有类别的 Channel 数据发送管理。
 
@@ -437,7 +475,7 @@ msg := <-ch
 msg, ok := <-ch
 ```
 
-这两种方式在编译器翻译后分别对应`runtime.chanrecv1`和`runtime.chanrecv2`两个入口方法。其在内部会再进一步的调用`runtime.chanrecv`方法，签名如下：
+这两种方式在编译器翻译后分别对应`runtime.chanrecv1`和`runtime.chanrecv2`两个入口方法，内部会再进一步的调用`runtime.chanrecv`方法，签名如下：
 
 ```go
 func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
@@ -455,7 +493,7 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 2. 从有缓冲的 Channel 中接收数据，且当前 Channel 缓冲区为空；
 3. 从一个 nil Channel 中接收数据（后续将无法被唤醒了）。
 
-发送和接收 Channel 是相对的，也就是其核心实现也是先对的，因此在理解时可以相互结合来看。
+发送和接收 Channel 是相对的，也就是其核心实现也是相对的，因此在理解时可以相互结合来看。
 
 #### 3.3.1 前置处理
 
@@ -505,7 +543,7 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 * 无缓冲区：循环队列为 0 以及发送等待队列`sendq`内没有 goroutine；
 * 有缓冲区：缓冲区数组为空，没有待接收的数据。
 
-Channel 为空的时候，先判断 Channel 的`closed`字段的状态进行判断，因为 Channel 是无法重复打开的，需要确定当前 Channel 是否为未关闭状态:
+Channel 为空的时候，先对 Channel 的`closed`字段的状态进行判断，因为 Channel 是无法重复打开的，需要确定当前 Channel 是否为未关闭状态:
 
 - Channel 未关闭时，直接返回结果；
 - Channel 已经关闭时，如果不存在缓存数据了，则会清理`ep`指针中的数据并返回。
@@ -531,11 +569,19 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, receiv
 }
 ```
 
-从代码注释中可以知道，在接收时：如果 Channel 的缓冲区大小为 0，那么接收方就会直接从发送方中取值；否则的话，接收方从缓冲区的头部获取一个数据，然后将取出的发送方的数据写入到缓冲区的末尾。
+这里如果能从等待发送队里中取到 sudog，则说明 Channel 当前是有被阻塞发送的发送者的。这也意味着：
+
+* 如果 Channel 是无缓冲的，那么就应该将阻塞发送队列的第一个 sudog 发送的数据给到当前的接收方；
+* 如果 Channel 是有缓冲的，那么缓冲区肯定是满的（否则发送方可以直接将数据写入到缓冲区而不会被阻塞），此时除了给当前的接收者传递缓冲区的第一个数据，还需要将阻塞队列中的第一个发送方的数据再写入到缓冲区，并唤醒发送方对应的 goroutine。
+
+从代码注释中也可以确认上面的逻辑，在接收时：
+
+* 如果 Channel 的缓冲区大小为 0，那么接收方就会直接从发送方中取值；
+* 否则的话，接收方从缓冲区的头部获取一个数据，然后将取出的发送方的数据写入到缓冲区的末尾。
 
 #### 3.3.3 缓冲接收
 
-接下来会对缓冲区中的数据进行接收处理：
+经过上面的判断处理，此时就说明缓冲区中有数据，而且没有被阻塞的发送者，则只需要接收缓冲区数据即可：
 
 ```go
 func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool) {
@@ -563,9 +609,11 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, receiv
 }
 ```
 
-在缓冲区中如果有数据时，会使用`hanbuf`方法根据`recvx`的索引位置取出数据，找到要接收的元素进行处理。如果所接收到的数据和所传入的变量均不为空，则会调用`typedmemmove`方法将缓冲区中的数据拷贝到所传入的变量中。
+在缓冲区中有数据时，处理方式相对较为简单：
 
-完成数据的拷贝之后，会进行各索引和队列总数的自增自减，并调用`typedmemclr`方法进行内存数据的清扫。
+1. 使用`hanbuf`方法根据`recvx`的索引位置取出数据，找到要接收的元素进行处理。
+2. 如果所接收到的数据和所传入的变量均不为空，则会调用`typedmemmove`方法将缓冲区中的数据拷贝到所传入的变量中。
+3. 完成数据的拷贝之后，进行索引和队列总数的自增自减，并调用`typedmemclr`方法进行内存数据的清扫。
 
 如果缓冲区中没有数据，而且不是阻塞方式获取，则会直接返回结果。
 
@@ -642,11 +690,14 @@ func closechan(c *hchan)
 
 ```go
 func closechan(c *hchan) {
+  // 未初始化的 chan 是不能被关闭的
   if c == nil {
     panic(plainError("close of nil channel"))
   }
   
   lock(&c.lock)
+  
+  // 已关闭的 chan 是不能被重复关闭的
   if c.closed != 0 {
     unlock(&c.lock)
     panic(plainError("close of closed channel"))
@@ -748,6 +799,7 @@ func closechan(c *hchan) {
 ```go
 func send(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
   if sg.elem != nil {
+    // 直接把要发送的数据 copy 到 receiver 的栈空间
     sendDirect(c.elemtype, sg, ep)
     sg.elem = nil
   }
@@ -757,6 +809,7 @@ func send(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
   if sg.releasetime != 0 {
     sg.releasetime = cputicks()
   }
+  // 唤醒接收者对应的 goroutine
   goready(gp, skip+1)
 }
 
@@ -766,6 +819,8 @@ func snedDirect(t *_type, sg *sudog, src unsafe.Pointer) {
   memmove(dst, src, t.size)
 }
 ```
+
+该方法的参数中，sg 是一个打包好的 gorouitne 对象，ep 是要发送到 Channel 中的数据指针。
 
 这段代码的流程如下：
 
@@ -779,15 +834,20 @@ func snedDirect(t *_type, sg *sudog, src unsafe.Pointer) {
 
 ```go
 func recv(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
+  // 无缓冲区的 chan
   if c.dataqsiz == 0 {
     if ep != nil {
       recvDirect(c.elemtype, sg, ep)
     }
   } else {
+    // 有缓冲区的 chan
+    
+    // 获取第一个要被接收的数据指针，并将其指向的数据拷贝给接收者
     qp := chanbuf(c, c.recvx)
     if ep != nil {
       typememmove(c.elemtype, ep, qp)
     }
+    // 将发送者的数据拷贝到 chan 的缓冲区中，位置就是刚发送给接收者的数据的位置
     typedmemmove(c.elemtype, qp, sg.elem)
     c.recvx++
     if c.recvx == c.dataqsiz {
@@ -815,9 +875,33 @@ func recv(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
 * 缓冲接收（存在缓冲区）：
 
     - 调用`chanbuf`方法，根据`recvx`索引的位置读取缓冲区元素，并将其拷贝到接收方的地址；
-    - 拷贝完成后，对`sendx`和`recvx`索引位置进行调整。
+    - 拷贝完成后，对`sendx`和`recvx`索引位置进行调整。因为 Channel 的缓冲区是环形的，当缓冲区满了的时候，先将第一个待接收的数据发给接收者，然后将发送者的数据填在这里，最后将第一个待接收数据的索引移动到下一个去，并保持下一个要写入缓冲区的位置为待接受的索引位置，表示缓冲区还是满的。
 
 最后还是常规的 goroutine 调度动作，会调用`goready`方法来唤醒当前所处理的 sudog 的对应的 goroutine。那么在下一轮调度中，既然已经接收了数据，自然发送方也就会被唤醒了。
+
+### 4.3 recv 缓冲区的操作
+
+对于 Channel 缓冲区满的时候的发送数据操作，用如下图示进行说明：
+
+1. 将缓冲区填满。
+
+    每一次发送数据到 Channel 缓冲区，都是将数据拷贝到缓冲区的末尾。当缓冲区填满了之后，会将 sendx 的指针位置设置为 0，此时 sendx 等于 recvx。
+    
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/1652021519635-47490161ddc2.jpg)
+
+2. 发送数据给接收者并将待发送者数据写入缓冲区中。
+
+    在缓冲区满了之后，如果还有发送者在发送数据，就会将发送者阻塞，并封装成 sudog 对象挂在 Channel 的发送者队列中。
+    
+    此时接收方来接收数据时，会将 Channel 缓冲区中的第一个数据发送给接收者。因为缓冲区的数据被取走了一个，那么下一个接收者要接收的数据就应该下一个了，所以需要将 recvx 移动到下一个位置上。
+    
+    因为还有等待发送数据的发送方，而缓冲区空出了一个位置，所以此时就可以将阻塞发送队列中的第一个发送方的数据写入到缓冲区中，从而尽早的解除发送方的阻塞状态。因为缓冲区中只有刚被接收者接收的数据的位置是空的，所以就要写入到那个位置上。写入之后 sendx 的位置也要移动到下一个。
+    
+    缓冲区满的时候 sendx 和 recvx 是相同的。而取走并写入一个数据，那缓冲区就还是满的，所以 sendx 和 recvx 就还是相同的。
+    
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/1652021999502-a57bb6278465.jpg)
+    
+这就是为什么 recv 方法中，在有缓冲区时那样处理的原因。
 
 ## 五、总结
 
