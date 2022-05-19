@@ -26,9 +26,6 @@ Go 语言中的 struct 结构体的字段，在进行编译的时候，会由编
 * 避免一些内存不对齐带来的坑
 
     在做一些操作时，会因为内存对齐造成异常和错误。比如，在 x86 32 位平台上，原子操作 64 bit 指针就需要强制 8 字节对齐，否则程序就会 panic。
-    
-    > 该 bug 可以参考 [atomic](https://godoc.org/sync/atomic#pkg-note-bug) 官方文档：
-    > On x86-32, the 64-bit functions use instructions unavailable before the Pentium MMX. On non-Linux ARM, the 64-bit functions use instructions unavailable before the ARMv6k core. On ARM, x86-32, and 32-bit MIPS, it is the caller's responsibility to arrange for 64-bit alignment of 64-bit words accessed atomically. The first word in a variable or in an allocated struct, array, or slice can be relied upon to be 64-bit aligned.
 
 * 有助于一些源码的阅读
 
@@ -150,9 +147,63 @@ T2 在 64 位平台上的内存布局如下图所示：
 
 可以看出，通过适当的调整结构体内字段的顺序就能够达到缩小结构体占用大小效果，因为能够巧妙的减少填充(padding)的存在，使得各个字段之间更加“紧凑”了。
 
-### 2.2 内存不对齐的问题示例
+### 2.2 空结构体字段对齐
 
-比如，下面这段代码：
+在 Go 中，如果结构或数字类型不包含大于 0 的字段（或元素），则其大小为 0。而两个不同的 0 大小的变量在内存中可能有相同的地址。
+
+由于结构体`struct{}`的大小为 0，所以当一个结构体中包含空结构体类型的字段时，通常不需要进行内存对齐。
+
+例如：
+
+```go
+type Demo1 struct {
+  m struct{} // 0
+  n int8     // 1
+}
+
+var d1 Demo1
+fmt.Println(unsafe.Sizeof(d1)) // 1
+```
+
+可以看到，Demo1 类型的变量`d1`的内存大小为 1 字节，也就是只计算了其`n int8`字段的小，而`m struct{}`字段则不占空间。最终，Demo1 类型也就没有内存对齐要求。
+
+但是当空结构体类型作为结构体的最后一个字段时，如果有指向该字段的指针，那么就会返回该结构体之外的地址。为了避免内存泄露，会额外进行一次内存对齐。
+
+例如：
+
+```go
+type Demo2 struct {
+  n int8     // 1
+  m struct{} // 0
+}
+
+var d2 Demo2
+fmt.Println(unsafe.Sizeof(d2)) // 2
+```
+
+Demo2 和 Demo1 结构体的字段和字段类型完全相同，但是 Demo2 的`m struct{}`字段在其末尾。如果不在`d2`的末尾添加一些空间，就可能会导致通过`d2.m`能够访问到不属于`d2`结构体的内存数据。如下图所示：
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1652877388320-24940e460352.jpg)
+
+此时为了避免出现内存数据泄露，就需要为`d2`进行一次内存对齐。经过内存对齐后，`m struct{}`后面也会被添加 1 字节的对齐填充，所以`d2`的内存大小就变成 2 字节了。
+
+## 三、内存不对齐的问题
+
+在一些特殊情况，如果不考虑内存对齐，会引发错误或者造成性能下降。
+
+### 3.1 原子操作的内存对齐要求
+
+在 x86 平台上，进行 64 位的原子操作需要强制 8 字节内存对齐，否则会出现错误。
+
+在 Go 的 `sync.atomic` 包中就有该问题。该 bug 可以参考 [atomic](https://godoc.org/sync/atomic#pkg-note-bug) 官方文档：
+
+> BUG(rsc): On 386, the 64-bit functions use instructions unavailable before the Pentium MMX.
+> 
+> On non-Linux ARM, the 64-bit functions use instructions unavailable before the ARMv6k core. 
+> 
+> On ARM, x86-32, and 32-bit MIPS, it is the caller's responsibility to arrange for 64-bit alignment of 64-bit words accessed atomically. The first word in a variable or in an allocated struct, array, or slice can be relied upon to be 64-bit aligned.
+
+下面这段代码演示了 Go 的原子操作因内存不对齐引发的 panic：
 
 ```go
 package main
@@ -223,11 +274,66 @@ type Group struct {
 }
 ```
 
-## 三、内存对齐工具
+### 3.2 伪共享 False Sharing
+
+在一些需要防止 Cache Line 伪共享的时候，也需要进行特殊的字段对齐。
+
+> 具体可以参考 [伪共享(False Sharing)](http://ifeve.com/falsesharing/)。
+
+缓存系统中是以 CPU 缓存行为单位存储的。缓存行是 2 的整数幂个连续字节，一般为 32~256 个字节，常见为 64 个字节。如果多个变量共享同一个缓存行，就会无意中影响彼此的性能，这就是**False Sharing（伪共享）**。
+
+缓存行上的写竞争是运行在 SMP 系统中并行线程实现可伸缩性最重要的限制因素。为了让可伸缩性与线程数呈线性关系，就必须确保不会有两个线程往同一个变量或缓存行中写入。下图说明了伪共享的问题：
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1652943690626-5fb5587ee502.jpg)
+
+在核心 1 上运行的线程想要更新变量 X，同时核心 2 上的线程想要更新变量 Y。不幸的是，这两个变量在同一个缓存行中。每个线程都要去竞争缓存行的所有权来更新变量。如果核心 1 获得了所有权并执行更新操作，缓存子系统会使核心 2 中对应的缓存行失效；如果核心 2 获得了所有权并执行更新操作，就会使核心 1 中对应的缓存行失效。这会来来回回的经过 L3 缓存，大大影响了性能。如果互相竞争的核心位于不同的插槽，就要额外横跨插槽连接，问题可能更加严重。
+
+例如，在`sync.Pool`中就有这种设计：
+
+```go
+type poolLocal struct {
+  poolLocalInternal
+  
+  // Prevents false sharing on widespread platforms with
+  // 128 mod (cache line size) = 0
+  pad [128 - unsafe.Sizeof(poolLocalInternal{})%128]byte
+}
+```
+
+poolLocal 结构体中的 pad 字段就是为了防止出现伪共享而设计的。如注释中所说：这里之所以使用 128 字节进行内存对齐，是为了兼容更多的平台。
+
+### 3.3 频繁执行指令 Hot Path
+
+Hot Path 是指执行非常频繁的指令序列。
+
+在访问结构体的第一个字段的时候，可以直接使用结构体的指针来访问（因为结构体变量的内存地址就是其第一个字段的内存地址）。而访问结构体的其他字段时，则需要在结构体指针的基础上进行一次偏移计算。在机器码中，偏移量是随指令传递的附加值。
+
+因此，相对其他字段来说，访问结构体的第一个字段的机器码更紧凑，速度更快。所以，**通常将常用字段放在结构体的第一个位置上，以减少 CPU 要执行的指令数量，从而达到更快的访问效果**。
+
+下面是`sync.Once`中的使用示例：
+
+```go
+// src/sync/once.go
+
+// Once is an object that will perform exactly one action.
+//
+// A Once must not be copied after first use.
+type Once struct {
+  // done indicates whether the action has been performed.
+  // It is first in the struct because it is used in the hot path.
+  // The hot path is inlined at every call site.
+  // Placing done first allows more compact instructions on some architectures(amd64/386),
+  // and fewer instructions (to calculate offset) on other architectures.
+  done int32
+  m    Mutex
+}
+```
+
+## 四、内存对齐工具
 
 在实际编码的时候，多数情况下都不会考虑到最优的内存对齐。但是可以通过一些工具来检测当前的内存布局是否是最优的。
 
-### 3.1 golang-sizeof.tips 网站
+### 4.1 golang-sizeof.tips 网站
 
 [golang-sizeof.tips](http://ww1.golang-sizeof.tips/) 这个网站可以可视化 struct 的内存布局，但确定是只支持 8 字节对齐。
 
