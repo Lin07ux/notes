@@ -3,6 +3,7 @@
 > 1. [Golang 是否有必要内存对齐？](https://ms2008.github.io/2019/08/01/golang-memory-alignment/)
 > 2. [Memory Layouts](https://go101.org/article/memory-layout.html)
 > 3. [图解Go之内存对齐](http://blog.newbmiao.com/slides/%E5%9B%BE%E8%A7%A3Go%E4%B9%8B%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90.pdf)
+> 4. [浅谈Golang内存对齐](https://mp.weixin.qq.com/s/omIuwNFgQbXdQcb4RkQIvA)
 
 ## 一、内存对齐
 
@@ -288,7 +289,7 @@ type Group struct {
 
 在核心 1 上运行的线程想要更新变量 X，同时核心 2 上的线程想要更新变量 Y。不幸的是，这两个变量在同一个缓存行中。每个线程都要去竞争缓存行的所有权来更新变量。如果核心 1 获得了所有权并执行更新操作，缓存子系统会使核心 2 中对应的缓存行失效；如果核心 2 获得了所有权并执行更新操作，就会使核心 1 中对应的缓存行失效。这会来来回回的经过 L3 缓存，大大影响了性能。如果互相竞争的核心位于不同的插槽，就要额外横跨插槽连接，问题可能更加严重。
 
-例如，在`sync.Pool`中就有这种设计：
+Go 的`sync.Pool`中就有这种设计：
 
 ```go
 type poolLocal struct {
@@ -310,7 +311,7 @@ Hot Path 是指执行非常频繁的指令序列。
 
 因此，相对其他字段来说，访问结构体的第一个字段的机器码更紧凑，速度更快。所以，**通常将常用字段放在结构体的第一个位置上，以减少 CPU 要执行的指令数量，从而达到更快的访问效果**。
 
-下面是`sync.Once`中的使用示例：
+Go 的`sync.Once`中的使用示例：
 
 ```go
 // src/sync/once.go
@@ -331,9 +332,156 @@ type Once struct {
 
 ## 四、内存对齐工具
 
-在实际编码的时候，多数情况下都不会考虑到最优的内存对齐。但是可以通过一些工具来检测当前的内存布局是否是最优的。
+在实际编码的时候，多数情况下都不会考虑到最优的内存对齐。虽然可以通过`unsafe`包中的方法搞清楚 struct 内存对齐的各种细节，但是也可以通过一些工具来更方便的检测当前的内存布局是否是最优的。
 
-### 4.1 golang-sizeof.tips 网站
+下面的相关介绍都是用如下的代码示例：
 
-[golang-sizeof.tips](http://ww1.golang-sizeof.tips/) 这个网站可以可视化 struct 的内存布局，但确定是只支持 8 字节对齐。
+```go
+package main
+
+import (
+ "fmt"
+ "unsafe"
+)
+
+type memAlign1 struct {
+  a byte     // Sizeof: 1  Alignof: 1 Offsetof: 0
+  b int      // Sizeof: 8  Alignof: 8 Offsetof: 8
+  c byte     // Sizeof: 1  Alignof: 1 Offsetof: 16
+  d string   // Sizeof: 16 Alignof: 8 Offsetof: 24
+  e byte     // Sizeof: 1  Alignof: 1 Offsetof: 40
+  f []string // Sizeof: 24 Alignof: 8 Offsetof: 48
+}
+
+type memAlign2 struct {
+  f []string // Sizeof: 24 Alignof: 8 Offsetof: 0
+  d string   // Sizeof: 16 Alignof: 8 Offsetof: 24
+  b int      // Sizeof: 8  Alignof: 8 Offsetof: 40
+  a byte     // Sizeof: 1  Alignof: 1 Offsetof: 48
+  c byte     // Sizeof: 1  Alignof: 1 Offsetof: 49
+  e byte     // Sizeof: 1  Alignof: 1 Offsetof: 50
+}
+
+func main() {
+  var m1 memAlign1
+  var m2 memAlign2
+ 
+  fmt.Println(unsafe.Sizeof(m1)) // 72
+  fmt.Println(unsafe.Sizeof(m2)) // 56
+}
+```
+
+### 4.1 go-tools/stuctlayout 相关工具
+
+[go-tools](https://github.com/dominikh/go-tools) 中有一些针对 struct 内存布局相关的处理工具：
+
+```shell
+go install honnef.co/go/tools/cmd/structlayout@latest # 分析 struct 内存布局数据
+go install honnef.co/go/tools/cmd/structlayout-pretty@latest # 图形化显示内存布局
+go install honnef.co/go/tools/cmd/structlayout-optimize@latest # 提供内存优化建议
+go install github.com/ajstarks/svgo/structlayout-svg@latest # 将内存布局转为 svg 图片
+```
+
+安装好上述几个工具之后，就可以使用 structlayout 命令来分析数据，然后使用其他的工具进行更进一步的处理。
+
+> 这几个工具都有一些参数可以调整输出结果，需要的话可以自行查询 help 信息。
+
+针对代码中的`memAlign1`和`memAlign2`结构分别进行优化建议：
+
+```shell
+# memAlign1
+> structlayout -json ./main.go memAlign1 | structlayout-optimize
+memAlign1.f []string: 0-24 (size 24, align 8)
+memAlign1.d string: 24-40 (size 16, align 8)
+memAlign1.b int: 40-48 (size 8, align 8)
+memAlign1.a byte: 48-49 (size 1, align 8)
+padding: 49-56 (size 7, align 0)
+memAlign1.c byte: 56-57 (size 1, align 8)
+padding: 57-64 (size 7, align 0)
+memAlign1.e byte: 64-65 (size 1, align 8)
+padding: 65-72 (size 7, align 0)
+
+# memAlign2
+> structlayout -json ./main.go memAlign2 | structlayout-optimize
+memAlign1.f []string: 0-24 (size 24, align 8)
+memAlign1.d string: 24-40 (size 16, align 8)
+memAlign1.b int: 40-48 (size 8, align 8)
+memAlign1.a byte: 48-49 (size 1, align 8)
+padding: 49-56 (size 7, align 0)
+memAlign1.c byte: 56-57 (size 1, align 8)
+padding: 57-64 (size 7, align 0)
+memAlign1.e byte: 64-65 (size 1, align 8)
+padding: 65-72 (size 7, align 0)
+```
+
+可以看到，`memAlign1`比`memAlign2`多了很多的 padding，所以前者占用的空间自然就更大了。
+
+也可以使用图形化方式展示结构体字段的占用空间和填充空间。比如，针对`memAlign1`进行图形化显示：
+
+```shell
+structlayout -json ./main.go memAlign1 | structlayout-pretty
+```
+
+效果如下：
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1652946939509-0e75b817413f.jpg)
+
+也可以使用 structlayout-svg 将内存布局数据转换为 svg 图片：
+
+```shell
+structlayout -json ./main.go memAlign1 | structlayout-svg -t "Structure Layout" > memAlign1.svg
+```
+
+效果如下：
+
+![](http://cnd.qiniu.lin07ux.cn/markdown/1652947611221-768d108adbb2.jpg)
+
+### 4.2 x/tools/gopls/fieldalignment
+
+在 Go 的`x/tools`包中，包含一个针对结构体字段对齐数据统计的工具 [fieldalignment](https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md#fieldalignment)，能够统计出每个结构体的大小，适合在命令行中进行批量执行。
+
+安装：
+
+```shell
+> go install golang.org/x/tools/...@latest
+```
+
+安装好之后，可以使用如下命令对前面的代码进行检测：
+
+```shell
+> awk '$1 == "module" {print $2}' ./go.mod | xargs fieldalignment
+```
+
+> fieldalignment 命令需要传入包名，所以使用 awk 命令自动从`go.mod`文件中获取当前的包名，然后传递给 fieldalignment 命令使用。
+
+输出的结果类似如下：
+
+```
+path/struct-layout/main.go:8:16: struct of size 72 could be 56
+path/struct-layout/main.go:17:16: struct with 32 pointer bytes could be 24
+```
+
+也就是说，优化前`memAlign1`结构体的大小可以从 72 字节变成 56 字节；优化后`memAlign2`结构体的 pointer bytes 可以从 32 变为 24。
+
+> Pointer bytes is how many bytes of the object that the garbage collector has to potentially scan for pointers.
+> 
+> Pointer bytes 的大小对 GC 的影响其实是很小的，可以参见 [Go Issue#44877](https://github.com/golang/go/issues/44877#issuecomment-794565908)。
+
+可以看到，fieldalignment 可以准确判断出结构体的大小是否存在优化空间。
+
+### 4.3 glangci-lint
+
+虽然使用 fieldalignment 功能就能够找到存在优化空间的结构体，但在实际集成到 CI 的时候，通常不会直接使用 fieldalignment，而是使用 [golangci-lint](https://golangci-lint.run/) 工具。
+
+golangci-lint 在使用前需要进行一些配置，然后再执行相关检测：
+
+```shell
+> cat .golangci.yml
+
+linters-settings:
+  govet:
+    enable-all: true
+
+> golangci-lint run --disable-all -E govet
+```
 
