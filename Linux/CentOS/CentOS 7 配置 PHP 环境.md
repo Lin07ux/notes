@@ -44,7 +44,8 @@ setenforce 0            # 使配置立即生效
 
 ```shell
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+# 使用阿里的源
+yum install -y https://mirrors.aliyun.com/remi/enterprise/remi-release-7.rpm
 ```
 
 对于 6.x 系统，使用如下方式：
@@ -72,12 +73,13 @@ systemctl enable nginx # 开机自启动
 systemctl start nginx  # 启动 Nginx
 ```
 
-### 安装 PHP 5.6
+### 安装 PHP 7.4
 
 ```shell
-# 安装 PHP 5.6 及相关依赖和插件，如果要安装其他版本修改 56 为对应版本数字即可
-# 比如，需要安装 7.1 版本就把 56 改成 71 即可
-yum install -y php56w php56w-fpm php56w-opcache php56w-xml php56w-mcrypt php56w-gd php56w-devel php56w-mysql php56w-intl php56w-mbstring php56w-bcmath php56w-cli.x86_64 php56w-common.x86_64 php56w-ldap.x86_64 php56w-pdo.x86_64
+# 启用 remi-php74
+yum-config-manager --enable remi-php74
+# 安装 PHP
+yum install -y php php-cli php-common php-fpm php-opcache php-xml php-mcrypt php-gd php-devel php-mysql php-intl php-mbstring php-bcmath php-ldap php-pdo
 ```
 
 安装好之后，就需要对 PHP 做一些基本的设置：
