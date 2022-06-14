@@ -11,9 +11,37 @@ sudo yum -y install ntp ntpdate
 ntpdate cn.pool.ntp.org
 ```
 
+### 修改 IP 地址
+
+Centos 7 修改 IP 地址就是修改一个文件中的内容配置即可：
+
+```shell
+# 查看当前 IP 地址
+> ip addr
+...
+inet 192.168.0.30/24 brd ...
+...
+
+# 更新 IP 地址配置
+> vim /etc/sysconfig/network-scripts/ifcfg-ens192
+IPADDR=192.168.0.200
+
+# 重启网络服务
+> systemctl network retart
+Restarting network     [ OK ]
+
+# 确认 IP 地址
+> ip addr
+...
+inet 192.168.0.200/24 brd ...
+...
+```
+
+> IP 地址配置文件的名称可能不是`ifcfg-ens192`，但是前缀一定是`ifcgf-ens`。
+
 ### Nginx 有权限但是无法访问文件
-Nginx 配置的 root 目录有对应的权限，但是无法访问，提示 404 错误。
-日志中记载的是权限不足，无法访问。
+
+Nginx 配置的 root 目录有对应的权限，但是无法访问，提示 404 错误。日志中记载的是权限不足，无法访问。
 
 此时一般是由于使用 selinux 服务导致的。关闭该服务即可恢复。
 
