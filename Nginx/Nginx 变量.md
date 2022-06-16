@@ -420,7 +420,73 @@ name: hello world
 class: 9
 ```
 
-### 2.3 其他预定义变量
+### 2.3 请求资源路径变量
+
+`$request_filename`表示当前请求资源的物理路径，计算表达式为：
+
+```
+$request_filename = $document_root$uri
+```
+
+这个变量是在`$request_uri`被解析处理得到了最终的`$uri`后，才结合`$document_root`生成的。
+
+比如：
+
+```conf
+server {
+    root /home/wwwroot/site/public;
+}
+```
+
+当请求`/index.php/new/list?p=1&ps=10`时:
+
+* `$request_uri = /index.php/news/list?p=1&ps=10`
+* `$uri = /index.php/new/list`
+* `$document_root = /home/wwwroot/site/public`
+* `$request_filename = /home/wwwroot/site/public/index.php/news/list`
+
+### 2.4 fastcgi 变量
+
+fastcgi 相关的变量有很多，但大都较为简单明了，而`$fastcgi_script_name`和`$fastcgi_path_info`这两个变量较为复杂一些。
+
+默认情况下，`$fastcgi_script_name = $uri`。但是为了美观，大部分情况下 url 都采用了 pathinfo 风格。所以如果直接把类似`index.php/news/index`传递给 PHP 等 CGI 客户端，那么对饮的`$_SERVER['SCRIPT_NAME']`的值就变成了`index.php/news/index`，这并不是一个有效的可执行文件名。
+
+此时，可以使用`fastcgi_split_path_info`指令通过正则对请求的`$uri`进行拆解，对拆出两部分内容：
+
+1. 将`$1`赋值给`$fastcgi_script_name`
+2. 将`$2`赋值给`$fastcgi_path_info`
+
+这样就能够在 CGI 客户端中得到真正要执行的脚本名称和脚本后携带的路径了。
+
+这也是在 Nginx + PHP 服务器中常见的配置：
+
+```conf
+fastcgi_split_path_info ^(.+?\.php)(/.+)$;
+fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+fastcgi_param PATH_INFO $fastcgi_path_info;
+fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+```
+
+在对于这种配置下，请求`/news/index?p=1&ps=10`时：
+
+1. 初始化时
+
+    * `$request_uri = /news/index?p=1&ps=10`
+    * `$uri = /news/index?p=1&ps=10`
+
+2. 经过 location try_files 重写后：
+
+    * `$uri = /index.php/news/index`
+    * `$request_filename = /home/wwwroot/site/public/index.php/news/index`
+    * `$fastcig_script_name = $uri`
+
+3. 经过 pathinfo 解析后
+
+    * `$fastcgi_script_name = /index.php`
+    * `$fastcgi_path_info = /news/index`
+
+### 2.5 其他预定义变量
 
 * `$remote_addr` 数字格式的客户端的 IP 地址；
 * `$remote_port` 客户端连接端口；
@@ -444,7 +510,6 @@ class: 9
 * `$request_body_file` 客户端请求主体信息的临时文件名；
 * `$request_completion` 如果请求成功完成，那么值为`OK`。如果请求没有完成或者请求不是该请求系列的最后一部分，那么它的值为空。
 * `$request_method`  该变量的值通常是 GET 或者 POST。
-* `$request_filename` 等于当前请求文件的路径，由指令`root`或`alias`和 URI 构成。
 
 * `$scheme`  该变量表示 HTTP scheme（例如 HTTP，HTTPS），根据实际使用情况来决定，
    例如：`rewrite  ^ $scheme://example.com$uri redirect;`。
