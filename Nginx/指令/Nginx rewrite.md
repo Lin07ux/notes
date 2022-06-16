@@ -20,9 +20,9 @@ rewrite <正则> <替换语句> [标识位];
 * `替换语句` 用来生成重写后的 uri
 * `标识位` 用来控制本次重写后的后续处理
 
-### 1.2 正则
+### 1.2 正则匹配
 
-Nginx rewrite 指令中的正则部分是会对请求的相对路径，不包含 hostname 和查询参数(URL 中`?`及其后面的部分)。所以如果要按照正则来匹配请求之后再进行重写，则需要确保正则能够在请求路径中得到匹配，否则不会执行该重写。
+Nginx rewrite 指令中的正则部分是会对请求的相对路径`$uri`，不包含 hostname 和查询参数(URL 中`?`及其后面的部分)。所以如果要按照正则来匹配请求之后再进行重写，则需要确保正则能够在请求路径中得到匹配，否则不会执行该重写。
 
 比如下面的 301 重定向示例：
 
@@ -34,7 +34,11 @@ rewrite ~* cafeneko\.info http://newdomain.com/ permanent;
 
 ### 1.3 替换语句
 
-替换语句就是用来指定重写后的 uri，在这里可以使用如`$1`、`$2`等的方式引用正则中的匹配结果。当然，由于 rewrite 的正则是不匹配 query_string 的，所以默认情况下，query_string 会自动追加到 rewrite 后的地址上。如果不想自动追加 query_string 则需要在 rewrite 地址的末尾添加`?`符号。
+替换语句就是用来指定重写后的 uri，在这里可以使用如`$1`、`$2`等的方式引用正则中的匹配结果。
+
+当然，由于 rewrite 的正则是不匹配`$query_string`的，所以默认情况下，`$query_string`会自动追加到 rewrite 后的地址上。
+
+如果不想自动追加`$query_string`则需要在 rewrite 地址的末尾添加`?`符号。
 
 如下所示：
 
@@ -42,7 +46,25 @@ rewrite ~* cafeneko\.info http://newdomain.com/ permanent;
 rewrite  ^/users/(.*)$  /show?user=$1?  last;
 ```
 
-### 1.3 标识位
+对`$query_string`的不同处理方式是`rewrite`和`try_files`的重要区别：`try_files`指令会丢弃`$query_string`。这也是为什么使用`try_files`重写时，通常都会加上`$query_string`的原因：
+
+```conf
+location / {
+  # 非 pathinfo 重写
+  # 适用于使用 $_SERVER['request_uri'] 中的路径做路由解析的框架，如 Laravel/Yii2
+  # 因为重写不会改变 $request_uri，所以在重写的时候不传递 $uri 也没关系
+  # 但是使用 try_files 时必须带上 $query_string，否则就会获取到不查询参数
+  try_files $uri $uri/ /index.php$is_args$query_string;
+  
+  # pathinfo 重写
+  # 适用于使用 $_SERVER['path_info'] 做路由解析的框架，如 ThinkPHP
+  # 此时需要在重写的时候将 $uri 显示的传递过去，否则就会造成 path_info 解析异常
+  # 因为规范的 pathinfo 要求参数也路径化在 $uri 中，所以可以不加 $query_string
+  try_files $uri $uri/ /index.php$uri$is_args$query_string
+}
+```
+
+### 1.4 标识位
 
 Nginx rewrite 的标识位有四种：
 
@@ -59,7 +81,7 @@ Nginx rewrite 的标识位有四种：
 
 ### 2.1 rewrite retry
 
-Nginx rewrite 有个特性：rewrite 后的 url 会再次进行 rewrite 检查，而且最多重试 10 次，10 次之后如果还没有终止的话，就会返回 HTTP 500 响应。
+Nginx rewrite 有个特性：rewrite 后的 url 可以再次进行 rewrite 检查，而且最多重试 10 次，10 次之后如果还没有终止的话，就会返回 HTTP 500 响应。
 
 Nginx rewrite 的查找执行流程如下：
 
