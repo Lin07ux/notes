@@ -158,11 +158,11 @@ func schedinit() {
 
 另外，还会通过 CPU 核心数和 GOMAXPROCS 环境变量来确定 P 的数量，并调用`procresize()`函数对 P 进行初始化。
 
-在初始化过程中，还会调用`mcommoninit()`函数，对 M0 进行初始化。
+在初始化过程中，还会调用`mcommoninit()`函数，对 m0 进行初始化。
 
-### 2.2 M0 初始化
+### 2.2 m0 初始化
 
-`runtime.mcommoninit()`函数中主要就是初始 M0，源码如下：
+`runtime.mcommoninit()`函数中主要就是初始 m0，源码如下：
 
 ```go
 func mcommoninit(mp *m, id int64) {
@@ -199,6 +199,8 @@ func mcommoninit(mp *m, id int64) {
 ### 2.3 P 初始化
 
 在完成一些前置的初始化后，就开始进行 P 的初始化了。在`runtime.schedinit()`函数中，通过`runtime.procresize()`即可进入到 P 初始化的流程中。
+
+`runtime.procresize()`不仅在初始化的时候会调用，当用户手动调用`runtime.GOMAXPROCS`的时候，会重新设定 nprocs，然后再执行`runtime.startTheWorld()`。在`runtime.startTheWorld()`方法中会使用新的 nprocs 再次调用`runtime.procresize()`方法。
 
 #### 2.3.1 runtime.procresize()
 
@@ -1100,7 +1102,276 @@ func goexit0(gp *g) {
 
 在该函数的最后，会再次调用`schedule()`，从而进入下一个调度循环。
 
-## 四、总结
+## 四、监控
+
+### 4.1 sysmon
+
+Go 的监控是依靠函数`sysmon()`来完成的，监控主要做以下几件事：
+
+* 释放闲置超过 5 分钟的 span 物理内存；
+* 如果超过两分钟没有执行垃圾回收，则强制执行垃圾回收；
+* 将长时间未处理的 netpoll 结果添加到任务队列；
+* 向长时间运行的 G 进行抢占；
+* 回收因为 syscall 调用而长时间阻塞的 P。
+
+监控线程并不是时刻在运行的，监控线程首次会休眠 20us，每次执行完成后，增加一倍的休眠时间，但是最多休眠 10ms。
+
+源码如下：
+
+```go
+func sysmon() {
+  lock(&sched.lock)
+  sched.nmsys++
+  unlock(&sched.lock)
+  
+  // If a heap span goes unused for 5 minutes after a garbage collection, 
+  // we hand it back to the operating system.
+  scavengelimit := int64(5 * 60 * 1e9)
+  
+  if debug.scavenge > 0 {
+    // Scavenge-a-lot for testing
+    forcegcperiod = 10 * 1e6
+    scavengelimit = 20 * 1e6
+  }
+  
+  lastscavenge := nanotime()
+  nscavenge := 0
+  
+  lasttrace := int64(0)
+  idle := 0 // how many cycles in succession we had not wokeup somebody
+  delay := uint32(0)
+  for {
+    // 判断当前循环应该休眠的时间
+    if idle == 0 {
+      delay = 20 // start with 20us sleep
+    } else if idle > 50 {
+      delay *= 2 // start doubling the sleep after 1ms
+    }
+    if delay > 10*1000 {
+      delay = 10 * 1000 // up to 10ms
+    }
+    usleep(delay)
+  }
+  // STW 时休眠 sysmon
+  if debug.schedtrace <= 0 && (sched.gcwaiting != 0 || atomic.Load(&sched.npidle) == uint32(gomaxprocs)) {
+    lock(&sched.lock)
+    if atomic.Load(&sched.gcwaiting) != 0 || atomic.Load(&sched.npidle) == uint32(gomaxprocs) {
+      atomic.Store(&sched.sysmonwait, 1)
+      unlock($sched.lock)
+      // Mark wake-up period small enough
+      // for the sampling to be correct.
+      maxsleep := forcegcperiod /2
+      if scavengelimit < forcegcperiod {
+        maxsleep = scavengelimit / 2
+      }
+      shouldRelax := true
+      if osRelaxMinNS > 0 {
+        next := timeSleepUntil()
+        now := nanotime()
+        if next-now < osRelaxMinNS {
+          shouldRelax = false
+        }
+      }
+      if shouldRelax {
+        osRelax(true)
+      }
+      // 进行休眠
+      notetsleep(&sched.sysmonnote, maxsleep)
+      if shouldRelax {
+        osRelax(false)
+      }
+      lock(&sched.lock)
+      atomic.Store(&sched.sysmonwait, 0)
+      noteclear(&sched.sysmonnote)
+      idle = 0
+      delay = 20
+    }
+    unlock(&sched.lock)
+  }
+  // trigger libc interceptors if needed
+  if *cgo_yield != nil {
+    asmcgocall(*cgo_yield, nil)
+  }
+  // poll network if not polled for more than 10ms
+  lastpoll := int64(atomic.Load64(&sched.lastpoll))
+  now := nanotime()
+  // 如果 netpoll 不为空，每隔 10ms 检查一下是否有 ok 的
+  if netpollinited() && lastpoll !=0 && lastpoll+10*1000*1000 < now {
+    atomic.Cas64(&sched.lastpoll, uint64(lastpoll), uint64(now))
+    // 返回已经获取到结果的 goroutine 的列表
+    gp := netpoll(false) // no-blocking - returns list of goroutines
+    if gp != nil {
+      incidlelocked(-1)
+      // 把获取到的 g 的列表加入到全局队列中
+      injectglist(gp)
+      incidlelocked(1)
+    }
+  }
+  // retake P's blocked in syscalls
+  // and preempt long running G's
+  if retake(now) != 0 {
+    idle = 0
+  } else {
+    idle++
+  }
+  // check if we need to force a GC
+  // 通过 gcTrigger.test() 函数判断是否超过设定的强制触发 GC 的时间间隔
+  if t := (gcTrigger{kind: gcTriggerTime, now: now}); t.test() && atomic.Load(&forcegc.idle) != 0 {
+    lock(&forcegc.lock)
+    forcegc.idle = 0
+    forcegc.g.schedlink = 0
+    // 把 gc 的 g 加入待运行队列，等待调度运行
+    injectglist(forcegc.g)
+    unlock(&forcegc.lock)
+  }
+  // scavenge heap once in a while
+  // 判断是否有 5 分钟未使用的 span，有的话就归还给系统
+  if lastscavenge+scavengelimit/2 < now {
+    mheap_.scavenge(int32(nscavenge), uint64(now), uint64(scavengelimit))
+    lastscavenge = now
+    nscavenge++
+  }
+  if debug.schedtrace > 0 && lasttrace+int64(debug.schedtrace)*1000000 <= now {
+    lasttrace = now
+    schedtrace(debug.scheddetail > 0)
+  }
+}
+```
+
+### 4.2 retake
+
+在`sysmon()`方法中，抢占长时间执行的 G 的函数是`retake()`，源码如下：
+
+```go
+const forcePreemptNS = 10 * 1000 * 1000 // 10ms
+
+func retake(now int64) uint32 {
+  n := 0
+  // Prevent allp slice changes. This lock will be completely
+  // uncontended unless we're already stopping the world.
+  lock(&allpLock)
+  // We can't use a range loop over allp because we may
+  // temporarily drop the allpLock. Hence, we need to re-fecth
+  // allp each time around the loop.
+  for i := 0; i < len(allp); i++ {
+    _p_ := allp[i]
+    if _p_ == nil {
+      // This can hanppen if procresize has grown
+      // allp but not yet created new Ps.
+      continue
+    }
+    pd := &_p_.sysmontick
+    s := _p_.status
+    if s == _Psyscall {
+      // Retake P from syscall if it's there for more than 1 sysmon tick (at least 20us).
+      // pd.syscalltick 即 _p_.sysmontick.syscalltick，它只有在 sysmon 执行的时候才会更新
+      // 而 _p_.syscalltick 则每次在调用 syscall 的时候都会更新
+      // 所以，当 syscall 之后，第一个 sysmon 检测的时候并不会抢占，而是在第二次才会开始抢占
+      // 中间间隔至少有 20us，最多会有 10ms
+      t := int64(_p_.syscalltick)
+      if int64(pd.syscalltick) != t {
+        pd.syscalltick = uint32(t)
+        pd.syscallwhen = now
+        continue
+      }
+      // On the one hand we don't want to retake Ps if there is no other work to do,
+      // but on the other hand we want to retake them eventually
+      // because they can prevent the sysmon thread from deep sleep.
+      // 是否有空 P，有的话寻找 P 的 M，以及当前的 P 在 syscall 之后有没有超过 10ms
+      if runqempty(_p_) && atomic.Load(&sched.nmspinning)+atomic.Load(&sched.npidle) > 0 && pd.syscallwhen+10*1000*1000 > now {
+        continue
+      }
+      // Drop allpLock so we can take sched.lock
+      unlock(&callpLock)
+      // Need to decrement number of idle locked M's
+      // (pretending that one more is running) before the CAS.
+      // Otherwise the M from which we retake can exit the syscall,
+      // increment nmidle and report deadlock.
+      incidlelocked(-1)
+      // 抢占 P，把 P 的状态转为 idle 状态
+      if atomic.Cas(&_p_.status, s, _Pidle) {
+        if trace.enabled {
+          traceGoSysBlock(_p_)
+          traceProcStop(_p_)
+        }
+        n++
+        _p_.syscalltick++
+        // 把当前 p 移交出去，上面已经分析过了
+        handoffp(_p_)
+      }
+      incidlelocked(1)
+      lock(&allpLock)
+    } else if s == _Prunning {
+      // Preempt G if it's running for too long.
+      // 如果 P 是 running 状态，而且 P 下面的 G 执行太久了，则进行抢占
+      t := int64(_p_.schedtick)
+      if int64(pd.schedtick) != t {
+        pd.schedtick = uint32(t)
+        pd.schedwhen = now
+        continue
+      }
+      // 判断是否超出 10ms，不超过则不抢占
+      if pd.schedwhen+forcePreemptNS > now {
+        continue
+      }
+      // 开始抢占
+      preemptone(_p_)
+    }
+  }
+  unlock(&allpLock)
+  return uint32(n)
+}
+```
+
+### 4.3 preemptone
+
+`preemptone()`函数用于从 P 中抢占当前正在运行的 G。不过在这个函数的注释中，作者表示这并不是很靠谱的方案。
+
+源码如下：
+
+```go
+func preemptone(_p_ *p) bool {
+  mp := _p_.m.ptr()
+  if mp == nil || mp == getg().m {
+    return flase
+  }
+  gp := mp.curg
+  if gp == nil || gp == mp.g0 {
+    return false
+  }
+  // 标识抢占字段
+  gp.preempt = true
+  
+  // Every call in a go routine checks for stack overflow by
+  // comparing the current stack pointer to gp->stackguard0.
+  // Setting gp->stackgruad0 to StackPreempt folds
+  // preemption into the normal stack overflow check.
+  // 更新 stackguard0，保证能检测到栈溢出
+  gp.stackguard0 = stackPreempt
+  return true
+}
+```
+
+在这里，通过设置`gp.stackguard0 = stackPreemp`然后让 G 误认为自己的栈不够用了，那就只能去进行栈扩张。在进行栈扩张的时候会调用`newstack()`分配一个新栈，然后把原先栈内的数据拷贝过去。而在`newstack()`函数中，有如下的一段判断：
+
+```go
+if preempt {
+  if thisg.m.locks != 0 || thisg.m.mallocing != 0 || thisg.m.preemptoff != "" || thisg.m.p.ptr().status != _Prunning {
+    // Let the goroutine keep running for now
+    // gp->preempt is set, so it will be preempted next time.
+    gp.stackground0 = gp.stack.lo + _StackGuard
+    gogo(&gp.sched) // never return
+  }
+}
+```
+
+可以看到在进行栈扩张的时候，会先判断是否是处于被占用状态。如果 G 被占用了，那么可能栈不够用就是假的，先不进行扩张了直接重新去调度。
+
+## 五、总结
+
+在调度器的设置上，最明显的就是复用：G 的 free 链表、M 的 free 链表、P 的 free 链表，这样就避免了重复创建销货而浪费资源。
+
+其次就是多级缓存：这一块跟内存上的设计思想也是一致的，P 一直有一个 G 的待运行队列，自己没有 G 或者 G 过多的时候才会平衡到全局队列。全局队列操作需要锁，本地操作则不需要，这样就能大大减少加锁带来的并发限制和资源消耗。
 
 整个调度循环的简单流程如下图所示：
 
@@ -1109,3 +1380,5 @@ func goexit0(gp *g) {
 详细的调度过程如下图所示：
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1648640157290-3a83196ecb5f.jpg)
+
+
