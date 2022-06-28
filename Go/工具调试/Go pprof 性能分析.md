@@ -1,6 +1,15 @@
-> 转摘：[通过pprof定位groutine泄漏](https://mp.weixin.qq.com/s/UcOwzNHqhPE0ZjKR1maWBw)
+> 转摘：
+> 
+> 1. [通过pprof定位groutine泄漏](https://mp.weixin.qq.com/s/UcOwzNHqhPE0ZjKR1maWBw)
+> 2. [Go 程序崩了？煎鱼教你用 PProf 工具来救火！](https://mp.weixin.qq.com/s?__biz=MzUxMDI4MDc1NA==&mid=2247488702&idx=1&sn=b941ddb5473e8f6b85cd970e81225347&chksm=f90401e3ce7388f50f390eb4dfd887481a7866cb50011802d1916ec644c3ba5485ea0e423036&scene=21#wechat_redirect)
 
 `pprof`是 Go 的性能分析工具，可以查看程序在运行过程中 CPU、内存、协程、锁等的详细信息。这对于定位程序中的 bug 非常有帮助。
+
+pprof 有如下几种采样方式：
+
+* `runtime/pprof`：采集程序（非 Server）的指定区块的运行数据进行分析；
+* `net/http/pprof`：基于 HTTP Server 运行，并且可以采集运行时数据进行分析。
+* `go test`：通过运行测试用例，并指定所需标识来进行采集。
 
 下面以死锁造成的内存泄露为例，来看看怎样使用 pprof 定位到内存泄露的位置。
 
