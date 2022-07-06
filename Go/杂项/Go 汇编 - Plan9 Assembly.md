@@ -549,4 +549,507 @@ caller stack frame    |                  |
                                                   callee
 ```
 
+## 六、代码示例
+
+### 6.1 add/sub/mul
+
+使用汇编实现加减乘法运算方法，先在`main.go`中声明汇编函数：
+
+```go
+package main
+
+import "fmt"
+
+// 汇编函数声明
+func add(a, b int) int
+func sub(a, b int) int
+func mul(a, b int) int
+
+func main() {
+    fmt.Println(add(10, 11))
+    fmt.Println(sub(99, 15))
+    fmt.Println(mul(11, 12))
+}
+```
+
+然后在`main.s`中使用汇编实现函数：
+
+```asm
+# include "textflag.h"
+// 因为声明函数用到了 NOSPLIT 这样的 flag，所以需要引入头文件
+
+// func add(a, b int) int
+TEXT ·add(SB), NOSPLIT, $0-24
+    MOVQ a+0(FP), AX    // 参数 a
+    MOVQ b+8(FP), BX    // 参数 b
+    ADDQ BX, AX         // AX += BX
+    MOVQ AX, ret+16(FP) // 返回值
+    RET
+    
+// func sub(a, b int) int
+TEXT ·sub(SB), NOSPLIT, $0-24
+    MOVQ a+0(FP), AX    // 参数 a
+    MOVQ b+8(FP), BX    // 参数 b
+    SUBQ BX, AX         // AX -= BX
+    MOVQ AX, ret+16(FP) // 返回值
+    RET
+
+// func mul(a, b int) int
+TEXT ·mul(SB), NOSPLIT, $0-24
+    MOVQ  a+0(FP), AX    // 参数 a
+    MOVQ  b+8(FP), BX    // 参数 b
+    IMULQ BX, AX         // AX *= BX
+    MOVQ  AX, ret+16(FP) // 返回值
+    RET
+
+```
+
+> `main.s`文件的最后必须留一个空行，否则可能会报`unexpected EOF`错误。
+
+把这两个文件放在同一个目录下，执行`go build`并运行就可以看到效果了。
+
+### 6.2 伪 SP、伪 FP 和硬件 SP
+
+下面的代码来验证伪 SP、伪 FP 和硬件 SP 的位置关系。
+
+spfpsp.go 代码如下：
+
+```go
+package main
+
+import "fmt"
+
+// 汇编函数声明
+func output(int) (int, int, int)
+
+func main() {
+    a, b, c := output(987654321)
+    fmt.Println(a, b, c)
+}
+```
+
+spfpsp.s 代码如下：
+
+```asm
+#include "textflag.h"
+
+// func output(int) (int, int, int)
+TEXT ·output(SB), $8-48
+    MOVQ 24(SP), DX             // 不带 symbol，这个 SP 就表示硬件 SP
+    MOVQ DX, ret3+24(FP)        // 第三个返回值
+    MOVQ perhapsArg1+16(SP), BX // 当前函数栈大小大于 0，所以 FP 在 SP 的上方 16 字节处
+    MOVQ BX, ret2+16(FP)        // 第二个返回值
+    MOVQ arg1+0(FP), AX         // 第一个参数，也就是 FP 的位置
+    MOVQ AX, ret1+8(FP)         // 第一个返回值
+    RET
+
+```
+
+执行上面的代码，可以得到类似如下的三个相同的值：
+
+```text
+987654321 987654321 987654321
+```
+
+和代码结合思考，可以知道，`output`函数的栈结构是这样的：
+
+```text
++---------------+
+|      ret2     | (8 bytes)
+|---------------|
+|      ret1     | (8 bytes)
+|---------------|
+|      ret0     | (8 bytes)
+|---------------|
+|      arg0     | (8 bytes)
++---------------+ <--- FP
+|   ret  addr   | (8 bytes)
++---------------+
+|   caller BP   | (8 bytes)
++---------------+ <--- pseudo SP
+| frame content | (8 bytes)
++---------------+ <--- hardware SP
+```
+
+这里 asm 代码中，设置 output 函数的 framesize 大小为 8，也可以尝试将 framesize 修改为 0，然后调整代码中引用伪 SP 和硬件 SP 时的 offset，来研究 framesize = 0 时伪 FP、伪 SP 和硬件 SP 三者之间的相对位置。
+
+这个例子也说明，伪 SP 和伪 FP 的相对位置是会发生变化的，手写时不应该用伪 SP 来引用参数和返回值数据，否则结果可能会出乎预料。
+
+### 6.3 汇编调用非汇编函数
+
+在汇编中也可以调用 Go 中定义的函数。
+
+output.go 代码如下：
+
+```go
+package main
+
+import "fmt"
+
+func add(x, y int) int {
+    return x + y
+}
+
+func output(a, b int) int
+
+func main() {
+    s := output(10, 13)
+    fmt.Println(s)
+}
+```
+
+output.s 代码如下：
+
+```asm
+#include "textflag.h"
+
+// func output(a, b int) int
+TEXT ·output(SB), NOSPLIT, $24-24
+    MOVQ a+0(FP), DX    // 参数 a
+    MOVQ DX, 0(SP)      // add 的参数 x
+    MOVQ b+8(FP), CX    // 参数 b
+    MOVQ CX, 8(SP)      // add 的参数 y
+    CALL ·add(SB)       // 调用 add 之前已经把其参数通过硬件 SP 搬到了函数的栈顶
+    MOVQ 16(SP), AX     // add 函数会把返回值放到 16(SP) 的位置
+    MOVQ AX, ret+16(FP) // 设置本函数的返回值
+    RET
+
+```
+
+### 6.4 汇编中的循环
+
+在汇编中通过`DECQ`和`JZ`指令结合，可以实现高级语言里的循环逻辑。
+
+sum.go 代码如下：
+
+```go
+package main
+
+func sum([]int64) int64
+
+func main() {
+    println(sum([]int64{1, 2, 3, 4, 5}))
+}
+```
+
+sum.s 代码如下：
+
+```asm
+#include "textflag.h"
+
+// func sum(sl []int64) int64
+TEXT ·sum(SB), NOSPLIT, $0-32
+    MOVQ $0, SI
+    MOVQ sl+0(FP), BX // &sl[0] 切片第一个元素的地址
+    MOVQ sl+8(FP), CX // len(sl) 切片的长度
+    INCQ CX           // CX++ 因为要循环 len 次
+    
+start:
+    DECQ CX       // CX--
+    JZ   done
+    ADDQ (BX), SI // SI += *BX
+    ADDQ $8, BX   // 指针移动
+    JMP  start
+
+done:
+    MOVQ SI, ret+24(FP)
+    RET
+```
+
+可以看到，汇编代码中的循环就是通过不断的增加 BX 来调整指向切片的元素的地址，然后就能够通过地址取值累加到 SI 寄存器中。
+
+在`done`标签中，返回值的地址是`ret+24(FP)`。之所以是 24，是因为 Go 的 slice 是一个占用 24 字节的结构体：data、len、cap。虽然没有用到 cap 属性，但是它依旧会占用空间。
+
+## 七、数据结构
+
+Go 标准库中的一些数据结构在汇编层面都表示一段连续的内存，只是不同位置和不同长度的内存表示特定的字段。
+
+### 7.1 数值类型
+
+标准库中的数值类型很多：
+
+1. int/int8/int16/int32/int64
+2. uint/uint8/uint16/uint32/uint64
+3. float32/float64
+4. byte/rune
+5. uintptr
+
+这些类型在汇编中就是一段存储着数据的连续内存，只是内存长度不一样，操作的时候确定好数据长度即可。
+
+### 7.2 slice
+
+slice 结构体包含三个字段：
+
+* `data` 首元素地址
+* `len` 切片的长度
+* `cap` 切片的容量
+
+在汇编中处理时，只要按照这三个字段的顺序和长度进行处理即可。
+
+### 7.4 string
+
+在汇编层面 string 就是地址 + 字符串长度。
+
+比如，对于如下的代码：
+
+```go
+package main
+
+//go:noinline
+func stringParams(s string) {}
+
+func main() {
+    var x = "abcc"
+    stringParam(x)
+}
+```
+
+用`go tool compile -S`输出汇编代码：
+
+```asm
+0x001d 00029 (stringParam.go:11)    LEAQ    go.string."abcc"(SB), AX  // 获取 RODATA 段中的字符串地址
+0x0024 00036 (stringParam.go:11)    MOVQ    AX, (SP) // 将获取到的地址放在栈顶，作为第一个参数
+0x0028 00040 (stringParam.go:11)    MOVQ    $4, 8(SP) // 字符串长度作为第二个参数
+0x0031 00049 (stringParam.go:11)    PCDATA  $0, $0 // gc 相关
+0x0031 00049 (stringParam.go:11)    CALL    "".stringParam(SB)
+```
+
+可以看到，在通过`CALL "".stringParam(SB)`调用 stringParams 函数之前，依次准备了字符串的地址和字符串的长度，作为 stringParams 函数的参数。
+
+### 7.5 struct
+
+struct 在汇编层面实际上也是一段连续的内存。在作为参数传递给函数时，会将其展开在 caller 的栈上传递给 callee。
+
+比如，对于如下的代码：
+
+```go
+package main
+
+type address struct {
+    lng int
+    lat int
+}
+
+type person struct {
+    age    int
+    height int
+    addr   address
+}
+
+func readStruct(p person) (int, int, int, int)
+
+func main() {
+    var p = person{
+        age:    99,
+        height: 88,
+        addr:   address{
+            lng: 77
+            lat: 66,
+        },
+    }
+    a, b, c, d := readStruct(p)
+    println(a, b, c, d)
+}
+```
+
+对应的`struct.s`代码如下：
+
+```asm
+#include "textflag.h"
+
+TEXT ·readStruct(SB), NOSPLIT, $0-64
+    MOVQ arg0+0(FP), AX
+    MOVQ AX, ret0+32(FP)
+    MOVQ arg1+8(FP), AX
+    MOVQ AX, ret1+40(FP)
+    MOVQ arg2+16(FP), AX
+    MOVQ AX, ret2+48(FP)
+    MOVQ arg3+24(FP), AX
+    MOVQ AX, ret3+56(FP)
+    RET
+
+```
+
+构建后运行，能够得到`99, 88, 77, 66`的输出，这表明即使是内嵌结构体，在内存分布上依然是连续的。
+
+### 7.6 map
+
+对下面的代码进行汇编(`go tool compile -S`)，可以得到一个 map 在对某个 key 赋值时所需要做的操作：
+
+```go
+package main
+
+func main() {
+    var m = map[int]int{}
+    m[43] = 1
+    var n = map[string]int{}
+    n["abc"] = 1
+    println(m, n)
+}
+```
+
+这里第 7 行对应的汇编代码如下：
+
+```asm
+0x0085 00133 (m.go:7)   LEAQ    type.map[int]int(SB), AX
+0x008c 00140 (m.go:7)   MOVQ    AX, (SP)
+0x0090 00144 (m.go:7)   LEAQ    ""..autotmp_2+232(SP), AX
+0x0098 00152 (m.go:7)   MOVQ    AX, 8(SP)
+0x009d 00157 (m.go:7)   MOVQ    $43, 16(SP)
+0x00a6 00166 (m.go:7)   PCDATA  $0, $1
+0x00a6 00166 (m.go:7)   CALL    runtime.mapassign_fast64(SB)
+0x00ab 00171 (m.go:7)   MOVQ    24(SP), AX
+0x00b0 00176 (m.go:7)   MOVQ    $1, (AX)
+```
+
+这段汇编代码的前面几行都是在准备`runtime.mapassign_fast64(SB)`函数的参数，在 runtime 库中可以看到该函数的签名：
+
+```go
+func maoassign_fast64(t *maptype, h *hmap, key uint64) unsafe.Pointer
+```
+
+可以看到，这个函数需要三个参数，且每个参数都是 8 字节。每个参数与汇编代码的对应关系如下：
+
+```text
+t *maptype => LEAQ type.map[int]int(SB), AX
+              MOVQ AX, (SP)
+
+h *hmap    => LEAQ ""..autotmp_2+232(SP), AX
+              MOVQ AX, 8(SP)
+
+key uint64 => MOVQ $43, 16(SP)
+```
+
+返回参数就是 key 对应的 可以写值的内存地址，拿到改地址就能把想要写入的值写进去了：
+
+```asm
+MOVQ 24(SP), AX
+MOVQ $1, (AX)
+```
+
+可以看到，整个过程还是比较复杂的，但是流程上还是比较清晰的：先准备好对应的参数，然后拿到返回值进行操作。
+
+### 7.7 channel
+
+Channel 在 runtime 中也是比较复杂的数据结构，如果在汇编层面操作，实际上也是调用 runtime 中的`chan.go`中的函数，和 map 比较类似。
+
+## 八、其他
+
+### 8.1 SIMD
+
+[SIMD](https://cch123.gitbooks.io/duplicate/content/part3/performance/simd-instruction-class.html) 是 Single Instruction, Multiple Data 的缩写。在 Intel 平台上的 SIMD 指令集先后为 SSE、AVX、AVX2、AVX512，这些指令集引入了标准以外的指令，和宽度更大的寄存器。例如：
+
+* 128 位的 XMM0~XMM31 寄存器
+* 256 位的 YMM0~YMM31 寄存器
+* 512 位的 ZMM0~ZMM31 寄存器
+
+这些寄存器的关系类似 RAX、EAX、AX 之间的关系。
+
+指令方面，可以同时对多组数据进行移动或者计算，例如：
+
+* `movups` 把 4 个不对准的单精度值传送到 XMM 寄存器或者内存；
+* `movaps` 把 4 个对准的单精度值传送到 XMM 寄存器或者内存。
+
+上述指令，在将数组作为函数的入参时有很大概率会看到。例如，对于如下代码：
+
+```go
+package main
+
+import "fmt"
+
+func pr(input [3]int) {
+    pr([3]int{1, 2, 3})
+}
+```
+
+使用`go compile -S`编译得到如下部分汇编代码：
+
+```asm
+0x001d 00029 (arr_par.go:10)    MOVQ    "".statictmp_0(SB), AX
+0x0024 00036 (arr_par.go:10)    MOVQ    AX, (SP)
+0x0028 00040 (arr_par.go:10)    MOVUPS  "".statictmp_0+8(SB), X0
+0x002f 00047 (arr_par.go:10)    MOVUPS  X0, 8(SP)
+0x0034 00052 (arr_par.go:10)    CALL    "".pr(SB)
+```
+
+可以看到，编译器在某些情况下已经考虑到了性能问题，使用 SIMD 指令集来对数据搬运进行优化。
+
+### 8.2 获取 Goroutine ID
+
+由于 struct 结构体本身就是一段连续的内存，在知道结构体的起始地址和字段的偏移量后，就能很容易的把这段数据搬运出来。
+
+Go goroutine 是一个`g`结构体实例，内部有自己唯一的 ID，不过 runtime 没有把这个 id 暴露出来。用下面的这段代码就能够获取出 Goroutine 的 ID：
+
+goid.go
+
+```go
+package goroutineid
+
+import "runtime"
+
+var offsetDict = map[string]int64{
+    // ... 省略一些行
+    "go1.7":  192,
+    "go1.7.1":  192,
+    "go1.7.2":  192,
+    "go1.7.3":  192,
+    "go1.7.4":  192,
+    "go1.7.5":  192,
+    "go1.7.6":  192,
+    // ... 省略一些行
+}
+
+var offset = offsetDict[runtime.Version()]
+
+// GetGoID returns the goroutine id
+func GetGoID() int64 {
+    return getGoID(offset)
+}
+
+func getGoID(off int64) int64
+```
+
+go_tls.h
+
+```h
+#ifdef GOARCH_arm
+#define LR R14
+#endif
+
+#ifdef GOARCH_amd64
+#define    get_tls(r)    MOVQ TLS, r
+#define    g(r)          0(r)(TLS*1)
+#endif
+
+#ifdef GOARCH_amd64p32
+#define    get_tls(r)    MOVQ TLS, r
+#define    g(r)          0(r)(TLS*1)
+#endif
+
+#ifdef GOARCH_386
+#define    get_tls(r)    MOVQ TLS, r
+#define    g(r)          0(r)(TLS*1)
+#endif
+```
+
+goid.s
+
+```asm
+#include "textflag.h"
+#include "go_tls.h"
+
+// func getGoID(int64) int64
+TEXT ·getGoID(SB), NOSPLIT, $0-16
+    get_tls(CX)
+    MOVQ g(CX), AX
+    MOVQ offset(FP), BX
+    LEAQ 0(AX)(BX*1), DX
+    MOVQ (DX), AX
+    MOVQ AX, ret+8(FP)
+    RET
+
+```
+
+这样就实现了一个简单的获取 g struct 中的 goid 字段的代码。
+
 
