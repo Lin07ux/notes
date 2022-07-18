@@ -2,16 +2,17 @@
 > 
 > 1. [Gopher 需要知道的几个结构体骚操作](https://mp.weixin.qq.com/s/A4m1xlFwh9pD0qy3p7ItSA)
 > 2. [为什么需要 noCopy](https://blog.lpflpf.cn/passages/golang-noCopy/)
+> 3. [Go 的 noCopy 是什么机制？](https://mp.weixin.qq.com/s/B8WYSCkjoOoZP7a575yX7A)
 
 ### 1. 为何需要 noCopy
 
-Go 语言中是使用按值传递的，所以如果直接将一个结构体实例作为参数传递给函数时，函数内部操作的就是一个新的实例了，而且新实例的字段值与原实例的字段值都相同。也就是会进行值拷贝。
+Go 语言中是使用按值传递的，所以如果直接将一个结构体实例作为参数传递给函数时，函数内部操作的就是一个新的实例了，而且新实例的字段值与原实例的字段值都相同，也就是会进行值拷贝。
 
-但是有些情况下，是不允许进行值拷贝的，因为这会破坏实例的一些特性。
+但是有些情况下，是不能进行值拷贝的，因为这会破坏实例的一些特性，特别是当变量资源本身带有状态且操作需要配套的时候是不能拷贝的。
 
-比如，对于 Go 中`sync.WaitGroup`，其内部的值维护了相关的状态。如果该类型的实例可以复制，那么状态也会被复制，而一个实例的状态的变更并不会影响到另一个实例的状态变化，那么就会造成死锁等各种问题。
+比如，对于 Go 中`sync.WaitGroup`，其内部的值维护了相关的状态。如果该类型的实例可以复制，那么状态也会被复制，而一个实例的状态的变更并不会影响到另一个实例的状态变化，这样就会造成死锁等各种问题。
 
-为了避免复制对象实例引起的状态问题，就需要禁止一些特定实例对象的复制。
+为了避免复制对象实例引起的状态问题，就需要**禁止对带有状态且需要操作配套的实例对象的复制**。
 
 ### 2. noCopy 实现
 
@@ -63,7 +64,7 @@ func main() {
 fatal error: all goroutines are asleep - deadlock!
 ```
 
-虽然 Go 不会对实现了`sync.Locker`接口的对象实现赋值时进行报错，但是在使用`go vet`做静态语法家分析时会提示相关的错误：
+虽然 Go 不会对实现了`sync.Locker`接口的对象实现赋值时进行报错，但是在**使用`go vet`做静态语法分析时会提示相关的错误**：
 
 ```shell
 $ go vet main.go
@@ -78,7 +79,7 @@ $ go vet main.go
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1640868928210-1a6b6203daa7.jpg)
 
-改正的方法也很简单，就是使用指针方式传递。
+改正的方法也很简单，就是**使用指针方式传递**。Mutex Lock、Cond、Pool、WaitGroup 这些资源都严格要求操作要配套所以这些变量都不应该按值赋值，而应该使用指针引用。
 
 ### 4. 引用 noCopy
 
@@ -95,6 +96,6 @@ type DoNotCopy [0]sync.Mutex
 
 它使用了`sync.Mutex`的零长数组，不占用空间。而`sync.Mutex`也实现了`sync.Locker`接口。
 
-由于 vet checker 会检测`sync.Mutex`，就相当于实现了`noCopy`的功能。
+由于 go vet checker 会检测`sync.Mutex`，就相当于实现了`noCopy`的功能。
 
 
