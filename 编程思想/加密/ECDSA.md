@@ -231,4 +231,11 @@ dA = (S × k - z) / R
 
 本文中的一些图片来自于 Avi Kak 解释 ECDSA 背后的[数学的论文](https://engineering.purdue.edu/kak/compsec/NewLectures/Lecture14.pdf)。
 
+更多参考如下：
+
+* [椭圆曲线密码学简介（一）：实数域的椭圆曲线及其群运算规则](https://zhuanlan.zhihu.com/p/102807398)
+* [椭圆曲线密码学简介（二）：有限域的椭圆曲线及离散对数问题](https://zhuanlan.zhihu.com/p/104531745)
+* [椭圆曲线密码学简介（三）：ECDH加密算法和ECDSA数字签名算法](https://zhuanlan.zhihu.com/p/107599962)
+* [椭圆曲线密码学简介（四）：破解安全性及与RSA之间的比较](https://zhuanlan.zhihu.com/p/108103413)
+
 
