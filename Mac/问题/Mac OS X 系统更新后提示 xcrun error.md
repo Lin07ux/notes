@@ -10,6 +10,25 @@ xcrun: error: invalid active developer path (/Library/Developer/CommandLineTools
 xcode-select --install
 ```
 
+如果执行上面的命令的时候提示如下的错误：
+
+```
+xcode-select: error: command line tools are already installed, use "Software Update" to install updates
+```
+
+则可以尝试重置 xcode 即可：
+
+```shell
+sudo xcode-select -r
+```
+
+并可使用如下面命令进行验证：
+
+```shell
+$ xcode-select -p
+/Library/Developer/CommandLineTools
+```
+
 参考：[xcrun: error](http://tips.tutorialhorizon.com/2015/10/01/xcrun-error-invalid-active-developer-path-library-developer-commandline-tools-missing-xcrun/)
 
 
