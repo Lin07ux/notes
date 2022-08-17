@@ -179,4 +179,20 @@ git remote prune origin
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1479049942671.png)
 
+### 代码更改数量统计
+
+使用`diff`命令可以统计代码变更的数量，比如：
+
+1. `git diff HEAD~2` 获取最近两次提交的变更（包括增删的文件和行数，以及每行具体的改动）
+
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/1660728416-bb57f8463ff0.jpg)
+
+2. `git diff --stat` 统计发生变化的文件的增删行数
+
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/1660728439-5e00bec8943a.jpg)
+
+3. `git diff branch --stat` 查看到指定分支（提交）的变更统计
+
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/1660728577-278fb37c6c89.jpg)
+
 
