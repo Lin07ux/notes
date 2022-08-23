@@ -4,6 +4,12 @@ systemd 可以将将一个程序配置成服务，通过调整服务化配置参
 
 > supervisor 也能做使一个程序保持运行和自动重启，不过它并不是 Linux 预装软件，而且是用 Python 写的，需要安装较多的依赖包，相对来说安装会更复杂一些。
 
+### 1.1 systemctl 命令
+
+systemd 服务可以通过 systemctl 命令来进行管理，常见用法有：
+
+* `systemctl -l -t service | less` 查看当前服务器中有哪些可以执行的服务。
+
 ## 二、服务化参数
 
 ### 2.1 Unit
