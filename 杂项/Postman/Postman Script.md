@@ -86,7 +86,7 @@ pm.test("response should be okay to process", function () {
 1. 请求发送之前：此时会执行在`pre-request script`中配置的脚本；
 2. 得到响应之后：此时会执行在`test script`中配置的脚本。
 
-![Postman Execution Order Of Scripts](http://cnd.qiniu.lin07ux.cn/markdonw/1610529608-postman-execution-order-of-scripts.png)
+![Postman Execution Order Of Scripts](http://cnd.qiniu.lin07ux.cn/markdown/1610529608-postman-execution-order-of-scripts.png)
 
 ### 2.2 集合中的脚本执行时机和顺序
 
