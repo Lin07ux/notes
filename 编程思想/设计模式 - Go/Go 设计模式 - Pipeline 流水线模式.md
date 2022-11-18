@@ -1,12 +1,16 @@
 > 转摘：[Go 编程模式 -- Pipeline](https://mp.weixin.qq.com/s/kQLAnh-frOALCDNU924zxQ)
 
+### 1. 解决的问题
+
 Pipeline 流水线工作模型是将工作流程分为多个环节，每个环节根据工作强度安排合适的人员数量。良好的流水线设计尽量让各环节的流通率平衡，最大化提高产能效率。
 
 Pipeline 由多个环节组成，且核心是数据。在 Go 中每个环节之间是通过 Channel 来保证数据流动，每个环节的数据处理由 goroutine 完成，且同一个环节任务可以由多个 goroutine 来同时处理。
 
 除了开始环节和结束环节，每个环节都可以有任意数量的输入 Channel 和输出 Channel。开始环节被称为发送者或生产者，结束环节被称为接收者或消费者。
 
-### 1. 基本示例
+### 2. 实现方式
+
+#### 2.1 基本示例
 
 下面是一个分为三个环境的 Pipeline 示例。
 
@@ -57,7 +61,7 @@ func main() {
 }
 ```
 
-### 2. Fan-in-out
+#### 2.2 Fan-in-out
 
 在上面的例子中，环节之间通过非缓冲的 Channel 传递数据，节点中的数据都是单个 goroutine 处理与消费。
 
@@ -71,7 +75,7 @@ func main() {
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1639712542571-016606f93972.jpg)
 
-### 3. 扇入示例
+实现如下：
 
 ```go
 package main

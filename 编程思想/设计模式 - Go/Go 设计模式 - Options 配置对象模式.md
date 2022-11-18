@@ -62,7 +62,7 @@ func HttpRequest(method string, url string, options ...interface{}) ...
 
 此时虽然参数是可变的，但是实现方需要通过遍历设置 HTTP 客户端的不同选项，这就让可变参数固定了传递顺序，调用方如果想要设置某个可选项还得记住参数顺序，且无法直接通过函数签名就确定参数顺序。
 
-### 2. Options 方案
+### 2. 实现方式
 
 下面来看如何使用 Options 模式来解决这种问题。
 
