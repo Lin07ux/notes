@@ -1,4 +1,9 @@
-> 转摘：[你知道 Go 结构体和结构体指针调用有什么区别吗？](https://mp.weixin.qq.com/s/g-D_eVh-8JaIoRne09bJ3Q)
+> 转摘：
+> 
+> 1. [你知道 Go 结构体和结构体指针调用有什么区别吗？](https://mp.weixin.qq.com/s/g-D_eVh-8JaIoRne09bJ3Q)
+> 2. [Go的方法接收者：值接收者与指针接收者](https://mp.weixin.qq.com/s/_duDs0oHc_z_p--3OoIfVw)
+
+Go 语言中，可以为自定义类型定义方法（系统内置类型不能添加方法），但自定义类型的方法的接收者可以是值类型，也可以是指针类型。经由 Go 编译器的处理，它们的使用范围相近，但是效果却不完全相同。
 
 ### 1. 示例
 
@@ -37,6 +42,11 @@ func SetName2(s *MyStruct, name string) {
 ```
 
 因此，结构体方法是要将接收器定义为值还是指针，本质上与函数参数应该是值还是指针是同一个问题。
+
+Go 中对于类型的值接收者方法（也就是`(Type)Method`类型的方法）会自动使其拥有指针接收者方法（也就是`(*Type)Method`）的能力。也就是说：
+
+* 如果定义的是`(Type)Method`，则该类型会隐式的声明一个`(*Type)Method`；
+* 如果定义的是`(*Type)Method`，则不会隐式声明一个`(Type)Method`。
 
 ### 3. 如何选择
 

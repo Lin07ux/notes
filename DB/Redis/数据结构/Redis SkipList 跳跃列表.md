@@ -2,6 +2,7 @@
 
 > 1. 跳跃列表可以参看这个文章的解释：[漫画算法：什么是跳跃表？](http://blog.jobbole.com/111731/)
 > 2. [带你彻底击溃跳表原理及其Golang实现！（内含图解）](https://mp.weixin.qq.com/s/XEIrp1oTsBYDCv3b-m_11g)
+> 3. [关于跳表，这么解释你肯定能听懂](https://mp.weixin.qq.com/s/TTebiZuA3BmeC0aYjcK7gw)
 
 ### 1. 数据结构
 
