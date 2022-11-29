@@ -2,7 +2,7 @@
 
 这篇文章来讨论下一条 DML 语句从客户端发出后，服务器做了哪些处理，主要想讨论 redo、undo、binlog 这些日志是在什么时候生成的，什么时候写入到磁盘的。
 
-> 虽然 SELECT 语句的处理也很复杂，但它并不会修改数据库中的书，也就不会记录注入 redo、undo、binlog 这些日志。
+> 虽然 SELECT 语句的处理也很复杂，但它并不会修改数据库中的数据，也就不会记录注入 redo、undo、binlog 这些日志。
 
 ### 一、基础
 
@@ -124,7 +124,7 @@ InnoDB 使用`row_search_mvcc`处理读取一条记录的过程（不轮是加�
 
 ### 3.2 检测更新前后是否一样
 
-在`mysql_update`函数中，当通过`info.read_record`读取到一条记录只会，就要分析一下这条记录更新前后是否发生变化：
+在`mysql_update`函数中，当通过`info.read_record`读取到一条记录之后，就要分析一下这条记录更新前后是否发生变化：
 
 ![compare_records](http://cnd.qiniu.lin07ux.cn/markdown/1642552629069-4a4067fafba1.jpg)
 
@@ -187,7 +187,7 @@ MySQL 的 undo log 是要写到一种专门存储 undo log 的页面中的。如
 
 首先使用`row_upd_rec_sys_fields`函数更新系统字段`trx_id`以及`roll_pointer`，然后使用`row_upd_rec_in_place`函数真正的修改记录内容。
 
-> 在本例中的更新语句，更新前后的各个字段占用的存储空间大小是不变的，所以可以直接就低（in place）更新。
+> 在本例中的更新语句，更新前后的各个字段占用的存储空间大小是不变的，所以可以直接就地（in place）更新。
 
 然后再使用`btr_cur_update_in_place_log`函数记录更新的 redo 日志。
 
