@@ -21,7 +21,7 @@ redo log 可以分为以下两种类型：
 
 在 InnoDB 存储引擎中，大部分情况下，redo log 都是物理日志，而逻辑 redo log 涉及到的是更底层的内容。
 
-> 在记录 undo log 时，也要记录对应的 redo log。
+> 在 undo page 发生修改时，也要记录对应的 redo log。
 
 ### 1.3 组成
 

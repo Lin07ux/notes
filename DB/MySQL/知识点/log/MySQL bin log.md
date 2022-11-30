@@ -4,13 +4,13 @@
 
 对于 MySQL 来说，只要 binlog 和 redolog 都能正确持久化到磁盘上，就可以保证数据不丢失了。
 
-### 1. binlog 持久化
+### 1. bin log 持久化
 
-MySQL 为 binlog 设置了一个内存区域，充当缓存使用，也就是 binlog cache。每个线程都有自己的 binlog cache 区域。
+MySQL 为 bin log 设置了一个内存区域，充当缓存使用，也就是 bin log cache。每个线程都有自己的 bin log cache 区域。
 
-**在事务运行的过程中，MySQL 会先把日志写到 binlog cache 中，等到事务真正提交的时候再统一把 binlog cache 中的数据写到 binlog 文件中**。（binlog cache 有很多个，但 binlog file 只有一个。）
+**在事务运行的过程中，MySQL 会先把日志写到 binlog cache 中，等到事务真正提交的时候再统一把 binlog cache 中的数据写到 binlog 文件中**。（bin log cache 有很多个，但 bin log file 只有一个。）
 
-事实上，这个从 binlog cache 写到 binlog file 的操作并不是已经落盘了，而仅仅是把 binlog 写到了文件系统的 page cache 上（这一步对应下图中的`write`操作）。所以最后需要把 page cache 中的数据同步到磁盘上，才算真正完成了 binlog 的持久化（这一步对应下图中的`sync`操作）。一般情况下，认为`fsync`才占磁盘的 IOPS(Input/Output Operations Per Second)：
+事实上，这个从 bin log cache 写到 bin log file 的操作并不是已经落盘了，而仅仅是把 bin log 写到了文件系统的 page cache 上（这一步对应下图中的`write`操作）。所以最后需要把 page cache 中的数据同步到磁盘上，才算真正完成了 bin log 的持久化（这一步对应下图中的`sync`操作）。一般情况下，认为`fsync`才占磁盘的 IOPS(Input/Output Operations Per Second)：
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1641865592593-48a3d28303e3.jpg)
 
