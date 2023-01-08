@@ -40,14 +40,31 @@ class RegisterFacades
 
         Facade::setFacadeApplication($app);
 
-        AliasLoader::getInstance($app->make('config')->get('app.aliases', []))->register();
+        AliasLoader::getInstance(array_merge(
+            $app->make('config')->get('app.aliases', []),
+            $app->make(PackageManifest::class)->aliases()
+        ))->register();
     }
 }
 ```
 
-之后则是调用`Illuminate\Foundation\AliasLoader` 的`load()`方法来完成：
+在`Illuminate\Foundation\AliasLoader`的处理中，会将其`load()`方法注册到 PHP 的 autoload 方法序列的最前面：
 
 ```php
+public function register()
+{
+    if (! $this->registered) {
+        $this->prependToLoaderStack();
+
+        $this->registered = true;
+    }
+}
+
+protected function prependToLoaderStack()
+{
+    spl_autoload_register([$this, 'load'], true, true);
+}
+
 public function load($alias)
 {
    if (isset($this->aliases[$alias])) {
@@ -56,7 +73,7 @@ public function load($alias)
 }
 ```
 
-可以看到，最终是调用 PHP 自带的`class_alias()`方法来注册的。这个方法注册的类别名是惰性加载的，只有在用到的时候才会加载类定义。所以可以随意添加类别名的注册，而不会影响系统的性能。
+可以看到，最终是通过 PHP 自带的`class_alias()`方法来为 Facades 的类注册一个简短的别名，而且这个类别名是惰性加载的，只有在用到的时候才会加载类定义。所以可以随意添加类别名的注册，而不会影响系统的性能。
 
 ### 2. Facade 类
 
@@ -84,7 +101,7 @@ class App extends Facade
 }
 ```
 
-它只定义了一个`getFacadeAccessor()`的静态方法，返回字符串`'app'`。而根据注册`@see \Illuminate\Foundation\Application`可以猜到它和`\Illuminate\Foundation\Application`类有关的，但是`\Illuminate\Foundation\Application`类中没有静态的`make()`方法，只有一个一般的`public`的`make()`方法。那他是怎么能够通过静态方式调用这个`make()`方法的呢？
+它只定义了一个`getFacadeAccessor()`的静态方法，返回字符串`'app'`。而根据注释`@see \Illuminate\Foundation\Application`可以猜到它和`\Illuminate\Foundation\Application`类有关的，但是`\Illuminate\Foundation\Application`类中没有静态的`make()`方法，只有一个一般的`public`的`make()`方法。那他是怎么能够通过静态方式调用这个`make()`方法的呢？
 
 ### 3. __callStatic 魔术方法
 
