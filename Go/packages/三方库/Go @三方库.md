@@ -203,6 +203,22 @@ inotify 也是一个特殊句柄，属于匿名句柄之一，这个句柄用于
 
 [Go 存储基础 — “文件”被偷偷修改？来，给它装个监控！](https://mp.weixin.qq.com/s/Vq5WxDyorMQ2nNkUAr6DjQ)
 
+### 3.4 结构体字段对齐 fieldalignment
+
+[fieldalignment](https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/fieldalignment)是一个检测和对齐结构体字段的小工具，可以找到那些可以重新排序字段以减少内存占用的结构，并提供建议和编辑为最紧凑的顺序。
+
+fieldalignment 会有鲁昂个不同的报告：一个是检查结构体的大小，另一个是报告所使用的指针字节数（是指 GC 会对 struct 中的这些字节进行潜在的指针扫描）。
+
+比如：
+
+* `struct { uint32, string }` 16 个指针字节，GC 会扫描字符串的内部指针；
+* `struct { string, *uint32}` 24 个指针字节，GC 会进一步扫描`*uint32`；
+* `struct { string, uint32}` 8 个指针字节，因为扫描到 string 会立马停止。
+
+可以看出，最紧凑的顺序并非总是最有效的。在极少数情况下，它可能会导致两个变量分别被字节的 goroutine 更新占用同一个 CPU 缓存线，从而引起一种被称为“假共享”的内存争夺，这样会降低两个 goroutine 的速度。
+
+另外，fieldalignment 自动调整字段顺序后会导致字段后的注释被丢掉了。
+
 ## 四、其他
 
 ### 4.1 chromedp
