@@ -109,7 +109,7 @@ func solution02() (err error) {
 
 这种方案解决了方案一中忘记关闭文件的风险，如果有更多`if err != nil`的分支条件，这种模式可以有效降低代码行数。
 
-**第三种方案：在函数嘴周 return 语句之前，显式调用一次 f.Close()**
+**第三种方案：在函数最终 return 语句之前，显式调用一次 f.Close()**
 
 ```go
 func solution03() error {
