@@ -4,6 +4,7 @@
 > 2. [终于被我说清楚了！](https://mp.weixin.qq.com/s/Ef73pSWb_k6yiTTlNCrEjg)
 > 3. [MySQL 全局锁、表级锁、行级锁，你搞清楚了吗？](https://mp.weixin.qq.com/s/SgteE94sZfAMv5mZJYrTqw)
 > 4. [争议很大的问题](https://mp.weixin.qq.com/s/lHk6q0r2EU3pfthXQnFC7g)
+> 5. [美团面试特有：写个 SQL 语句然后问加了哪些锁](https://mp.weixin.qq.com/s/36vYCusyO-67-2vvU_6RtQ)
 
 > 下面的说明以 MySQL InnoDB 存储引擎为例。
 
@@ -212,6 +213,8 @@ InnoDB 存储引擎在可重复读隔离级别下，**普通的 SELECT 语句属
 
 在 InnoDB 引擎的锁实现中：**行锁加锁是在索引记录上添加的**，如果查询条件没有使用索引字段的话，整张表都无法进行增删改，但这并不是因为加了表锁，而是因为表中所有记录之间都加了间隙锁，相当于把整个表给锁住了。由于没有使用索引，会进行全表扫描，在遍历索引的时候会为对应的记录加上 Next-Key Lock，而不是针对输出的结果加行锁。
 
+在查找过程中，只有访问到的对象才会加锁，而且加锁的基本单位是 Next-Key Lock，但是在一些特定的情况下，Next-Key Lock 会退化为 Record Lock 或者 Gap Lock。
+
 ### 2.1 加锁场景
 
 而在锁定读（当前读）时会对读取的记录加行级锁：
@@ -257,6 +260,15 @@ SELECT ... FOR UPDATE
 
 * 存在：在索引树上定位到这条记录后为该记录添加记录锁 Record Lock；
 * 不存在：在索引树上找到第一条大于该查询值的记录和第一条小于该查询值的记录，然后在这两条记录之间加上间隙锁 Gap Lock。
+
+比如，假设 user 表中有主键 ID 为 20、25、30 的数据，那么对于下面的 SQL：
+
+```sql
+SELECT * FROM user WHERE id = 25 FOR UPDATE;
+SELECT * FROM user WHERE id = 22 FOR UPDATE;
+```
+
+前者可以查找到 id 为 25 的记录，那么就会在该记录上加上记录锁；后者因为不存在 id 为 22 的记录，所以会向前找到比 22 小的记录（也就是 id 为 20 的记录），向后找到比 22 大的记录（也就是 id 为 25 的记录），然后在这两条记录之间加上间隙锁，锁的范围是`(20, 25)`。
 
 ### 2.4 唯一索引范围查询
 
