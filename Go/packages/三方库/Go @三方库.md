@@ -219,6 +219,33 @@ fieldalignment 会有鲁昂个不同的报告：一个是检查结构体的大�
 
 另外，fieldalignment 自动调整字段顺序后会导致字段后的注释被丢掉了。
 
+### 3.5 可视化 Go Runtime 指标 - statsviz
+
+[statsviz](https://github.com/arl/statsviz) 可以方便的集成到 HTTP 服务中，然后在浏览器中就可以实时看到服务器的 runtime 指标信息：堆、对象、goroutine、GC、调度器等。
+
+在 HTTP 服务中注册 statsviz 方式如下：
+
+```go
+// 注册到自定义的 HTTP Server
+mux := http.NewServeMux()
+statsviz.Register(mux)
+
+// 注册到 Go 默认的 HTTP Server
+statsviz.RegisterDefault()
+
+// 注入到 gin 框架
+router := gin.New()
+router.GET("/debug/statsviz/*filepath", func(context *gin.Context) {
+  if context.Param("filepath") == "/ws" {
+    statsviz.Ws(context.Writer, context.Request)
+    return
+  }
+  statsviz.IndexAction("/debug/statsviz").ServeHTTP(context.Writer, context.Request)
+}
+```
+
+statsviz 默认会向 HTTP 服务中注入`/debug/stasviz`和`/debug/statsviz/ws`两个路由：前者用于 HTML 资源响应，后者提供 WebSocket 服务向页面提供实时数据。
+
 ## 四、其他
 
 ### 4.1 chromedp
