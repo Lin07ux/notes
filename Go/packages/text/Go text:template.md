@@ -291,7 +291,7 @@ Go template 中的条件判断语法和 Go 语法基本相同：
 {{if pipeline}} T1 {{else}} {{if pipeline}} T0 {{end}}
 ```
 
-### 3.6 range 循环迭代
+### 2.6 range 循环迭代
 
 Go template 有两种迭代方式：
 
@@ -326,7 +326,7 @@ range 可以迭代 slice、array、map 和 channel。迭代的时候会设置`.`
 
 需要注意的是，`{{ range . }}`和`<li>{{ . }}</li>`两行中的`.`变量的值是不同的：前者表示模板的全局变量，后者则表示当前正在迭代的元素。
 
-### 3.7 with 作用域区块
+### 2.7 with 作用域区块
 
 Go template 中可以使用`with`命令来定义一个作用域区块，并将当前区块中的`.`变量的值修改为`with`命令指定的值。
 
@@ -347,7 +347,7 @@ Go template 中可以使用`with`命令来定义一个作用域区块，并将�
 
 这行模板中，通过`with`将其区块中的`.`变量的值设置为了`"xx"`，所以渲染输出的结果就是`xx`。
 
-### 3.8 funcs 函数
+### 2.8 funcs 函数
 
 Go template 中定义了一些内置函数，主要有如下：
 
@@ -382,7 +382,7 @@ arg1==arg2 || arg1==arg3 || arg1==arg4
 
 Go template 也支持自定义函数，不过自定义函数需要在执行模板解析（`Parse`）之前进行设置。
 
-### 3.9 define & template 模板嵌套
+### 2.9 define & template 模板嵌套
 
 Go template 支持模板嵌套，也就是说在一个模板中能够通过模板名称引入其他的模板，实现模板复用。
 
@@ -433,7 +433,7 @@ ONE <nil>
 TWO haha
 ```
 
-### 3.10 block 模板占位
+### 2.10 block 模板占位
 
 根据官方文档的解释：`block`等价于使用`define`定义一个指定名称的模板，并在有需要的地方执行这个模板，执行时将子模板的`.`变量设置为 pipeline 的值。
 
@@ -484,7 +484,7 @@ TWO haha
 
 从而实现对`home.html`模板的复用和对`content`内容的自定义。
 
-### 3.11 html 上下文感知
+### 2.11 html 上下文感知
 
 对于`html/template`包来说，存在上下文感知的处理，而`text/template`没有该功能。
 
@@ -542,4 +542,214 @@ t, _ := template.ParseFiles("tmpl.html")
 t.Execute(w, template.HTML(r.FormValue("comment")))
 ```
 
+## 三、实现
+
+text/template 和 html/template 包在整体的结构和实现逻辑上都是相似的，只是有些属性值的使用和处理不同。
+
+### 3.1 结构体
+
+**Template**
+
+template 中最主要的是 Template 结构体，包中的大部分导出的方法和函数的返回值都是该结构体的实例：
+
+```go
+type Template struct {
+  name string       // 模板名称
+  *parse.Tree       // 解析树
+  *common           // 模板集合
+  leftDelim  string // 左分隔符，默认为 {{
+  rightDelim string // 右分隔符，默认为 }}
+}
+```
+
+该结构体中需要主要关注的是`name`和`common`两个字段，前者可以被用来查找、引用该模板，后者则是与当前 Template 实例关联的一个模板组。
+
+**common**
+
+`common`结构体的定义如下：
+
+```go
+type common struct {
+  tmpl       map[string]*Template // Map from name to defined templates.
+  option     option
+  muFuncs    sync.RWMutes // protects parseFuncs and execFuncs
+  parseFuncs FuncMap
+  execFuncs  map[string]reflect.Value
+}
+```
+
+这个结构体的`tmpl`是一个 map 结构，key 为模板实例的名称，value 为模板实例指针，所以一个 common 中可以包含多个 Template。而每个 Template 中又通过`common`字段指向了 common 实例，这就构成了一个闭环。
+
+也就是说，Template 在解析的时候，会将遇到的每个模板定义都生成一个 Template 实例，这些 Template 实例会共用同一个 common。而且这个 common 实例中会包含全部的这些 Template 实例。
+
+可以将 common 看做为一个模板组，它与 Template 实例之间最终会组成类似如下的结构：
+
+![](https://cnd.qiniu.lin07ux.cn/markdown/1676647620)
+
+**FuncMap**
+
+common 中`parseFuncs`的类型是一个很简单的函数 map 类型，定义如下：
+
+```go
+type FuncMap map[string]any
+```
+
+虽然从定义上看其值可以是 any（也就是`interface{}`），但其实是要求其需要为一个函数，并且只能返回一个或者两个值，而且如果返回两个值则需要第二个值是 error 类型。如果不符合这些条件，就会出现 panic。
+
+common 中的 parseFuncs 和 execFuncs 共同构成模板渲染时的自定义函数组。
+
+### 3.2 New
+
+template 包中，提供了一个`New()`函数，来创建一个空的、无解析数据的模板，同时还会初始化 common 结构体。对应的源码如下：
+
+```go
+func New(name string) *Template {
+  t := &Template{
+    name: name,
+  }
+  t.init()
+  return t
+}
+
+func (t *Template) init() {
+  if t.common == nil {
+    c := new(common)
+    c.tmpl = make(map[string]*Template)
+    c.parseFuncs = make(FuncMap)
+    c.execFuncs = make(map[string]reflect.Value)
+    t.common = c
+  }
+}
+```
+
+可以看到，`New()`函数的功能很简单，就是创建一个 Template 实例，并初始化其 common 结构体。而且初始化 common 结构体的方法`t.init()`在整个包中会有多次用到，所以它就做了 common 是否为空的判断，为空的时候才会进行初始化，这样可以避免多次设置 common。
+
+另外，需要注意的是，`New()`函数得到的 Template 实例虽然初始了 common 实例，但是 common 实例中并没有包含该 Template 实例，它们之间还只是单向指向关系。在调用了 Template 实例的`Parse()`方法之后才会将当前的 Template 实例添加到它的 common 中。所以，**common 是一个已经被解析了的模板组**。
+
+在 Template 结构体上也定义了一个`New()`方法，它相当于对当前实例的拷贝，不过名字是单独设置的，而且这个新的实例还处于未解析状态：
+
+```go
+// New allocates a new, undefined template associates with the given one and with the same
+// delimiters. The association, which is transitive, allows one template to
+// invoke another with a {{template}} action.
+func (t *Template) New(name string) *Template {
+  t.init()
+  nt := &Template {
+    name:       name,
+    common:     t.common,
+    leftDelim:  t.leftDelim,
+    rightDelim: t.rightDelim,
+  }
+  return nt
+}
+```
+
+### 3.3 Parse/ParseGlob/ParseFiles/ParseFs
+
+template 提供了四个方法来实现模板的解析，常用的是前三个：
+
+* Parse 解析给定的文本内容；
+* ParseGlob 读取并解析与给定的正则表达式匹配的文件；
+* ParseFiles 解析给定的文件，支持多个文件路径参数；
+* ParseFs 在指定的文件系统中读取并解析文件。
+
+需要注意：**注意在调用 `Parse()` 方法之后才会将相关的 Template 实例放进 common 中，表示这个模板已经可用了，或者称为已经定义了(defined)，可以被 `Execute()` 或 `ExecuteTemplate()` 进行渲染了，也表示可以使用 `Lookup()` 和 `DefinedTemplates()` 来检索模板了。**
+
+另外，调用了`Parse()`方法解析模板之后，会将给定的 FuncMap 中的函数添加到 common 中。而只有存在于 common 中的函数才可以在模板中使用。
+
+`ParseGlob/ParseFiles/ParseFs`三个方法（在 html/template 包中也提供了三个同名的函数）会在解析文件的时候创建新的 Template 实例，这些新的实例都属于同一个 common 模板组。但是需要注意的是：调用这三个方法之后，当前的模板实例依旧没有被添加到 common 中。也就是说，当前模板实例依旧不可用、未定义。
+
+使用文件来解析时，默认会使用文件的 basename 作为对应的 Template 实例的名称。
+
+### 3.4 Execute/ExecuteTemplate
+
+这两个方法是用来渲染已经解析好的模板，并将结果输出到一个 io.Writer 中。它俩的区别在于：前者使用整个 common 中已定义好的模板对象进行渲染，后者可以指定使用 common 中的某个已定义的模板进行渲染。
+
+```go
+func (t *Template) Execute(wr io.Writer, data interface{}) error
+func (t *Template) ExecuteTemplate(wr io.Writer, name string, data interface{}) error
+```
+
+### 3.5 Lookup/DefinedTemplates/Templates
+
+这三个方法都用于检索已经定义的模板：
+
+* Lookup 根据模板名称来检索并返回对应的 Template 实例，对应名称的模板不存在在返回 nil；
+* DefinedTemplates 返回所有已经定义的模板名称组成的字符串，没有已定义的模板时返回空字符串；
+* Templates 返回所有已定义的模板实例的 slice，没有已定义的模板时返回空的 slice。
+
+### 3.6 Clone
+
+`Clone()`方法用于克隆一个完全一样的模板，包括 common 结构体也会完全克隆。它与`New()`方法的不同在于：
+
+* `New()`方法复用当前模板实例的内容，创建一个新的模板实例；
+* `Clone()`方法将当前模板实例的全部数据都做一份深拷贝，得到一个与当前模板实例没有关联的新实例。
+
+也就是说，调用`Clone()`方法得到的实例和当前实例完全一样，但是修改克隆的新实例将不会对原实例造成影响。
+
+例如：
+
+```go
+func main() {
+	t1 := template.New("test1")
+	t2 := t1.New("test2")
+	t1, _ = t1.Parse(
+		`{{define "T1"}}ONE{{end}}
+		{{define "T2"}}TWO{{end}}
+		{{define "T3"}}{{template "T1"}} {{template "T2"}}{{end}}
+		{{template "T3"}}`)
+	t2, _ = t2.Parse(
+		`{{define "T4"}}ONE{{end}}
+		{{define "T2"}}TWOO{{end}}
+		{{define "T3"}}{{template "T4"}} {{template "T2"}}{{end}}
+		{{template "T3"}}`)
+
+	t3, err := t1.Clone()
+	if err != nil {
+		panic(err)
+	}
+
+	// 两者的解析树位置相同，但 common 不同
+	fmt.Println(t1.Lookup("T4"))  // &{T4 0xc000070240 0xc000100050  }
+	fmt.Println(t3.Lookup("T4"))  // &{T4 0xc000070240 0xc000078000  }
+
+	// 修改 t3
+	t3, _ = t3.Parse(`{{define "T4"}}one{{end}}`)
+
+	// t1 中的 T4 未发生变化，但 t3 中的 T4 已经不同了
+	fmt.Println(t1.Lookup("T4"))  // &{T4 0xc000070240 0xc000100050  }
+	fmt.Println(t3.Lookup("T4"))  // &{T4 0xc0000706c0 0xc000078000  }
+}
+```
+
+### 3.7 Must
+
+template 中的函数和方法一般返回的都是两个值：一个是 Template，一个是 error。
+
+但是有时候，只有第一个返回值是想要的，而 error 出现时只想简单的 panic 即可。所以 template 包中提供了`Must()`函数来进行封装简化，只返回需要的 Template 值：
+
+```go
+func Must(t *Template, err error) *Template {
+  if err != nil {
+    panic(err)
+  }
+  return t
+}
+```
+
+利用这个函数就能够简化很多调用的写法：
+
+```go
+t := template.Must(template.New("name").Parse("text"))
+```
+
+### 3.8 Funcs
+
+`Funcs()`方法可以为模板组指定自定义函数，而且自定义函数的优先级高于内置函数的优先级。所以如果自定义函数的名称和内置函数名称相同，则内置函数将失效。
+
+`Funcs()`方法接收一个 FuncMap 类型的参数，所以理论上是可以设置任何类型的自定义函数的。但是如果自定义函数的返回值不是 1 个或 2 个，而且第二个返回值不是 error 类型时，模板渲染会自动停止。
+
+自定义的函数可以有零个或多个参数，如果需要多个参数，需要在调用函数时自行决定好传入参数的顺序。
+
+注意：**必须在解析之前调用`Funcs()`方法，这样才能在解析的时候将自定义函数放进 common 结构中，否则自定义函数不生效。**
 
