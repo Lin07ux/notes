@@ -52,5 +52,46 @@ brew install brew-cask
     
     > 参考：[Brew doctor says: “Warning: /usr/local/include isn't writable.”](http://stackoverflow.com/questions/14527521/brew-doctor-says-warning-usr-local-include-isnt-writable)
 
+2. 安装是提示网络超时
 
+    由于墙的存在，在国内安装 Homebrew 的时候常会遇到连接超时的问题，此时可以改用国内的镜像源进行安装：
+    
+    ```shell
+    /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
+    ```
 
+选择对应的源之后输入密码即可完成安装。
+
+3. 使用 brew 安装软件时提示 Git 错误
+
+    错误类似如下：
+
+    ```shell
+    Error: Command failed with exit 129: git
+    ```
+    
+    对应的是如下的 Git 错误：
+    
+    ```shell
+    fatal: detected dubious ownership in repository at '/opt/homebrew/Library/Taps/homebrew/homebrew-core'
+    To add an exception for this directory, call:
+    
+        git config --global --add safe.directory /opt/homebrew/Library/Taps/homebrew/homebrew-core
+    ```
+    
+    这一般是由于安装 Homebrew 时，一些子仓库(homebrew-cask/homebrew-core/homebrew-services)的所有者和当前使用者不同导致的。可以将这些子仓库加入到 git 的安全目录(safe.directory)中来解决这个问题：
+
+    ```shell
+    git config --global --add safe.directory /opt/homebrew/Library/Taps/homebrew/homebrew-core
+    git config --global --add safe.directory /opt/homebrew/Library/Taps/homebrew/homebrew-cask
+    git config --global --add safe.directory /opt/homebrew/Library/Taps/homebrew/homebrew-services
+    ```
+    
+4. brew 安装 GitHub 上的软件时连接超时
+
+    brew 使用 curl 进行下载，所以可以给 curl 配置上 socks5 代理，走代理下载 GitHub 等墙外的资源：
+    
+    ```bash
+    # ~/.curlrc
+    socks5 = "127.0.0.1:1080"
+    ```
