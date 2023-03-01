@@ -4,11 +4,11 @@
 
 > A value x of non-interface type X and a value t of interface type T are comparable when values of type X are comparable and X implements T. The are equal if t's dynamic type is identical to X and t's dynamic value is equal to x.
 
-interface 类型变量与非 interface 类型变量进行判断时，首先要求非 interface 类型变量实现了对应的 interface 接口，否则编译不通过。其次要求非 interface 类型变量的值是可比较的。
+**interface 类型变量与非 interface 类型变量进行判断时，首先要求非 interface 类型变量实现了对应的 interface 接口，否则编译不通过。其次要求非 interface 类型变量的值是可比较的**。
 
 > 对于空 interface（也就是`interface{}`）来说，可以认为所有的类型都实现了该接口。
 
-在满足上面的要求下，interface 类型变量的动态类型、值均与非 interface 类型变量相同时，两个变量判断结果为 true。
+**在满足上面的要求下，interface 类型变量的动态类型、值均与非 interface 类型变量相同时，两个变量判断结果为 true。**
 
 ### 2. 问题
 

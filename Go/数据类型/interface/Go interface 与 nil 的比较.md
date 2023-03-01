@@ -1,3 +1,5 @@
+### 1. 比较逻辑
+
 interface 变量定义的是一个 16 字节的结构体，其中首 8 字节是类型字段，后 8 字节是数据指针。普通的 interface 是`iface`结构，`interface{}`对应的是`eface`结构。
 
 interface 变量创建的时候是 nil，此时这 16 个字节全都是 0。**interface 变量与 nil 的判断，汇编逻辑是判断首 8 字节是否是 0 值。**
@@ -6,9 +8,7 @@ interface 变量创建的时候是 nil，此时这 16 个字节全都是 0。**i
 
 这也表明：在编译通过的情况下，**具体类型到接口的赋值一定会导致接口非零**。
 
-### 1. 示例
-
-示例代码如下：
+### 2. 问题
 
 ```go
 package main
@@ -35,9 +35,9 @@ func isNil(x interface{}) {
 }
 ```
 
-可以看到，默认情况下，一个 interface 变量的值就是 nil。但是一旦将一个具体类型的变量赋值给它了，它就不再是 nil 了。因为，虽然它的值是 nil，但是类型必然不是 nil 了。
+对于上述的代码可以看到，默认情况下，一个 interface 变量的值就是 nil。但是一旦将一个具体类型的变量赋值给它了，它就不再是 nil 了。因为，虽然它的值是 nil，但是类型必然不是 nil 了。
 
-### 2. 解决方法
+### 3. 解决方法
 
 要使得能正确的判断 interface 的值是否为 nil，可以利用反射来实现。代码如下：
 
@@ -58,7 +58,7 @@ func isNil(i interface{}) bool {
 * 先对值进行 nil 判断，不为 nil 时在设置成 interface 类型；
 * 返回具体的值类型，而不是返回 interface 类型。
 
-### 3. 赋值改变为非 nil interface
+### 4. 赋值改变为非 nil interface
 
 对于一个声明为 interface 的变量，其初始值默认为 nil，但是当将一个对应 interface 实现对象赋值给它时，它就是非 nil interface 了，即便这个实现对象是 nil。这也是因为 interface 与 nil 的判断是根据其首 8 字节的动态类型是否为 nil 造成的。
 
