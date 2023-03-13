@@ -1,4 +1,4 @@
-## 常用命令
+## 一、常用命令
 
 * 启动守护进程：`supervisord -c /etc/supervisor/supervisord.conf`
 * 重载配置：`supervisorctl reload`
@@ -13,7 +13,24 @@
 
 > `start`、`stop`、`restart`后跟随`all`表示表示启动、关闭、重启所有程序。
 
-## 常见报错
+## 二、常用配置
+
+### 1. 使 Supervisor 的日志定位到标准输出中而不是文件中
+
+```ini
+[supervisord]
+nodaemon=true
+logfile=/dev/null
+logfile_maxbytes=0
+```
+
+`nodaemon=true`配置能够使 Supervisor 的日志输出到标准输出中，`logfile_maxbytes=0`则可以避免日志超限后不再记录。
+
+因为 Supervisor 不会区别特殊文件和普通文件，所以这个日志大小限制是必填的，否则会按照默认的 50MB 的限制记录。
+
+> 转摘：[supervisord disable log files or use logfile=/dev/stdout](https://stackoverflow.com/questions/45645758/supervisord-disable-log-files-or-use-logfile-dev-stdout)
+
+## 三、常见报错
 
 使用 Supervisor 遇到错误时，基本思路如下：
 
