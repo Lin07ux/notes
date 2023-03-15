@@ -39,3 +39,10 @@ docker history <name>[:<version>] --no-trunc
 > 
 > 1. [CMD 容器启动命令](https://yeasy.gitbook.io/docker_practice/image/dockerfile/cmd)
 > 2. [ENTRYPOINT 入口点](https://yeasy.gitbook.io/docker_practice/image/dockerfile/entrypoint)
+
+### CMD 和 ENTRYPOINT 的继承
+
+默认情况下，`CMD`和`ENTRYPOINT`指令都能被子镜像继承。但是如果子镜像重新定义了`ENTRYPOINT`指令，那么父级的`CMD`就会被重置为 null。这样是为了避免不当的讲原先的`CMD`作为参数传递给新的`ENTRYPOINT`执行，造成未预料的结果。
+
+> 参考：[Is CMD in parent docker overriden by CMD/ENTRYPOINT in child docker image?](https://stackoverflow.com/questions/49028644/is-cmd-in-parent-docker-overriden-by-cmd-entrypoint-in-child-docker-image)
+
