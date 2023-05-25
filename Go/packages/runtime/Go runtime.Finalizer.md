@@ -51,6 +51,8 @@ gc Finalizer
 
 ### 3. Finalizer 特点：串行化执行
 
+> 转摘：[Go 细节篇-内存回收又踩坑了](https://mp.weixin.qq.com/s/KH-DJl5DhhnQ3Jwt2BPh-g)
+
 Finalizer 很好用，但是它也有限定条件。在官网上有如下的[声明](https://golang.google.cn/pkg/runtime/#SetFinalizer)：
 
 > A single goroutine runs all finalizers for a program, sequentially. If a finalizer must run for a long time, it should do so by starting a new gorutine.
