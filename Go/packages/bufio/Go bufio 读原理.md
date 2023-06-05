@@ -1,4 +1,4 @@
-> 转摘：[硬核，图解bufio包系列之读取原理](https://mp.weixin.qq.com/s/rjQ9_8TxfHXpZF4B1gj32w)
+> 转摘：[硬核，图解bufio包系列之读取原理](https://mp.weixin.qq.com/s/nDTzCqPwb5nriHsuhQjVpA)
 
 ## 一、读取介绍
 
@@ -304,7 +304,7 @@ n, _ := bufioReader.Read(p)
 
 ## 四、总结
 
-由以上可知，bufio 是利用局部性原理，通过将文件的内容预先加载到缓冲区中，以减少 ID 的系统调用来提高读取性能的。
+由以上可知，bufio 是利用局部性原理，通过将文件的内容预先加载到缓冲区中，以减少 IO 的系统调用来提高读取性能的。
 
 也就是说，当读取数据时，只有在缓冲区中能够命中时才能提高读取的性能。
 
