@@ -22,8 +22,8 @@ type call struct {
   val       interface{}      // 函数的返回值，只会写入一次
   err       error
   forgotten bool             // 调用了 Forgot 方法
-  dups      int              // 统计调用次数以及返回的 channel
-  chans     []chan<- Result
+  dups      int              // 统计调用次数
+  chans     []chan<- Result  // 返回的 channel
 }
 
 type Result struct {
@@ -87,7 +87,7 @@ func (g *Group) Do(key string, fn func() (interface{}, error)) (v interface{}, e
     
     在得到结果之后还需要进行错误的处理。处理的时候会区分 panic 错误和 runtime 的错误，这是为了避免会出现死锁，后面会看到为什么要这样做。
     
-    最后就可以返回执行的结果了，包括执行得到的结果值、执行返回的错误以及是否共享了结果（必然是共享的，总是为`true`）。
+    最后就可以返回执行的结果了，包括执行得到的结果值、执行返回的错误以及是否共享了结果。
 
 2. 当前 key 不存在
 
