@@ -37,7 +37,7 @@
 * `Dont't Show` 选择查询结果中不出现的内容；
 * `Result Limit` 自定义显示结果个数。
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/tTfUVj-20210120180232.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/tTfUVj-20210120180232.jpg)
 
 #### 2.2.2 Navigation
 
@@ -67,10 +67,10 @@ Buffer 选项卡中的设置很简单，主要就是是否启用缓存功能和�
 
 * `Option + ↑`将选中的文件/文件夹加入到缓存列表，或者将已加入缓存列表的文件/文件夹从缓存列表中移除。加入缓存之后，就会在 Alfred 的搜索界面上出现选中文件的小图标了。
 * `Option + ↓`和`Option + ↑`类似，也可以将选中的文件加入到缓存列表中，但是它不可以将已加入缓存列表的文件/文件夹移除。而且，使用这个快捷键将文件/文件夹加入缓存列表之后，会自动选中下一个文件/文件夹。
-    ![](http://cnd.qiniu.lin07ux.cn/uPic/tzR7d4-20210120200128.jpg)
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/tzR7d4-20210120200128.jpg)
     
 * `Option + →`调出控制面板，来对缓存列表中的文件/文件夹进行批量处理，比如：打开、发邮件、拷贝、移动、删除等。
-    ![](http://cnd.qiniu.lin07ux.cn/uPic/LWYIWw-20210120200700.jpg)
+    ![](http://cnd.qiniu.lin07ux.cn/markdown/LWYIWw-20210120200700.jpg)
 
 * `Option + ←`可以移除缓存列表中的最后一项（也就是最近添加的一项）。
 * `Option + Delete`可以将缓存列表清空。
@@ -119,21 +119,21 @@ Buffer 选项卡中的设置很简单，主要就是是否启用缓存功能和�
 
 另外每个查询设置都能设置相应网站的图标，只要将网站图标拖到设置的位置即可。在新版本的 Alfred 中，还增加了`Use HTTPS for default searches if possible`选项，以强化安全性。
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/Wg94PX-20210120205717.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/Wg94PX-20210120205717.jpg)
 
 ### 2.5 Calculator
 
 计算器主要有两个功能：一个就是直接输入简单的加减运算，一个就是输入`=`来输入复杂的计算，支持许多高级的数学函数。
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/Vjxuzt-20210120205828.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/Vjxuzt-20210120205828.jpg)
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/Kyl8vF-20210120205845.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/Kyl8vF-20210120205845.jpg)
 
 ### 2.6 Dictionary
 
 字典功能其实使用的是 Mac 系统自带的字典，可以设置使用的字典和查询关键字，输入`di + 关键字`来查询中英字典：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/SD4yVi-20210120205928.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/SD4yVi-20210120205928.jpg)
 
 ### 2.7 Clipboard
 

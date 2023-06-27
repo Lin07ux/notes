@@ -6,9 +6,9 @@ Postman 的脚本中，可以使用一些预定义的变量来生成随机数据
 
 > 在 Pre-request 脚本中使用动态变量需要使用`pm.variables.replaceIn()`方法，比如：`pm.variables.replaceIn('{{$randomFirstName}}')`。
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/ISBuCp-20210122115641.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/ISBuCp-20210122115641.png)
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/yhjYGc-20210122115722.png)
+![](http://cnd.qiniu.lin07ux.cn/markdown/yhjYGc-20210122115722.png)
 
 动态变量列表如下：
 

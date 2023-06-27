@@ -10,7 +10,7 @@ Postman 的变量分为多个层级：
 
 各层级变量的存取方式如下：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/ZKl4qM-20210122145353.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/ZKl4qM-20210122145353.jpg)
 
 
 

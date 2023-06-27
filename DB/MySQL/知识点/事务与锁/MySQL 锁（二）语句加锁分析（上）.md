@@ -45,7 +45,7 @@ INSERT INTO hero VALUES
 
 现在，`hero`表就有了两个索引：一个聚簇索引（主键索引）、一个二级索引。示意图如下：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/LXtevH-20210129134314.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/LXtevH-20210129134314.jpg)
 
 ## 二、普通的 SELECT 读
 
@@ -111,7 +111,7 @@ SELECT * FROM hero WHERE number = 8 LOCK IN SHARE MODE;
 
 这个语句执行时只需要访问一下聚簇索引中`number`值为 8 的记录，索引只需要给它添加一个 **S 型记录锁**，如下图所示：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/a86hhG-20210129144505.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/a86hhG-20210129144505.jpg)
 
 #### 3.1.2 `SELECT ... FOR UPDATE`语句
 
@@ -123,7 +123,7 @@ SELECT * FROM hero WHERE number = 8 FOR UPDATE;
     
 这个语句执行时只需要访问一下聚簇索引中`number`值为 8 的记录，所以只需要给它加一个 **X 型记录锁**就好了，如图所示：
     
-![](http://cnd.qiniu.lin07ux.cn/uPic/Jmcvbf-20210129144710.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/Jmcvbf-20210129144710.jpg)
 
 #### 3.1.3 `UPDATE ...`语句
 
@@ -148,7 +148,7 @@ UPDATE hero SET name = 'cao曹操' WHERE number = 8;
     
 如下图所示（图中带圆圈的数字来表示为各条记录加锁的顺序）：
     
-![](http://cnd.qiniu.lin07ux.cn/uPic/0axvNa-20210129145254.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/0axvNa-20210129145254.jpg)
 
 #### 3.1.4 `DELETE ...`语句
 
@@ -204,7 +204,7 @@ SELECT * FROM hero WHERE number <= 8 LOCK IN SHARE MODE;
 
 可以看到，对于`number = 15`的记录，会先对其加锁，然后再把锁释放掉。过程如下图所示：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/64uRCk-20210129164020.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/64uRCk-20210129164020.jpg)
 
 这个过程有意思的一点就是，如果先在事务 T1 中执行：
 
@@ -234,7 +234,7 @@ SELECT * FROM hero WHERE number >= 8 LOCK IN SHARE MODE;
 
 当 InnoDB 找到索引中的最后一条记录，也就是`Supremum`伪记录后，在存储引擎内部就可以立即判断这是一条伪记录，不必要返回给 Server 层处理，而且也没必要给它也加上锁（也就是说在第 1 步中就压根儿没给这条记录加锁）。整个过程会给`number`值为 8、15、20 这三条记录加上S型正经记录锁，画个图表示一下就是这样：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/ML79Eb-20210129165522.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/ML79Eb-20210129165522.jpg)
 
 #### 3.2.2 `UPDATE ...`语句
 
@@ -261,7 +261,7 @@ UPDATE hero SET name = 'cao曹操' WHERE number >= 8;
 
 如下图所示：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/8odhjO-20210130001710.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/8odhjO-20210130001710.jpg)
 
 而如果是下面的语句：
 
@@ -301,7 +301,7 @@ SELECT * FROM hero WHERE name = 'c曹操' LOCK IN SHARE MODE;
 
 示意图如下：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/2t9pDV-20210130003314.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/2t9pDV-20210130003314.jpg)
 
 由于`idx_name`是一个普通的二级索引，所以在`idx_name`索引中定位到满足条件的第一条记录只会，就可以沿着这个记录继续向后查找。但是从上面的描述中可以看出来，并没有对下一套二级索引记录进行加锁。
 
@@ -358,7 +358,7 @@ SELECT * FROM hero FORCE INDEX(idx_name) WHERE name >= 'c曹操' LOCK IN SHARE M
 
 示意图如下：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/z1YVov-20210130005444.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/z1YVov-20210130005444.jpg)
 
 再来看下边这个语句：
 
@@ -376,7 +376,7 @@ SELECT * FROM hero FORCE INDEX(idx_name) WHERE name <= 'c曹操' LOCK IN SHARE M
 
 本例中使用的查询条件是`name <= 'c曹操'`，在为`name = 'c曹操'`的二级索引记录以及它对应的聚簇索引加锁之后，会接着二级索引中的下一条记录，也就是`name = 'l刘备'`的那条二级索引记录。由于该记录不符合索引条件下推的条件，而且是范围查询的最后一条记录，会直接向 Server 层报告查询完毕，重点是这个过程中并不会释放`name = 'l刘备'`的二级索引记录上的锁，也就导致了语句执行完毕时的加锁情况如下所示：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/nVcv9r-20210130010411.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/nVcv9r-20210130010411.jpg)
 
 这样就会造成一个尴尬的情况：假如事务 T1 执行了上述语句，并且未提交，在事务 T2 上再执行下面的语句：
 
@@ -414,7 +414,7 @@ UPDATE hero SET country = '汉' WHERE name <= 'c曹操';
 
 这个过程如下图所示：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/G6ST0z-20210130011436.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/G6ST0z-20210130011436.jpg)
 
 #### 3.4.4 `DELETE ...`语句
 
@@ -440,7 +440,7 @@ SELECT * FROM hero WHERE country = '魏' LOCK IN SHARE MODE;
 
 如下图所示：
 
-![](http://cnd.qiniu.lin07ux.cn/uPic/GLwr5O-20210130011913.jpg)
+![](http://cnd.qiniu.lin07ux.cn/markdown/GLwr5O-20210130011913.jpg)
 
 使用`SELECT ... FOR UPDATE`进行加锁的情况与上边类似，只不过加的是 **X 型记录锁**。
 
