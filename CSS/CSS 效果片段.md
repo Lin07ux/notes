@@ -31,6 +31,32 @@ p {
 
 对于非`-webkit`核心的浏览器，就没有直接的 CSS 属性来设置了，需要变通方法：设置文本行高，然后设置高度为：显示的行数 * 行高。但是这样则不好设置最后的省略号了，需要借助 js 代码来实现。
 
+### 元素高度依赖于宽度
+
+当需要元素的高度为其宽度的某个比例时，可以借助 css 的 padding 的百分比值来实现。在 CSS 的 [padding 的规范](https://www.w3.org/TR/CSS2/box.html#padding-properties)中关于百分比值有如下描述：
+
+> `<percentage>`
+> The percentage is calculated with respect to the `width` of the generated box's containing block, even for 'padding-top' and 'padding-bottom'.
+
+所以可以使用如下方式来设置元素的高度：
+
+```css
+.box {
+  position: relative;
+  width: 100px;
+  height: 0;
+  padding-bottom: 100%;
+}
+
+.child {
+  position: absolute:
+  width: 100%;
+  height: 100%;
+}
+```
+
+通过调整父元素的`padding-bottom`的百分比值，就能调整其高度为宽度的比例。
+
 ### hover 浮动效果
 
 ```css
