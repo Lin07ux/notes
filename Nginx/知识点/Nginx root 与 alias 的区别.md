@@ -1,7 +1,10 @@
 root 和 alias 都可以定义在 location 模块中，用来指定请求资源的真实路径。不同点在于：
 
-1.	`alias`指令只能作用在 location 中，而`root`指令可以存在 server、http 和 location 中。
-2.	`alias`指令的参数后面必须要用`/`结束，否则会找不到文件，而`root`指令的参数则对`/`可有可无。
+1. `alias`指令只能作用在 location 中，而`root`指令可以存在 server、http 和 location 中。
+2. `alias`指令的参数后面必须要用`/`结束，否则会找不到文件，而`root`指令的参数则对`/`可有可无。
+3. 对于请求资源的真实路径：
+    * `alias`：用配置值**替换** location 中的值之后的路径；
+    * `root`：用配置的值**拼接** location 中的值之后的路径。
 
 `root`指令，对应的请求资源的**真实的路径是 root 指定的值加上 location 指定的值**。比如：
 
@@ -27,7 +30,14 @@ location /i/ {
 
 ![](http://cnd.qiniu.lin07ux.cn/markdown/1476061099215.png)
 
+如果在 location 中使用了正则表达式，那么其中的`alias`必须要使用正则变量：
 
+```conf
+// if alias is used inside a location defined with a regular expression
+// then such regular expression should contain captures and alias should
+// refer to these captures, for example:
 
-
-
+location ~ ^/users/(.+\.(?:gif|jpe?g|png))$ {
+    alias /data/w3/images/$s;
+}
+```
